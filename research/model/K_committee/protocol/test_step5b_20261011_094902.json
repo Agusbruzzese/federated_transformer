@@ -1,0 +1,78 @@
+{
+ "AN": {
+  "QF_equivalent": true,
+  "row_order_irrelevant": true,
+  "wrong_fold_raises": true,
+  "missing_day_raises": true,
+  "duplicate_raises": true,
+  "missing_seed_raises": true,
+  "gate_incomplete_raises": true,
+  "QF_inferior": true,
+  "attr_non_iid": true,
+  "attr_fewer_negatives": true,
+  "attr_averaging": true,
+  "QS_helps": true,
+  "QS_does_not_help": true,
+  "interaction_~0.05": true,
+  "interaction_~0": true,
+  "paired_formula": "True",
+  "collapse": true,
+  "leak_gate_fail": true,
+  "controls_known": true,
+  "PASS": true
+ },
+ "TU": {
+  "keep_default": true,
+  "best_of_several": true,
+  "boundary_not_enough": true,
+  "PASS": true
+ },
+ "MA": {
+  "n": true,
+  "unique": true,
+  "groups": true,
+  "regenerates_identically": true,
+  "placeholders_resolvable": true,
+  "server_inits_seed_matched": true,
+  "refuses_S_before_pins": true,
+  "refuses_tuned_before_tuning": true,
+  "PASS": true
+ },
+ "FS": {
+  "C0a": true,
+  "C0b": true,
+  "C0c": true,
+  "final_hash_recorded": true,
+  "lr_trace_matches_schedule": true,
+  "guard_by_content": true,
+  "pool_pin_asserts": true,
+  "required_args": true,
+  "C0prime_bit_identical_m5": true,
+  "PASS": true
+ },
+ "EV": {
+  "fold_mismatch_refused": true,
+  "own_fold_accepted": true,
+  "single_class_refused": true,
+  "PASS": true
+ },
+ "ALL_PASS": true,
+ "code_sha256": {
+  "analyze.py": "bd73299c8537037f84c70bb8b563f4c6060280ab553ee4bc2b14ddfd8fdbf737",
+  "evaluator.py": "193ca2e0307c5863c6aba10765052e823627268b047b0c55167613aa6ad3910f",
+  "evaluator2.py": "ce0d48dcf75babb4c71ac2ede320accfd443bf9726b3d04d2541e86c2642d595",
+  "fedsim2.py": "638febb10769c9900b679aa8b0904e6766411a75eeb08cd348b72caeba6df884",
+  "fedsim3.py": "62c9e4bf56c2144ebb39932418b19166606669967646ea97885a341c87e39ce3",
+  "folds.json": "79f3b1ffe755d66639e4522b4f814d7c4619ee6b994655b98dc30d610daf776a",
+  "folds.py": "8b89a759881fa23f37d90185edfaf16fc6f5612861a25d77f1a0d06159f24d99",
+  "launch.py": "5a34ed74f8716ebfb05a369cd94cd0760b44b9ce4aa0d0e2357ff629d85b24b8",
+  "manifest.py": "d4b4113d4f87499766f3168dba504abe72771abb3e5fb6fa6a45695fa0caeee0",
+  "manifest_v2_1.json": "2ed0423d40847d3b9a62ed18215cfea5853cec9de288e2f3d90ca71e49ba9dcb",
+  "noisepool_v2.py": "ba90c631d39ecdad91aa521be658869bb6f32e7191d9536cc3d6a50a4a13f69a",
+  "score_all.py": "7ece424517de4298e7934b3c84a9654c6bc17dc25e5d4ee7b8e061868cfc00e9",
+  "test_evaluator.py": "7247370deb443ac8d08a1d5f4a098c03045f7af28f49116cf91db9d70ed8510f",
+  "test_fedsim2.py": "fea081c771bbc55f6a89760e5436d67a86242177522ad7048a89ee7565ba7f4f",
+  "test_step5b.py": "12c83b6cb777edf1e54c658c656b2c91b03bcb90ea214f879a618903a1a74cbc",
+  "tune.py": "110d39bb7ace57a9f559a1ba79cab1426d88fe59ee08ba87ec07c3ffb01efad6"
+ }
+}

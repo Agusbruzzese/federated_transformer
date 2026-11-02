@@ -1,0 +1,137 @@
+================================================================================
+ CONSOLIDATION ADDENDUM: WHAT CHANGED AFTER REPORT 40, FAIRNESS, FIGURES
+ Report 49 (addendum to report 40; consolidates reports 41-48; no new
+ experiments)
+ Project: federated_transformer                Date: 2026-10-19
+ Runbook: fl_system5/RUNBOOK_v2.md (RUNBOOK.md kept unchanged)
+ Figures: reports/figures/49_fig1_key_comparisons.png,
+          reports/figures/49_fig2_embedding_maps.png
+          (script research/model/R_replication/figs49.py)
+================================================================================
+
+1. WHAT WAS ADDED AFTER REPORT 40
+  No new recordings exist, so the study was re-run on the 5 284 events that
+  no model had ever used (SNR 10-20, same days). Then three pre-registered
+  follow-ups explained the differences.
+    rep. 41-42  replication on new events: procedure valid; federated
+                not worse than central; SecAgg+ equivalent; pretraining
+                gain not seen (scored with noisy labels).
+    rep. 43-44  why: neither a clean server nor a re-tuned lr restores
+                the gain (with noisy labels). The server model alone
+                already matches every trained model, which suggests a
+                ceiling.
+    rep. 45-46  the ceiling, tested: scored with reliable (clean-event)
+                labels, the gain IS there: S+F vs federated +0.029
+                [+0.017, +0.040]. Federated vs central -0.018, equivalent,
+                as in the study.
+    rep. 47-48  data rule: training on all events (SNR >= 10) is
+                equivalent to clean-only; noisy-only is clearly worse.
+  Figure 1 shows all of these on one axis.
+
+2. UPDATED BOTTOM LINE (replaces report 40 sec. 1 points 1-2; points 3-6
+   unchanged)
+  1. Federated = central, within the margin: on the study's events (-0.023)
+     and on never-used events scored with reliable labels (-0.018).
+  2. Server pretraining helps: +0.049 with clean client data, +0.029 with
+     noisy client data (reliable labels). Its gain is smaller but real on
+     noisy sites.
+  3. Data rule: S+F trains on SNR >= 20 by default. SNR >= 10 is
+     equivalent but costs 0.017 lobes. Never train on noisy events only
+     (-0.075).
+  4. Method lesson: probe labels derived from noisy waveforms compressed
+     the measurable range 2.6x and reversed two conclusions. Always score
+     with clean-event labels.
+
+3. WERE THE MODELS COMPARED FAIRLY?
+  Yes, under one explicit definition of fair: same data, same compute,
+  same tuning effort, same evaluation, decided by rules fixed in advance.
+  In detail:
+    Same data       every arm trains on exactly the same events of the same
+                    10 day-clients per fold. Central pools them; federated
+                    keeps them at their sites. Each event draws noise only
+                    from its own day.
+    Same model      the same 207k-parameter patch transformer, SimCLR loss,
+                    augmentations and schedule shape.
+    Same compute    the same number of training examples (2.56 M); the
+                    pretrained arm is also compared with federated given
+                    the SAME extra compute (F-X+P), so its gain is not just
+                    more training.
+    Same tuning     4 learning rates per arm, one frozen selection rule,
+                    a separate tuning day never used for evaluation.
+    Same test       probes fitted on each fold's client events, scored only
+                    on 9 days that no compared model ever trained on
+                    (3-fold cross-fitting).
+    Enough repeats  10 seeds x 3 folds per arm; uncertainty from both
+                    seeds and days (two-stratum CIs).
+    No moving goal  protocol, margins and code frozen by sha256 before any
+                    model was trained; every follow-up pre-registered; the
+                    analysis run once.
+    Checked tools   planted controls showed the procedure can say
+                    "equivalent" AND "worse" before real use; all numbers
+                    were reproduced by an independent recomputation
+                    (900/900); the system runs are bit-identical to the
+                    simulator.
+  Where fairness has limits (stated in the reports):
+    - The central reference used batch 256. Batch 64 was +0.035 better on
+      clean events, but -0.039 on new events. The reference choice
+      matters at that level.
+    - Compute is matched in training examples, not wall-clock time or
+      communication.
+    - In the replication, learning rates were deliberately NOT re-tuned
+      (the recipe was being replicated).
+    - Probes are fitted on client events. Models trained on those events
+      (T20, T10) are scored on probes fitted to their own training
+      events; the noisy-only models (TLO) are not. This is the same for
+      every arm inside each comparison, but favours T20/T10 over TLO.
+    - Margins were derived on the clean tier.
+    - SecAgg+ equivalence and the DP curve used fold 0 only; the DP curve
+      used 3 seeds.
+    - All data come from one sensor, 14 winter days; the "labels" are
+      shape proxies (no vehicle labels exist).
+
+4. RESULTS AT A GLANCE (lobe-count skill; Figure 1)
+    Federated vs central       -0.023 (study)    -0.018 (new events)  EQUIVALENT
+    Pretraining vs federated   +0.049 (study)    +0.029 (new events)  HELPS
+    SecAgg+ vs plain           +0.000 (seeds 3-9) -0.000 (new events) EQUIVALENT
+    DP (site level, 10 sites)  no usable setting; at epsilon 6.6 lobes 0.235
+                               vs 0.676 (report 37)
+    S+F on SNR >= 10 vs >= 20  -0.017  EQUIVALENT
+    S+F on noisy only vs >= 20 -0.075  INFERIOR
+  Absolute (study, clean labels): central 0.600, federated 0.577, S+F
+  0.626, untrained 0.276.
+
+5. WHERE THE CLUSTERING GRAPHICS ARE
+  Clustering was studied before the federated study (report 03). The
+  figures are:
+    research/model/C1_clustering/gallery_R1_awd_s100.png, gallery_R2_simclr_s0.png,
+        gallery_R3_morph8.png  (12 largest clusters per representation,
+        waveforms + median)
+    research/model/C2_lookalikes/gallery_families.png (about 7 shape
+        families), gallery_C2a_*.png, gallery_C2b_*.png
+    research/model/S_synth/compare/*.png (real vs synthetic: densities,
+        waveforms, family mix, embeddings)
+    research/extraction/*/fig*.png (signal, detection, extraction)
+  Finding (report 03): the data form a CONTINUUM of shapes. There are no
+  discrete clusters (silhouette <= 0.28 at every k). About 7 reproducible
+  shape families exist; inside them, amplitude and duration vary
+  continuously. The encoder is a feature extractor, not a clustering
+  method.
+  NEW, Figure 2: the same unseen events (fold 0, n = 1 041) in the
+  embedding of central, federated and pretrained federated (t-SNE),
+  coloured by lobe count. All three organise events by shape in soft
+  regions (single-lobe, two-lobe, three-plus), not separated clusters.
+  This is consistent with report 03. The federated maps are organised
+  like the central one, which is what the equivalence result says
+  numerically (15-NN overlap with central 0.696 vs 0.699 between two
+  central runs, report 24).
+
+6. RUNBOOK v2 (fl_system5/RUNBOOK_v2.md)
+  It adds:
+    - the data rule (sec. 2a);
+    - lr 1e-3 for S+F, even for noisy sites;
+    - scoring with clean-event labels.
+  System, security and recovery are unchanged.
+
+================================================================================
+ End of report
+================================================================================

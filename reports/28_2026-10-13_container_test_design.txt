@@ -1,0 +1,77 @@
+================================================================================
+ FEDERATED SYSTEM ACROSS REAL CONTAINERS: DESIGN AND ACCEPTANCE CRITERIA
+ Report 28 (design; written before implementation)
+ Project: federated_transformer                Date: 2026-10-13
+ Builds on: report 27 (system validated as local processes)
+================================================================================
+
+1. GOAL
+  Run the validated federated system as 11 separate containers (1 server,
+  10 clients), each with its own filesystem and its own network
+  namespace, communicating over a container network. Show that:
+    - it still computes exactly the study's models;
+    - container boundaries enforce data isolation;
+    - recovery from a killed container is exact.
+
+2. ENVIRONMENT (installed by the user, 2026-10-13)
+  Docker 29.1.3, Compose 2.40.3, NVIDIA container runtime; GPU visible in
+  containers (RTX 4060, driver 580.178.04). Docker is reached via
+  "sg docker" until the user's next login.
+
+3. DESIGN
+  Image   fl-base: ubuntu:24.04 + python3.12 3.12.3-1ubuntu0.17 (the same
+          Debian package version as the host). Nothing else.
+  Mounts  read-only, at the same absolute paths, so that the validated
+          environments are used unchanged and no multi-GB download is
+          needed:
+            - the environments .venv-fl and .venv (torch + CUDA libraries);
+            - the code fl_system/ and ssl_central/.
+          Data, per container:
+            server    federation.json (ro) + its own server/ folder (rw);
+                      it sees NO client folder;
+            client k  only data/fl_system/fold0_v2/client_k/ (rw for its
+                      state); it sees no other client, no server folder, no
+                      study data.
+  Network a private bridge network per run; the server is reachable as
+          "flserver:8080"; each container has its own IP and network
+          namespace; nothing is published to the host.
+  GPU     all containers use the same GPU through the NVIDIA runtime (one
+          physical machine). This is a property of the test bench, not of
+          the protocol.
+  Users   containers run as the host user (uid 1000), so outputs belong to
+          the user; HOME=/tmp; no bytecode writes.
+  Orchestration
+          a generated Compose file per run (new file per run name; the
+          legacy docker-compose.yml is not touched), started with
+          "docker compose up"; the run stops if any container exits with an
+          error.
+
+4. ACCEPTANCE CRITERIA (fixed now)
+  C1a  Exactness, short: a 3-round container run (fold 0, seed 0,
+       server init, lr 1e-3, small budget) equals the frozen simulator
+       (same test as T1): max |diff| <= 1e-5 per round. Bit-identity
+       expected, because the libraries, driver and GPU are identical.
+  C1b  Exactness, full: the deployment recipe S+F, 200 rounds, full budget,
+       seed 0, in containers, vs the study's v21_S+F_f0_s0 model: score
+       difference <= 0.01 (weights compared too).
+  C2   Isolation enforced by the container: from inside a client
+       container, other clients' folders, the server folder and the study
+       data (data/k_committee, data/events) DO NOT EXIST in its
+       filesystem; inside the server container, no client folder exists.
+       Checked by listing and by attempting to open known paths.
+  C3   Fault and recovery: "docker kill" of one client container during a
+       round. The server refuses partial aggregation and the run stops;
+       restart with --resume; the final weights must be bit-identical to an
+       uninterrupted container run (C1a run).
+  C4   Network: each container has its own network namespace and IP;
+       traffic is measured on the server container's interface and
+       compared with the theoretical payload (17.26 MB per round).
+  Pass needed for "validated in containers": C1a, C1b, C2, C3. C4 is
+  measured and reported.
+
+5. COST
+  About 1-2 h of work. GPU: minutes for C1a/C3; about 5-10 min for C1b.
+
+================================================================================
+ End of report
+================================================================================

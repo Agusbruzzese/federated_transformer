@@ -1,0 +1,138 @@
+================================================================================
+ OPTION A, STEP M4: SITE-LEVEL DIFFERENTIAL PRIVACY - DESIGN, PRE-REGISTRATION
+ AND PRE-RUN TESTS
+ Report 35 (written and frozen BEFORE any M4 curve run)
+ Project: federated_transformer                Date: 2026-10-14
+ Follows: reports 30 (M4 outline), 33 (M3), 34 (M3c'). User decision: do M4.
+ Code: fl_system4/ (dp.py, dpsim.py, fl_system4/ Flower app, tests_M4u.py,
+       check_M4v.py, analyze_M4.py, run_M4.sh); launcher
+       fl_system2/run_deploy.py (+ choice fl_system4 -> runs4; nothing else
+       changed, compile-checked; previous copy kept in the session scratchpad)
+================================================================================
+
+1. WHAT DP ADDS, AND WHICH KIND
+  SecAgg+ (M3) hides each site's update from the server, but the released
+  model still depends on every site's data. Differential privacy bounds how
+  much the final model can reveal about any ONE SITE's whole dataset
+  (site-level DP, the unit that matters for 10 sites), measured by
+  (epsilon, delta). Smaller epsilon = stronger privacy.
+  Mechanism (DP-FedAvg, McMahan et al. 2018, distributed form):
+    a. each site clips its round update to L2 norm C;
+    b. each site adds its share of Gaussian noise, sd z*C*n_max/(n_k*sqrt(K)),
+       BEFORE SecAgg+. After SecAgg+'s n_k weighting and the sum, the
+       decoded mean carries noise sd z*C*n_max/sum(n), i.e. z times the
+       sensitivity of the weighted mean to one site's clipped update. The
+       server never sees an update without noise, not even the sum.
+    c. accountant: 200 rounds, all sites every round = exactly mu-GDP with
+       mu = sqrt(200)/z (Dong, Roth, Su 2022). epsilon at delta = 1e-5 by
+       the exact conversion, cross-checked by an RDP bound.
+       Adjacency: "zero-out" (one site's update replaced by 0; standard for
+       DP-FedAvg) is the headline; "replace-one" (mu doubles) also reported.
+  Record-level DP (protecting single events inside a site, via DP-SGD) is
+  NOT done here: the contrastive NT-Xent loss couples every event in a
+  batch (each one is a negative for all others), so per-example clipping
+  does not bound the sensitivity. Doing it properly would require changing
+  the loss, i.e. a different recipe and a new study (see sec. 7).
+
+2. EXPECTATION, STATED BEFORE RUNNING (analytic)
+  Per round, the decoded update has norm <= about C (signal); the noise has
+  norm z*C*(896/5412)*sqrt(215744) = about 77*z*C over 215 744 weights.
+    z     epsilon (zero-out)   epsilon (replace-one)   noise/signal per round
+    0.3   1311                 4846                    ~ 23
+    1     159                  520                     ~ 77
+    3     30.5                 83.8                    ~ 230
+    10    6.57                 15.5                    ~ 770
+  (epsilon values from tests_M4u U4). Meaningful privacy (epsilon <= ~10)
+  needs z >= ~7, i.e. noise hundreds of times larger than the signal in
+  every round. PREDICTION: with only 10 sites, no setting with a
+  meaningful epsilon will keep the model equivalent to plain training.
+  Utility should be lost from about z = 0.1 (epsilon in the thousands).
+  The runs test this prediction; they do not assume it.
+
+3. HOW IT IS MEASURED: AN EXACT SIMULATOR OF THE REAL SYSTEM
+  A real run costs 2.2 h. dpsim.py runs the same federation in one process
+  (about 7-11 min per run):
+    - the same site code (fl_system/core.py), reading each site's own
+      provisioned folder;
+    - dp.privatize, shared verbatim with the real ClientApp;
+    - the exact SecAgg+ arithmetic of Flower 1.39 (weight factor,
+      stochastic quantisation with the same seeds, integer sum,
+      dequantisation; the masks cancel exactly and are omitted).
+  Its exactness is TESTED, not assumed:
+    V1  dpsim without DP, seeds 0-2, 200 rounds, vs the REAL SecAgg+ runs
+        of M3c: global weights at rounds 1, 2, 3, 50, 100, 150, 200 and
+        final model, max |diff| must be 0.0.
+        (Development check already done: rounds 1-3 of seed 0
+        BIT-IDENTICAL, dpsim/dev_v1_s0_3r.)
+    V2  REAL fl_system4 (SecAgg+ + DP, z = 1, 3 rounds) vs dpsim with the
+        same configuration: global weights r1-3 and final, max |diff| 0.0,
+        and identical per-site clipping factor and noise sd.
+  If V1 or V2 fails, the curve is still computed but reported as
+  simulator-only (not proven equal to the real system).
+
+4. PRE-RUN UNIT TESTS (done; fl_system4/tests_M4u_20261014_100129.json)
+  U1 clipping: norm <= C after clipping, unchanged below C. PASS.
+  U2 per-site noise: sd within 0.21 % of target, mean 0, normal
+     (KS p 0.90), the same seed reproduces, other rounds differ. PASS.
+  U3 noise in the decoded SecAgg+ sum = z x sensitivity within 0.20 %;
+     0 values outside the SecAgg+ range. PASS.
+  U4 accountant: the exact GDP epsilon gives delta = 1e-5 to better than
+     0.1 % by independent numerical integration of the privacy-loss
+     distribution, for z = 0.3-30; always <= the RDP bound. PASS.
+  Smoke: dpsim with z = 1 runs (1 round, dpsim/dev_dp_z1_1r).
+
+5. PRE-REGISTERED PROCEDURE (code frozen by sha256, below)
+  Clip norm C: median of all 2000 site-round update norms of the V1 seed-0
+    run (= the real M3c seed-0 run). Computed by the chain, not chosen.
+  SecAgg+ value range: 0.5 + 7*z*C/sqrt(10) (so noise almost never hits
+    the range; the number of range-clipped values is reported).
+  Grid: z = 0 (clipping only), 0.01, 0.03, 0.1, 0.3, 1, 3, 10; seeds 0-2;
+    full S+F recipe (200 rounds, 2.56 M examples, lr 1e-3), fold 0.
+  Per z (analyze_M4.py; frozen evaluator; fold-0 evaluation days):
+    - epsilon (zero-out, replace-one), delta 1e-5;
+    - vs PLAIN (study S+F models): seed-paired two-stratum 90 % CI,
+      outcome at the study margins (LOBES 0.04, POLARITY 0.02,
+      DURATION 0.03), contrast label;
+    - vs INIT (the pinned server checkpoint each run starts from = no
+      federated training at all): LEARNS(metric) if the 90 % CI lower
+      bound > 0;
+    - vs SecAgg+ only (descriptive).
+  Summary: z* = largest z labelled EQUIVALENT or NON-INFERIOR vs plain,
+    with its epsilon; "None" if no z qualifies.
+  Note: with 3 seeds and 3 days the CIs are wide; labels near the
+    boundary are reported as they come, without re-analysis.
+
+  Frozen code (sha256):
+    dp.py              b1a8a17359d0add2d8e5cfdef9091e6cfb0dfa9ef7da8d88d04c43baa62c5d4a
+    dpsim.py           1ab98ba6bb2bf2c76836f91b0315eee877e73c311edc752609b0fe0e00258c27
+    check_M4v.py       1002dcb5aadb8c3e41840ac8a6f95fde2f551509b98cd2531bba6439221a0280
+    analyze_M4.py      1444a2d7601e342de20bb7ea4e3c31af29f27aab122fd47c125ce1ead6756bb4
+    run_M4.sh          331dc3d7d226df0284be0cdda4bf551aa5e4c1eb5d5214f2e866e97ed5c52c86
+    client_app.py      c27a9e1833a045a85b897c2144588a95c51303ce2f56c6535c130e680b686f25
+    server_app.py      8fde39f2c47eccbf111e38be7bba2d1ce5ea1e621612c9b2522b2b3d6a243f11
+    tests_M4u.py       4b5146de89949d447e904f37d8f67f1380e5f1734a82001d86a6af8989a5d1bd
+
+6. SCHEDULE AND COST
+  run_M4.sh starts detached now but WAITS until the M3c' chain (report 34)
+  has finished, so the two never share the GPU. Then: V1 3 runs, calib,
+  V2 (1 short real run + sim), curve 24 sim runs, analysis.
+  About 4-5 h GPU after M3c' (M3c' itself: about 15.5 h).
+  Development checks already run (a few GPU seconds each while M3c'
+  was running): dev_v1_s0_3r, dev_dp_z1_1r. They do not affect M3c's
+  results, which are deterministic.
+
+7. LIMITS (stated in advance)
+  - Site-level DP with 10 sites is a known hard regime: the guarantee
+    scales with the number of participants. The result will say how much
+    utility is lost at each epsilon, not "DP works" in general.
+  - Noise seeds are deterministic here for reproducibility. A deployment
+    must draw noise from a secret, cryptographic source at each site;
+    deterministic seeds known to the server would void the guarantee.
+  - Distributed noise assumes all 10 sites add their share. If sites
+    collude to drop theirs, the noise shrinks accordingly.
+  - Record-level DP (sec. 1) and larger federations are out of scope; they
+    would be a separate design.
+
+================================================================================
+ End of report
+================================================================================

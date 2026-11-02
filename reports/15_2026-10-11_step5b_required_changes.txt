@@ -1,0 +1,107 @@
+================================================================================
+ STEP 5b: IMPLEMENTATION OF THE REVIEWER'S REQUIRED CHANGES (R1-R4)
+ Report 15 (execution report; normative changes in report 14)
+ Project: federated_transformer                Date: 2026-10-11
+ Code (all NEW files, research/model/K_committee/protocol/):
+   fedsim3.py, evaluator2.py, analyze.py, tune.py, manifest.py,
+   manifest_v2_1.json, launch.py, score_all.py, test_step5b.py
+ Results: test_step5b_20261011_094807.json (run 1, FAIL, kept)
+          test_step5b_20261011_094902.json (final run, ALL_PASS)
+          selftest_fedsim3_20261011_094902.json
+================================================================================
+
+1. PURPOSE
+  Remove every remaining human choice from launching and analysing, and
+  match the controls to N_SEEDS = 10, so that the freeze (step 6) fixes
+  every decision before any data exist (reviewer F, report 13).
+
+2. USER DECISIONS (2026-10-11)
+  - N_SEEDS = 10.
+  - PRIVACY = no.
+  - Controls: replicate design, C256 seeds 10-19 (+1.6 h GPU), chosen over
+    the split-half option.
+
+3. WHAT WAS BUILT
+  R1  manifest.py -> manifest_v2_1.json: 338 runs (server 10, tuning 28,
+      dryrun 60, main 210, ablation 30).
+      launch.py: plan check, learning-rate and server-hash resolution,
+      skip-if-done, no overwrite, run log.
+      fedsim3.py: all arm parameters required on the command line.
+  R2  analyze.py: tidy-input grids with alignment assertions; Q-F, Q-S,
+      attributions, interaction, seed-paired, collapse, sensitivity (a)-(d),
+      gate, dry-run controls.
+      score_all.py: scoring driver for the dry run and the main runs,
+      including the planted controls.
+      tune.py: tuning scorer and selection rule.
+      evaluator2.py: fold check, effective rank, class assertion, gate
+      convergence count, tuning-day scoring, 15-NN overlap.
+  R3  Replicate C256 seeds 10-19 in the manifest; controls at 10 vs 10;
+      operational kappa* for L2; pre-stated L1 response (report 14 A2).
+  R4  fedsim3: learning-rate trace per client per round; pinned sha256 of
+      folds.json and the noise pool asserted before training; guard by file
+      content as well as name; final checkpoint hash stored; unique
+      self-test paths. Report 09 corrections listed in report 14 A5.
+
+4. PROOFS (test_step5b.py; criteria written in the file before run 1)
+  AN  analysis on toy data with known answers (all PASS in the final run):
+        - misalignment and incompleteness raise: a day scored by a model
+          of another fold, a missing day, a duplicate cell, a missing seed,
+          a missing gate value;
+        - row order is irrelevant (identical SE after shuffling);
+        - Q-F EQUIVALENT when there is no effect; INFERIOR with a lobes
+          effect of -0.10;
+        - each attribution rule fires on its own scenario only (non-IID,
+          fewer negatives, averaging);
+        - Q-S HELPS with S+F +0.05; DOES NOT HELP with no effect;
+        - interaction about 0.05 and about 0 in the two scenarios;
+        - seed-paired SE equals the direct formula to 1e-12;
+        - collapse flags exactly the planted seed; gate FAIL on a planted
+          leak;
+        - controls() gives the known verdicts and kappa*.
+  TU  selection rule: keeps 3e-4 within +0.02; picks the best of several
+      that clear it.
+  MA  manifest: 338 unique entries; group sizes exact; regenerates
+      identically from manifest.py; every placeholder resolvable; the
+      launcher refuses S arms before the server hashes are pinned and tuned
+      arms before tuned_lr.json exists. Plan check (launch.py check):
+      41 distinct arm x fold configurations, all within tolerance.
+  FS  fedsim3:
+        - C0a/C0b/C0c (FedAvg) PASS;
+        - C0' bit-identical to m5.train (weight difference 0.0) PASS;
+        - learning-rate trace equals peak x lam(i) for every client and
+          round;
+        - a renamed copy of the pooled noise file is refused (content
+          guard);
+        - a wrong pinned pool hash stops training;
+        - missing required arguments are refused;
+        - the final checkpoint hash is recorded.
+  EV  evaluator2: scoring a fold-0 checkpoint on fold 1 is refused; its
+      own fold is accepted; a single-class day is refused.
+
+5. WHAT THE TESTS FOUND (honest record)
+  Run 1 (094807): FAIL on AN "gate_incomplete_raises". analyze.zbar
+  averaged over the remaining folds when one (seed, fold) gate value was
+  missing, instead of failing. A missing gate would have silently biased
+  the leakage test. Fixed by asserting that the seed x fold gate grid is
+  complete and finite. The failing output is kept.
+  Run 2: stopped by the no-overwrite guard. fedsim3's M5 self-test used
+  fixed scratch and run folder names from run 1. Fixed by giving the
+  self-test unique, timestamped paths (no output was overwritten).
+  Run 3 (094902): ALL_PASS. It records the sha256 of every protocol file
+  tested (report 14 A6).
+
+6. COST
+  CPU/GPU for tests: under 1 min of GPU, about 1 min of CPU (plan check
+  6 s). No study training.
+
+7. DEVIATIONS
+  None from report 14. Report 09 was not edited.
+
+8. NEXT STEP
+  Short confirmation check by reviewer F (R1-R4 done as required). Then
+  step 6, the freeze: hash report 09, report 14 and the A6 file list into
+  a freeze record; after that, any change is a logged deviation.
+
+================================================================================
+ End of report
+================================================================================

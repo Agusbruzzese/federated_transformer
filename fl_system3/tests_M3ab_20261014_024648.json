@@ -1,0 +1,40 @@
+{
+ "run": "m3a",
+ "clipping_range": 0.5,
+ "quantization_range": 4194304,
+ "max_weight": 896,
+ "rounds": [
+  {
+   "round": 1,
+   "max_abs_err": 2.2500593532879913e-07,
+   "bound": 3.961187042026958e-07,
+   "rel_err": 4.003795147868361e-05,
+   "err_within_bound": true,
+   "max_abs_corr_masked_vs_true": 0.005141726988237131,
+   "ks_uniform_max": 0.0024872825347557193,
+   "n_values": 215744
+  },
+  {
+   "round": 2,
+   "max_abs_err": 2.249047197479606e-07,
+   "bound": 3.955704293300865e-07,
+   "rel_err": 5.913526077917294e-05,
+   "err_within_bound": true,
+   "max_abs_corr_masked_vs_true": 0.004692430642647458,
+   "ks_uniform_max": 0.0029660909910730893,
+   "n_values": 215744
+  },
+  {
+   "round": 3,
+   "max_abs_err": 2.3454235866334936e-07,
+   "bound": 3.9489636912992213e-07,
+   "rel_err": 0.0003499745360785883,
+   "err_within_bound": true,
+   "max_abs_corr_masked_vs_true": 0.0033529476472861394,
+   "ks_uniform_max": 0.0031810523645117716,
+   "n_values": 215744
+  }
+ ],
+ "M3a_PASS": true,
+ "M3b_PASS": true
+}

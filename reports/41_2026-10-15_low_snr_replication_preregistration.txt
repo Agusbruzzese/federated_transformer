@@ -1,0 +1,90 @@
+================================================================================
+ REPLICATION ON NEVER-USED EVENTS (LOW-SNR TIER): PRE-REGISTRATION
+ Report 41 (written and frozen BEFORE any replication run)
+ Project: federated_transformer                Date: 2026-10-15
+ Code: research/model/R_replication/ (rep.py, rep_manifest.json, run_rep.sh)
+ User decision: replicate on the never-used low-SNR events (no new
+ recordings exist).
+================================================================================
+
+1. WHY, AND WHAT THIS CAN AND CANNOT SHOW
+  Every study result (report 24) and every system result (reports 27-40)
+  comes from the 4 375 events with SNR >= 20. The method was developed on
+  those events, so the results are exploratory with respect to them. No new
+  recordings exist: the dataset folder holds exactly the 4 runs (18 dates,
+  "14 days") already used.
+  Never used: 5 284 events with 10 <= SNR < 20, from the same days. They
+  were counted and inspected descriptively during extraction (phase E), but
+  NO model was ever trained or scored on them, and no protocol decision was
+  based on them.
+  This replication answers: do the study's conclusions hold on different,
+  noisier vehicles, with everything else fixed?
+  It does NOT test new days, a new season, or a new sensor. Same-day
+  conditions (traffic mix, weather, noise floor) are shared with the study.
+
+2. DESIGN (identical to the study except the data)
+  - Tier: 10 <= SNR < 20, all 18 dates, the same rule as the study
+    otherwise (dropout events not excluded, exactly as in the study).
+  - Folds, days, server days (Feb 18 + 20), tuning day (Feb 10), noise
+    pool, augmentations, model, budgets, learning rates and probes: all
+    unchanged. The frozen protocol code is used unmodified. rep.install()
+    fills the cache of the single data loader (m4.load) with the low-SNR
+    tier before any protocol module reads data. "verify_freeze.py" runs at
+    the start of the chain.
+  - Learning rates are NOT re-tuned: the study's chosen values (C256
+    1.5e-4; C64, F-nat, F-X+P 3e-4; S+F 1e-3) are part of the recipe
+    being replicated.
+  - Server pretraining is redone on the low-SNR server-day events
+    (477 events; study: 434), with the study's server command.
+  - Clients per fold: 10, with 141-679 events each (study: 53-434). Fold
+    training events: 3 443 / 3 295 / 3 767.
+  - Runs (190, commands copied verbatim from the study manifest; listed in
+    rep_manifest.json):
+      server 10; C256 seeds 0-9 x 3 folds; C256rep seeds 10-19 x 3;
+      C64 x 30; F-nat x 30; F-X+P x 30; S+F x 30.
+    SecAgg+ arm: S+F through the exact SecAgg+ simulator (dpsim, proven
+    bit-identical to the real system in report 37), fold 0, seeds 0-9, on
+    fl_system folders provisioned from the low-SNR tier.
+  - Scoring: the frozen evaluator; untrained networks (INIT, seeds 0-9) as
+    the negative control.
+
+3. PRE-REGISTERED DECISIONS (rep.py analyze; the study's own functions)
+  Procedure validity (all three required, else results are reported as
+  NOT INTERPRETABLE):
+    C1  C256rep vs C256 -> EQUIVALENT (the procedure can declare
+        equivalence on this tier);
+    C3  INIT vs C256 -> INFERIOR (it can detect a bad model);
+    L1  gate calibration (m_leak rule from C256rep vs C256) -> PASS.
+  Claims; "REPLICATED" means the same label as the study:
+    QF  F-nat vs C256: EQUIVALENT and nuisance gate PASS (study: EQUIVALENT,
+        gate PASS);
+    QS  server pretraining (Holm family S+F > F-nat, S+F > F-X+P):
+        HELPS (study: HELPS);
+    SF  S+F vs C256: NON-INFERIOR or EQUIVALENT (study: NON-INFERIOR);
+    SA  SecAgg+ vs plain S+F, fold 0, seed-paired: EQUIVALENT (study:
+        EQUIVALENT, report 36).
+  Margins: the study's (LOBES 0.04, POLARITY 0.02, DURATION 0.03), not
+  re-derived.
+  Descriptive (no claim): C64 vs C256 and F-nat vs C64 (the study's caveat),
+  seed-paired sensitivity analyses, collapse check, mean scores.
+  Interpretation rule: a claim that is not replicated is reported as such,
+  with its label. Noisier probe labels at low SNR can lower precision and
+  produce INCONCLUSIVE. That would mean "not confirmed", not "refuted",
+  unless the label is INFERIOR or the opposite direction.
+
+4. FROZEN CODE (sha256)
+  rep.py              ac499275f80a4ecf93ad5ce66d2b2f6fa779137a55426c75354c9ab6d085af7b
+  rep_manifest.json   cc2529c2974516eeceeb8047e64c74acf8f432aa7d895300109231ffc51e4d6b
+  run_rep.sh          373611b7c507cf1e5e8f94f6d5644561e7b733c766a7fc5003b74736d2642157
+  Smoke test before freezing (scratch folder, not part of the results):
+  plans for server/fed/central on folds 0-2; 2 training rounds; scoring and
+  gate on fold 0.
+
+5. COST
+  190 runs x about 4.6 min = about 14.5 h; SecAgg+ arm 10 x 7 min; scoring
+  about 1 h. About 16-17 h, detached and resumable (finished runs are
+  skipped after a reboot). Results in report 42.
+
+================================================================================
+ End of report
+================================================================================

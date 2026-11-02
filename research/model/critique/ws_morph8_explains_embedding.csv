@@ -1,0 +1,7 @@
+,,r2_mean_dim,r2_mean_dim,r2_mean_dim,r2_total,r2_total,r2_total
+,,mean,min,max,mean,min,max
+arch,kind,,,,,,
+cnn,rand,0.662,0.591,0.723,0.664,0.589,0.729
+cnn,ssl,0.643,0.587,0.699,0.645,0.587,0.701
+tf,rand,0.596,0.491,0.682,0.598,0.489,0.682
+tf,ssl,0.681,0.606,0.737,0.681,0.607,0.737

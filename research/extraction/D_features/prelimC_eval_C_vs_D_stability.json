@@ -1,0 +1,68 @@
+{
+ "C_dev_vs_C_holdout": {
+  "per_criterion_rho": {
+   "invariance_R@1": 0.9166666666666666,
+   "leak_date_skill": 1.0,
+   "leak_hour_skill": 1.0,
+   "sil_excess": 0.8666666666666667,
+   "ari_excess": 0.9833333333333333,
+   "proxy": 1.0
+  },
+  "composite_rho": 0.9614530884382773,
+  "median_criterion_rho": 0.9916666666666667,
+  "top2_a": [
+   "morph",
+   "legacy_fixed_io"
+  ],
+  "top2_b": [
+   "legacy_fixed_io",
+   "morph"
+  ],
+  "same_top2": true,
+  "stable": true
+ },
+ "D_dev_vs_C_dev": {
+  "per_criterion_rho": {
+   "invariance_R@1": 0.8166666666666667,
+   "leak_date_skill": 0.9833333333333333,
+   "leak_hour_skill": 0.9,
+   "sil_excess": 0.43333333333333335,
+   "ari_excess": 0.7,
+   "proxy": 0.7666666666666667
+  },
+  "composite_rho": 0.5322329596711892,
+  "median_criterion_rho": 0.7916666666666667,
+  "top2_a": [
+   "waveform",
+   "morph"
+  ],
+  "top2_b": [
+   "morph",
+   "legacy_fixed_io"
+  ],
+  "same_top2": false,
+  "stable": false
+ },
+ "D_holdout_vs_C_holdout": {
+  "per_criterion_rho": {
+   "invariance_R@1": 0.7333333333333334,
+   "leak_date_skill": 0.9833333333333333,
+   "leak_hour_skill": 0.9666666666666667,
+   "sil_excess": -0.03333333333333333,
+   "ari_excess": 0.5333333333333333,
+   "proxy": 0.6333333333333333
+  },
+  "composite_rho": 0.47060485181697,
+  "median_criterion_rho": 0.6833333333333333,
+  "top2_a": [
+   "waveform",
+   "morph"
+  ],
+  "top2_b": [
+   "legacy_fixed_io",
+   "morph"
+  ],
+  "same_top2": false,
+  "stable": false
+ }
+}

@@ -1,0 +1,89 @@
+================================================================================
+ DATA INTAKE KIT: NEW RECORDINGS THROUGH THE VALIDATED PIPELINE IN ONE STEP
+ Report 50 (build + validation + frozen analysis rules for future data)
+ Project: federated_transformer                Date: 2026-10-19
+ Code: intake/run.py (sha256 8a47efa50ff61e345ac11dddc8ed1af5a9ff244cd7e72f0486fca10e16bb9f01)
+       intake/README.md (sha256 8e0057e5443770feff44f33ef3cfac57a924709c6b1c568b9eb9e7e9903bf708)
+ Self-test outputs: data/intake/selftest_20250224_v2/ (valid);
+       selftest_20250224, selftest_20250224_p16 (pre-fix, kept as record)
+================================================================================
+
+1. PURPOSE
+  The project is now limited by data, not method. When new recordings
+  arrive (another week, season or sensor), they should be checked,
+  extracted and tested the same day, with every decision rule fixed
+  BEFORE the data exist. This report freezes those rules.
+    .venv/bin/python -m intake.run --raw "<new folder>" --name <name>
+
+2. STAGES (details in intake/README.md)
+  1 integrity  chunk index and full scan of every file, using workstream
+               A's validated code redirected to the intake's own folder.
+               Checks: files paired >= 99 %, 24-bit values,
+               fs 2400-2430 Hz, monotonic timestamps.
+  2 extract    the validated extraction package, unchanged.
+  3 quality    events per day, SNR tiers, dropout share, morphology drift
+               vs the reference (KS > 0.15 flagged), usable days
+               (>= 30 events with SNR >= 20).
+  4 external   the FROZEN study models (C256, F-nat, S+F; seeds 0-9;
+               seed s uses its fold-(s mod 3) model; never trained on the
+               new data) scored on the new SNR >= 20 events.
+                 - Probes: the study's kNN + linear, cross-fitted by day:
+                   usable days are split into alternating halves, fitted
+                   on one half, scored per day on the other.
+                 - Two-stratum CIs and the study margins.
+                 - Validity: C1 C256rep vs C256 EQUIVALENT; C3 untrained vs
+                   C256 INFERIOR. Results are read only if both hold.
+                 - Claims: federated vs central (study: EQUIVALENT);
+                   pretraining vs federated (HELPS if Holm-rejected and
+                   >= half a margin; study: HELPS).
+  5 report     INTAKE_REPORT.txt + JSON. Stages resume; nothing is
+               overwritten.
+  Labels for the external test: SNR >= 20 only (lesson of reports 44-46).
+
+3. VALIDATION (self-test on reference run 2025-02-24..27, 6.8 GB)
+  a. Integrity: PASS; chunk index identical to workstream A's (all
+     columns except file paths).
+  b. Extraction: 3 485 events, identical to data/events for that run.
+     Windows and metadata are BIT-IDENTICAL (all columns except run_id,
+     which is numbered from 0 per intake).
+     DEFECT FOUND AND FIXED during validation:
+       - The first self-test matched the event set and counts exactly,
+         but 554 windows differed in the last float bit (max 3.1e-5
+         counts, relative 4e-8).
+       - Isolation:
+           * the kit was deterministic (14 vs 16 processes identical);
+           * the original pipeline re-run today reproduced data/events
+             exactly;
+           * the indices were identical.
+       - Cause: extraction/run.py pins the math libraries to one thread,
+         but only if it is imported before numpy. The kit imported numpy
+         first, so multi-threaded BLAS summed in a different order.
+       - Fix: the kit sets the same variables before importing numpy.
+         The re-test is bit-identical.
+  c. Quality: KS vs reference <= 0.05 on all features (in-sample, as
+     expected); no flags.
+  d. External stage runs end to end; procedure VALID.
+       federated vs central: INCONCLUSIVE (lobes -0.002 [-0.017, +0.013])
+       pretraining vs federated: NON-INFERIOR (lobes +0.016)
+     These are IN-SAMPLE (the models were trained on these days or their
+     neighbours) and NOT evidence. They only show the stage runs. With
+     4 days, intervals are wide, as the README warns.
+  Runtime for 6.8 GB: about 24 min (integrity 16 s, extraction 24 min,
+  quality < 1 min, external about 3 min).
+
+4. WHAT A RESULT WILL MEAN (fixed now)
+  - External test VALID + federated vs central EQUIVALENT (or
+    NON-INFERIOR) -> the study's central result holds on new recordings
+    with the frozen models.
+  - Pretraining HELPS -> the deployment recipe's advantage transfers.
+  - INCONCLUSIVE with fewer than about 6 usable days -> collect more days;
+    it is not a refutation.
+  - Quality flags (drift) -> report them alongside. Large drift means the
+    new data differ (season, sensor), which is exactly what an external
+    test should probe, but it must be stated.
+  - If the new data cover >= 14 days, the full retraining replication
+    (pipeline of reports 41-48) is the follow-up.
+
+================================================================================
+ End of report
+================================================================================

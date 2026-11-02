@@ -1,0 +1,87 @@
+"""Federated server (report 25). FedAvg over all K clients every round (cross-silo), weighted by examples processed,
+aggregated in client order with fedsim3's formula. Never aggregates a partial round: any client failure stops the run with
+an error (resume with --resume after the client is back; clients resume from their own saved state).
+    .venv-fl/bin/python fl_system/server.py --fed data/fl_system/fold0/federation.json --run <tag> --seed 0 --rounds 200 \
+        --examples 2560000 --batch 64 --lr 1e-3 --init data/fl_system/fold0/server/server_init_s0.pt [--resume] [--save-every 50]
+Output: data/fl_system/fold<F>/server/runs/<run>/ rounds.jsonl, global_r<NNN>.pt, final.pt ({enc, head}), summary.json
+"""
+import argparse, hashlib, json, os, sys, time
+import numpy as np
+import torch
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); sys.path[:0] = [ROOT, os.path.join(ROOT, "fl_system")]
+import core
+import flwr as fl
+from flwr.server.strategy import FedAvg
+from flwr.common import ndarrays_to_parameters, parameters_to_ndarrays
+
+AGG_DEV = "cuda" if torch.cuda.is_available() else "cpu"
+sha = lambda p: hashlib.sha256(open(p, "rb").read()).hexdigest()
+
+
+class StrictFedAvg(FedAvg):
+    def __init__(self, K, shapes, out, offset, save_every, R, **kw):
+        super().__init__(**kw); self.K, self.shapes, self.out, self.offset, self.save_every, self.R = K, shapes, out, offset, save_every, R
+        self.log = open(os.path.join(out, "rounds.jsonl"), "a"); self.t0 = time.time(); self.bytes_total = 0
+
+    def aggregate_fit(self, server_round, results, failures):
+        rnd = server_round + self.offset
+        if failures or len(results) != self.K:
+            raise RuntimeError(f"round {rnd}: {len(failures)} client failure(s), {len(results)}/{self.K} results -> stopping (no partial aggregation)")
+        by_k = {}
+        for _, res in results:
+            k = int(res.metrics["k"]); assert k not in by_k; by_k[k] = res
+        assert sorted(by_k) == list(range(self.K)), sorted(by_k)
+        vecs = [core.flat(parameters_to_ndarrays(by_k[k].parameters), AGG_DEV) for k in range(self.K)]
+        ex = [by_k[k].num_examples for k in range(self.K)]
+        new = core.aggregate(vecs, ex); arrays = core.unflat(new, self.shapes)
+        nbytes = sum(a.nbytes for a in arrays); self.bytes_total += 2 * self.K * nbytes
+        rec = dict(round=rnd, secs=round(time.time() - self.t0, 2), examples=ex, bytes_round=2 * self.K * nbytes, bytes_total=self.bytes_total,
+                   loss=float(np.average([by_k[k].metrics["loss_mean"] for k in range(self.K)], weights=ex)),
+                   clients=[{kk: v for kk, v in by_k[k].metrics.items()} for k in range(self.K)])
+        self.log.write(json.dumps(rec) + "\n"); self.log.flush()
+        torch.save(new.cpu(), os.path.join(self.out, f"global_r{rnd:03d}.pt")) if (rnd % self.save_every == 0 or rnd <= 3 or rnd == self.R) else None
+        torch.save(new.cpu(), os.path.join(self.out, "global_last.pt")); json.dump(dict(round=rnd), open(os.path.join(self.out, "last_round.json"), "w"))
+        print(f"[server] round {rnd} loss {rec['loss']:.4f} {rec['secs']}s", flush=True)
+        return ndarrays_to_parameters(arrays), {}
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    for k, t in (("--fed", str), ("--run", str), ("--seed", int), ("--rounds", int), ("--examples", int), ("--batch", int), ("--lr", float)):
+        ap.add_argument(k, type=t, required=True)
+    ap.add_argument("--init", default=""); ap.add_argument("--address", default="0.0.0.0:8080"); ap.add_argument("--resume", action="store_true")
+    ap.add_argument("--save-every", type=int, default=50)
+    a = ap.parse_args(); fed = json.load(open(a.fed)); K, N = fed["K"], fed["N_total"]
+    out = os.path.join(os.path.dirname(a.fed), "server", "runs", a.run)
+    enc, head = core.build(a.seed, "cpu")                                 # fedsim3.build(seed): same initial values
+    if a.init:
+        sd = torch.load(a.init, map_location="cpu"); enc.load_state_dict(sd["enc"]); head.load_state_dict(sd["head"])
+    shapes = [tuple(p.shape) for p in core.params(enc, head)]; offset = 0
+    if a.resume:
+        offset = json.load(open(os.path.join(out, "last_round.json")))["round"]
+        init_arrays = core.unflat(torch.load(os.path.join(out, "global_last.pt")), shapes); print(f"[server] resuming after round {offset}", flush=True)
+    else:
+        assert not os.path.exists(os.path.join(out, "rounds.jsonl")), f"refusing to overwrite {out}"
+        os.makedirs(out, exist_ok=True); init_arrays = core.get_weights(enc, head)   # launcher may have created it for logs
+    cfg = lambda rnd: dict(round=rnd + offset, R=a.rounds, X=a.examples, N=N, lr=a.lr, batch=a.batch)
+    strat = StrictFedAvg(K, shapes, out, offset, a.save_every, a.rounds, fraction_fit=1.0, fraction_evaluate=0.0, min_fit_clients=K,
+                         min_evaluate_clients=0, min_available_clients=K, on_fit_config_fn=cfg, accept_failures=False,
+                         initial_parameters=ndarrays_to_parameters(init_arrays))
+    t0 = time.time()
+    try:
+        fl.server.start_server(server_address=a.address, config=fl.server.ServerConfig(num_rounds=a.rounds - offset), strategy=strat)
+    except BaseException as e:                                            # C3 (report 29): Flower's gRPC threads kept the process
+        print(f"[server] FAILED: {type(e).__name__}: {e}", flush=True)   # alive after a refused round; exit explicitly
+        os._exit(2)
+    last = json.load(open(os.path.join(out, "last_round.json")))["round"]
+    assert last == a.rounds, f"run stopped after round {last} of {a.rounds}"
+    core.set_weights(enc, head, core.unflat(torch.load(os.path.join(out, "global_last.pt")), shapes))
+    torch.save(dict(enc=enc.state_dict(), head=head.state_dict()), os.path.join(out, "final.pt"))
+    summ = dict(args=vars(a), K=K, N=N, wall_s=round(time.time() - t0, 1), bytes_total=strat.bytes_total,
+                provenance=dict(federation=sha(a.fed), init=sha(a.init) if a.init else None, final=sha(os.path.join(out, "final.pt")),
+                                core=sha(os.path.join(ROOT, "fl_system/core.py"))))
+    json.dump(summ, open(os.path.join(out, "summary.json"), "w" if a.resume else "x"), indent=1); print("[server] done", json.dumps(summ)[:300], flush=True)
+
+
+if __name__ == "__main__":
+    main()

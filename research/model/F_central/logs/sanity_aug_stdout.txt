@@ -1,0 +1,5 @@
+guard test: masked fraction 0.1667 (expect 8 ordered view pairs / 48 negatives = 0.1667); no-near fraction 0.0
+firewall ok: 3172 366 837
+polarity of view max == eval-crop polarity: 0.961
+noise-only view: median residual sigma / 1 (max-norm units): 0.0073
+event mask fully inside crop (random crop rule): 0.984 of events can fit at every stretch

@@ -1,0 +1,22 @@
+{
+ "per_criterion_rho": {
+  "invariance_R@1": 0.9166666666666666,
+  "leak_date_skill": 1.0,
+  "leak_hour_skill": 1.0,
+  "sil_excess": 0.8666666666666667,
+  "ari_excess": 0.9833333333333333,
+  "proxy": 1.0
+ },
+ "composite_rho": 0.9614530884382773,
+ "median_criterion_rho": 0.9916666666666667,
+ "top2_a": [
+  "morph",
+  "legacy_fixed_io"
+ ],
+ "top2_b": [
+  "legacy_fixed_io",
+  "morph"
+ ],
+ "same_top2": true,
+ "stable": true
+}

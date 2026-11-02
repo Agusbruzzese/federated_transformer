@@ -1,0 +1,551 @@
+================================================================================
+ PROTOCOL v2: CENTRAL VS FEDERATED (10 CLIENTS) VS PRETRAINED SERVER
+ Report 09 (supersedes sections 4-7 of report 08)
+ Project: federated_transformer                Date: 2026-10-10
+ Status: DRAFT v2. To be re-reviewed (step 5), then frozen by hashes (step 6).
+ Inputs: report 08; research/model/K_committee/{A_model,B_stats,C_federated,
+         D_validity,E_review}/REPORT.md; protocol/folds.{py,json}
+================================================================================
+
+PURPOSE OF THIS DOCUMENT
+------------------------
+Report 08 proposed protocol v1. The independent reviewer (member E) accepted
+it subject to required changes: one blocker (B1), five major points (M1-M5)
+and nine minor points (m1-m9). This document is the complete protocol v2.
+Section 0 maps every reviewer point to the place where it is resolved. All
+other sections are normative: once frozen, any departure from them is a
+logged deviation.
+
+Two parameters are still open and must be set by the user before freezing:
+  N_SEEDS     5 or 10 initial-weight seeds per arm (section 7)
+  PRIVACY     whether the optional client-identity test S-PRIV is included
+              (section 6.4)
+
+
+--------------------------------------------------------------------------------
+0. RESPONSE TO THE REVIEW (member E)
+--------------------------------------------------------------------------------
+
+  Point  Issue                                    Resolution             Where
+  -----  ---------------------------------------  ---------------------  ----
+  B1     simulator trained clients sequentially   FIXED; proven by       1.4
+         (parameter aliasing)                     control C0 (PASS)      8.1
+  M1     no own-day noise pool for Feb 7, 13,     threshold rule fixed   2.3
+         19, 25; relaxed days hand-picked;        here; pools built in
+         raw-pool assertion missing               step 2; per-fold
+                                                  firewall + assertion
+  M2     statistics vs nested folds and seeds     seed stratum = n init  5.2-
+         shared across folds                      seeds, means over all  5.4
+                                                  9 days; estimand
+                                                  conditional on the 3
+                                                  partitions;
+                                                  heterogeneity flag
+  M3     leakage gate ill-defined; "privacy"      redefined as the       6
+         wording; L2 planted on the wrong unit    nuisance-encoding
+                                                  gate; statistic,
+                                                  null, primary version
+                                                  and margin rule
+                                                  defined; L2 per eval
+                                                  day
+  M4     asymmetric tuning                        every trained arm      4
+                                                  type tuned by the same
+                                                  grid and rule
+  M5     incomplete decision rules                exhaustive, mutually   5.5-
+                                                  exclusive table;       5.8
+                                                  attribution tests;
+                                                  S+F > F-X+P in the
+                                                  confirmatory family;
+                                                  roles of all contrasts
+  m1     tuning trains on other folds' eval days  fold-0-only            5.9
+                                                  sensitivity analysis
+  m2     exposure figures wrong for folds         corrected; server      3.3
+                                                  budget P re-derived
+  m3     dry-run controls too easy                near-margin control C5 8.2
+  m4     server-only floor; joint-data central    arms S0 and CJ added   3.1
+  m5     single points of failure                 collapse rule and      3.5
+                                                  sensitivity analysis
+  m6     synthetic probe contaminated             descriptive only,      5.8
+                                                  stated
+  m7     monitoring references contaminated       Feb 10 own-day pool;   3.6
+                                                  no M5 reference
+  m8     central recipe chosen on now-eval days   stated in the claims   9
+  m9     text errors                              corrected throughout   -
+
+
+--------------------------------------------------------------------------------
+1. DESIGN OVERVIEW
+--------------------------------------------------------------------------------
+
+1.1 Question
+  Does training the same SimCLR encoder by federated averaging across 10
+  clients (one client = one or two recording days) give a representation
+  equivalent to central training on the same events, under equal
+  conditions? Does pretraining on server-owned days help the federated
+  model?
+
+1.2 Encoder and objective (all arms)
+  M5 patch transformer (207 424 parameters) + projection head; SimCLR
+  NT-Xent, T = 0.1, 30 s false-negative guard; M5 augmentation chain
+  (crop + stretch 0.85-1.18, amplitude 0.8-1.25, real background noise
+  alpha ~ U(0,1) x sigma_ev, DC offset and drift); AdamW, wd 1e-4.
+
+1.3 Data unit
+  SNR >= 20 events (4 375), 12 s, 50 Hz, max-normalised. Targets for
+  evaluation are morphology-derived proxies (polarity, lobe count, log
+  duration). They are circular with respect to morphology and therefore
+  valid only for RELATIVE comparisons between arms.
+
+1.4 Simulator
+  research/model/K_committee/C_federated/fedsim.py, in-process,
+  deterministic.
+  - v0 contained the aliasing bug B1 (kept as fedsim_v0_aliasing_bug.py,
+    never to be used).
+  - v1 copies weights into clients and aggregates in a fixed client order.
+  - Proofs: control C0 (section 8.1) and the K = 1 bit-identity with
+    m5.train (selftest.json: weight difference 0.0).
+
+
+--------------------------------------------------------------------------------
+2. DATA
+--------------------------------------------------------------------------------
+
+2.1 Day roles (folds.json; folds.py, deterministic)
+  server        Feb 18 + Feb 20 (run 0218)           434 events
+  tuning        Feb 10                               327 events
+  evaluation    fold 0: Feb 5, 11, 25                1 041 events
+                fold 1: Feb 6, 13, 26                1 077 events
+                fold 2: Feb 7, 14, 27                  851 events
+  clients       per fold, all remaining days merged to exactly 10 clients
+                (rule in folds.py: repeatedly merge the smallest client into
+                its adjacent same-run client, the smaller neighbour first).
+                Training events per fold: 2 573 / 2 537 / 2 763.
+  Every evaluation day is scored only by models that never trained on it.
+  Server, tuning, client and evaluation days are disjoint within every fold
+  (verified by member E, check_design.py).
+
+2.2 Firewall (asserted in code, per fold)
+  set(client event ids) & set(eval ids | server ids | tuning ids) = empty.
+  The m4 "role" field is NOT used as a firewall (it would reject legitimate
+  client days such as Feb 19).
+
+2.3 Background-noise pools (resolves M1)
+  Rule, fixed BEFORE building the missing pools:
+    For every day that is a client, server or tuning day, build the strict
+    pool (rule I5 of ssl_central/bgpool.py, per-day blocks as in
+    noisepool.py). If the strict pool has fewer than N_MIN = 50 segments,
+    add the relaxed segments (<= 10 % flagged samples, bridged; detections
+    still veto).
+  Status: existing pools already satisfy the rule. Strict counts are
+  Feb 6: 44, Feb 8: 1, Feb 9: 0, Feb 11: 0 -> relaxed added; all other
+  existing days >= 191 strict segments. Pools for Feb 7, 13, 19, 25 and
+  Feb 10 (monitoring only) are built in step 2 under this rule.
+  Clarification (fixed before the new pools were built): the relaxed rule
+  also accepts every strict-clean stretch, so segments are de-duplicated by
+  (run, position), keeping the strict copy. C's v1 pool held 35 such
+  duplicates (Feb 6: 34, Feb 8: 1), which gave them double weight.
+
+  EXECUTION RECORD, step 2 (2026-10-10; protocol/noisepool_v2.py,
+  noisepool_v2.json; CPU 7 min on 12 processes)
+    - New days, strict counts: Feb 7: 1, Feb 10: 1, Feb 13: 659,
+      Feb 19: 661, Feb 25: 692. Relaxed segments were added for Feb 7 (81)
+      and Feb 10 (125), both in the dropout-dense run 0204.
+    - Merged pool: data/k_committee/protocol/bgpool_day_v2.npy, 7 199
+      segments x 640, 36 duplicates removed, all rows at unit robust
+      sigma, sha256 07b52c9a...f09214. C's files are untouched.
+    - Every day has its own pool. Totals per day: 35 (Feb 11) to 705.
+    - Feb 11 stays below N_MIN even after the relaxed rule (35 segments,
+      0 strict). The rule defines no further step, so the day is used as is.
+      This is reported, not changed.
+    - Relaxed segments are noisier than strict ones on the same days
+      (median sigma 136-164 vs 108-151 counts). The pools are identical in
+      every arm, so this favours no arm. It may make the run-0204 days
+      slightly more identifiable, which the nuisance gate measures in
+      every arm.
+
+  Every training event draws noise only from its own day's pool, in every
+  arm. The code asserts that ssl_central's pooled bgpool.npy is never
+  opened by the training or evaluation code.
+
+
+--------------------------------------------------------------------------------
+3. ARMS
+--------------------------------------------------------------------------------
+
+3.1 Arms trained in every fold, for every seed s
+
+  arm    description                             budget       role
+  -----  --------------------------------------  -----------  -------------
+  C256   central, batch 256 (M5 recipe)          X            reference
+  C64    central, batch 64                       X            control
+  F-IID  FedAvg, 10 IID clients (same sizes as   X            control
+         F-nat, events assigned by seeded
+         permutation)
+  F-nat  FedAvg, 10 natural clients              X            primary
+  S+F    server checkpoint, then F-nat           P + X        primary
+  S+C    server checkpoint, then C256            P + X        control
+  F-X+P  F-nat from random init, budget X + P    P + X        control
+  CJ     central batch 256 on clients + server   P + X        descriptive
+         events (joint data)
+  S0     server checkpoint alone (no client      P            descriptive
+         training; evaluation only)                           (floor)
+
+  X = 2 560 000 examples (10 000 x 256), P = 423 936 examples (section 3.3).
+
+3.2 Settings shared by all arms
+  - Initial weights: torch.manual_seed(s), identical for every arm with seed
+    s and in every fold.
+  - Learning-rate schedule: 5 % linear warm-up, then cosine to 0, over each
+    phase's own budget. After server pretraining, the client phase (S+F,
+    S+C) restarts the schedule with fresh optimiser state.
+  - Final weights are used: no early stopping, no restarts.
+  - Federated settings:
+      R = 200 rounds (F-X+P: R = 233, proportional to its budget);
+      all 10 clients in every round;
+      local batch b_k = min(64, n_k);
+      local steps s_k = max(1, round(X / R x n_k / N / b_k)) (equal local
+        epochs);
+      FedAvg weighted by examples processed;
+      persistent client AdamW moments.
+    The total examples per fold are 0.9945-0.9995 x X (rounding; reported
+    as is).
+
+3.3 Exposure (corrects m2)
+  Epochs per event at budget X (member E, check_design.csv):
+    central  995 / 1 009 / 927   (folds 0 / 1 / 2; mean 977)
+    FedAvg   909-1 024 across clients
+  The server budget matches the mean central exposure:
+    P = round(977 x 434 / 256) x 256 = 1 656 steps x 256 = 423 936 examples.
+
+3.4 Server checkpoints
+  One per seed, trained on the server days only (central topology, batch
+  256, budget P, the server days' own noise pools). Shared across the 3
+  folds and across S+F, S+C and S0. Hash-pinned before any client phase.
+
+3.5 Collapse and failures (resolves m5)
+  A run is "collapsed" if the effective rank of its evaluation embedding is
+  below 0.5 x the median effective rank of C256 in the same fold.
+  Collapsed or diverged runs are INCLUDED in the primary analysis. A
+  sensitivity analysis excluding them is reported. A collapsed server
+  checkpoint is reported together with all 6 runs that depend on it.
+
+3.6 Monitoring (resolves m7; not used for any decision)
+  Per round: client losses, update norms, drift ratio, learning-rate trace,
+  held-out NT-Xent on Feb 10 with views drawn from Feb 10's own noise pool,
+  and effective rank. No external model is used as a reference during
+  training.
+
+
+--------------------------------------------------------------------------------
+4. EQUAL TUNING BUDGET (resolves M4)
+--------------------------------------------------------------------------------
+
+  Tuned arm types: C256, C64, F-nat, S+F, S+C, F-X+P, CJ.
+  F-IID inherits the F-nat value: it is the same algorithm, and must differ
+  from F-nat only in the partition.
+  The server pretraining uses lr = 3e-4 (not tuned; identical input to all
+  S arms).
+
+  Grid       peak lr in {1.5e-4, 3e-4, 6e-4, 1e-3}
+  Data       fold-0 clients (fold-0 server checkpoint for S arms), seed 0
+  Score      mean over the two primary metrics (section 5.1) on Feb 10,
+             probes fitted on the fold-0 client events
+  Rule       keep 3e-4 unless another value exceeds the 3e-4 score by more
+             than delta_sel = 0.02; if several do, take the highest-scoring
+             one
+  Cost       7 arm types x 4 = 28 runs
+
+
+--------------------------------------------------------------------------------
+5. EVALUATION AND STATISTICS
+--------------------------------------------------------------------------------
+
+5.1 Evaluator (identical for every arm; outside the federated system)
+  - Embed the fold's client events and evaluation-day events (eval view:
+    centred 12 s crop, max-normalised, 64-d encoder output).
+  - Probes are fitted on the client events and scored per evaluation day:
+      kNN      k = 15, Euclidean, StandardScaler on
+      linear   LogisticRegression(C = 1), float64, tol 1e-8 (convergence
+               checked); RidgeCV (logspace(-3, 3, 13)) for duration;
+               StandardScaler on
+  - Score: chance-corrected balanced accuracy (skill) for classes, R2 for
+    duration.
+  - PRIMARY metrics:
+      LOBES     = mean of kNN and linear skill, lobe count capped at 4
+      POLARITY  = mean of kNN and linear skill, sign of the main peak
+
+5.2 Estimand (resolves M2)
+  For contrast A vs B and metric k:
+    Delta_k = (1/D) sum_d [ mean_s Y_A(s,d) - mean_s Y_B(s,d) ]
+  over the D = 9 evaluation days and the n seeds. Y(s,d) is the score of
+  the model with seed s, from the fold containing day d, on day d.
+  The estimand is CONDITIONAL on the 3 fixed partitions (folds.json). It
+  makes no claim about other ways of splitting days into clients.
+
+5.3 Inference (two-stratum t)
+  - Seed stratum: for each arm and seed, M(s) = mean of Y(s,d) over all 9
+    days. S2_seed = pooled within-arm variance of M(s) (df n_A + n_B - 2).
+    This is valid whether or not seed effects are correlated across folds:
+    each seed contributes one value per arm.
+  - Day stratum: r_d = day-d difference of seed means minus Delta_k;
+    S2_day = var(r_d) (df D - 1).
+  - SE2 = S2_seed (1/n_A + 1/n_B) + S2_day / D; Satterthwaite df.
+  - 90 % CI = Delta_k +- t(0.95, df) SE. This is the CI used for TOST,
+    non-inferiority and one-sided tests at alpha = 0.05.
+  - Sensitivity: the seed-paired version (seeds shared across arms).
+
+5.4 Heterogeneity across partitions
+  Per-fold Delta_k is reported for every contrast. If the per-fold values
+  span more than m_k, the contrast is labelled PARTITION-DEPENDENT. The
+  label is reported next to the decision; it does not change it.
+
+5.5 Margins (from central variability; each <= 1/4 of the SSL gain over own
+    init)
+  LOBES     m = 0.04   (gain 0.33). Power caveat: B's 80 %-power floor is
+                       met only if the arm x day interaction is <= 0.03; at
+                       the measured worst case (0.061) lobe equivalence is
+                       underpowered.
+  POLARITY  m = 0.02   (gain 0.14)
+  DURATION  m = 0.03   (secondary; gain 0.053; non-monotone in training.
+                       B's margins.csv lists 0.02, which is below B's own
+                       power floor of 0.025; 0.03 is used.)
+
+5.6 Per-metric outcome (exhaustive and mutually exclusive)
+  Given the 90 % CI [L, U] of Delta_k and margin m:
+    L > -m:   U < m            -> EQ   equivalent
+              U >= m, L < m    -> NI   non-inferior (not shown equivalent)
+              L >= m           -> SUP  superior beyond the margin
+    L <= -m:  U > -m           -> INC  inconclusive ("not shown")
+              U <= -m          -> INF  inferior beyond the margin
+
+5.7 Contrast outcome (two primary metrics) and the nuisance gate
+  Primary label, first matching row:
+    any metric INF                     -> INFERIOR (name the metric)
+    any metric INC                     -> INCONCLUSIVE (state each metric's
+                                          label, e.g. "polarity EQ, lobes
+                                          not shown")
+    both metrics EQ                    -> EQUIVALENT
+    otherwise (EQ/NI/SUP mix)          -> NON-INFERIOR (name any SUP metric)
+  Gate label (section 6):
+    U_leak < m_leak                    -> gate PASS
+    U_leak >= m_leak                   -> gate FAIL ("more nuisance encoding
+                                          than central not excluded"; if
+                                          L_leak >= m_leak: "shown")
+  Final label = primary label + gate label (4 x 2 = 8 outcomes). A
+  positive lower bound inside the margin is reported as an annotation
+  ("slightly more nuisance encoding, within the margin").
+
+5.8 Roles of the contrasts
+  CONFIRMATORY (alpha controlled)
+    Q-F  F-nat vs C256: label per section 5.7 (intersection-union over the
+         2 primaries; no correction needed).
+    Q-S  one Holm family of 4 one-sided superiority tests (alpha = 0.05):
+         {S+F > F-nat, S+F > F-X+P} x {LOBES, POLARITY}.
+         "Server pretraining helps" iff, for at least one metric, BOTH tests
+         reject after Holm AND both point estimates are >= m_k / 2.
+         "Does not help" iff S+F vs F-nat is EQUIVALENT (section 5.7).
+         Otherwise: inconclusive.
+  SECONDARY, defined tests without alpha control (stated as such)
+    Attribution of a federated shortfall (F-nat vs C256 INFERIOR or
+    INCONCLUSIVE with a negative point estimate on metric k):
+      "fewer negatives"  C64 vs C256 is INF/INC (negative) on k AND F-IID vs
+                         C64 is EQ/NI on k
+      "averaging"        C64 vs C256 is EQ/NI on k AND F-IID vs C64 is
+                         INF/INC (negative) on k
+      "non-IID"          F-IID vs C256 is EQ/NI on k AND the one-sided
+                         95 % upper bound of F-nat - F-IID is < 0 on k
+      Several attributions can hold at once; none is claimed if none holds.
+    Interaction: (S+F - F-nat) - (S+C - C256), with a 90 % CI.
+    S+F vs C256 and CJ vs C256: labels per section 5.7.
+  DESCRIPTIVE (CIs only, no claims)
+    - duration;
+    - per-probe scores;
+    - 15-NN overlap with the same fold's C256 (noise floor = C256 seeds
+      0-4 vs 5-9);
+    - gap closure G = (arm - init) / (C256 - init);
+    - effective rank, alignment ratio, uniformity, CKA;
+    - F-IID - C64 (sanity check; need not be 0);
+    - S0 (server floor);
+    - synthetic family / stretch probes. CONTAMINATED: the generator was
+      fitted on 6 of the 9 evaluation days and on both server days, with
+      families built from all days, which slightly favours the S arms.
+    - ablations (persistent vs reset optimiser moments; R = 50).
+
+5.9 Sensitivity analyses (pre-stated)
+  (a) fold 0 alone: its evaluation days are untouched by tuning, because
+      tuning trains on fold-0 clients (resolves m1);
+  (b) collapsed runs excluded (section 3.5);
+  (c) seed-paired inference (section 5.3);
+  (d) day 2025-02-07 excluded (lobe-score outlier in member A's analysis).
+
+
+--------------------------------------------------------------------------------
+6. NUISANCE-ENCODING GATE (resolves M3)
+--------------------------------------------------------------------------------
+
+6.1 What it measures
+  How strongly the embedding encodes which day an event comes from, beyond
+  what the event's physical description explains. Evaluation days were
+  never trained on, so this measures day nuisance in the representation,
+  NOT privacy.
+
+6.2 Statistic, per (arm, seed, fold)
+  - Data: the fold's 3 evaluation days.
+  - Features:
+      conditional (PRIMARY)  [embedding PCA-19, morph8, hour bin,
+                              has_dropout]
+      reference              [morph8, hour bin, has_dropout]
+  - Classifier: LogisticRegression(C = 1), StandardScaler; GroupKFold(5)
+    over 30-minute blocks; target = day (3 classes); score = balanced-
+    accuracy skill.
+  - Q = skill(conditional) - skill(reference).
+  - Null: 50 block permutations of the day labels (each block keeps its
+    size and receives the label of a randomly permuted block). The same
+    statistic is recomputed for each; Q0 = mean of the null.
+  - Null-centred value: Z = Q - Q0.
+  - Per seed: Zbar(s) = mean of Z over the 3 folds.
+  The unconditioned version (embedding alone) is reported as secondary.
+
+6.3 Test and margin
+  - Delta_leak = mean_s Zbar_A(s) - mean_s Zbar_C256(s); Welch t over
+    seeds; one-sided 95 % upper bound U_leak.
+  - Margin rule, fixed now, applied in the dry run before any federated
+    model is scored:
+      m_leak = max(0.03, 2 x |Delta_leak(C256 seeds 0-4 vs seeds 5-9)|,
+                   2 x SE of that difference).
+  - Calibration (control L2, section 8.2): a planted per-evaluation-day
+    offset must give gate FAIL.
+
+6.4 Optional S-PRIV (only if the user chooses PRIVACY = yes)
+  Client identity on held-out within-day time blocks: the last 25 % of
+  30-minute blocks of each client day are withheld from training in ALL
+  arms. A day-identity classifier is trained on the embeddings of the
+  other clients' withheld blocks. Secondary, reported with a permutation
+  null. Withholding reduces training events by about 25 % in every arm
+  (equal across arms).
+
+
+--------------------------------------------------------------------------------
+7. SEEDS (user parameter N_SEEDS)
+--------------------------------------------------------------------------------
+
+  N_SEEDS = 5 (seeds 0-4) or 10 (seeds 0-9) for every arm. Central C256
+  seeds 5-9 are always trained (control C1).
+  Power for LOBES equivalence at true Delta = 0, D = 9 (member E's
+  re-simulation):
+    arm x day interaction 0.03:   n = 5 -> 0.77;  n = 10 -> 0.88
+    interaction 0.061:            n = 5 -> 0.14;  n = 10 -> 0.18
+  POLARITY: >= 0.998 in every simulated cell. Type I error <= 0.048 in
+  every cell. These power figures assume no arm x fold interaction; E
+  showed that type I error rises with such an interaction, which is why the
+  heterogeneity flag (section 5.4) is reported.
+
+
+--------------------------------------------------------------------------------
+8. CONTROLS: PROOFS THE PROCEDURE CAN PASS AND FAIL
+--------------------------------------------------------------------------------
+
+8.1 Code control (gate before any training)
+  C0  test_fedavg.py, rerun after every change to fedsim.py:
+        C0a  identical start weights for all clients, every round;
+        C0b  client and global weights bit-identical under reversed client
+             order;
+        C0c  global = example-weighted mean of the clients (|diff| < 1e-5).
+      Status 2026-10-10: PASS (C0c difference 1.6e-7). fedsim v0 fails C0a
+      (10 distinct start points; E's test_fedavg_alias.json).
+  C0' selftest: K = 1 bit-identical to m5.train. Status: PASS (difference
+      0.0).
+
+8.2 Statistical controls (dry run, step 8: central models only, before any
+    federated or server model is scored)
+  C1  C256 seeds 0-4 vs C256 seeds 5-9          must be EQUIVALENT
+  C3  untrained init vs C256                    must be INFERIOR
+  C4  C256 (seeds 5-9) embeddings + Gaussian    must be INFERIOR
+      noise tau = 0.5 SD, vs C256 seeds 0-4
+  C5  near-margin: noise tau* chosen by          must NOT be EQUIVALENT
+      bisection on fold 0 so that the LOBES     (INF or INC)
+      point estimate is -1.25 m, then applied
+      to all folds
+  L1  C256 seeds 5-9 vs 0-4 on the gate         gate PASS (by construction
+                                                of m_leak: a check of the
+                                                computation)
+  L2  C256 seeds 5-9 embeddings + a planted     gate FAIL
+      per-evaluation-day offset of the smallest
+      strength the permutation null detects
+      (grid kappa = 0.005-0.05 x embedding SD)
+  If any control misbehaves: stop, fix the procedure, log the change, and
+  repeat the dry run. The real arms are scored only after all controls
+  pass.
+
+
+--------------------------------------------------------------------------------
+9. CLAIMS ALLOWED (fixed in advance)
+--------------------------------------------------------------------------------
+
+  Q-F EQUIVALENT, gate PASS
+    "On these 9 unseen days and these 3 partitions, FedAvg across 10
+    day-clients gives representations within +-0.04 (lobes) and +-0.02
+    (polarity) of central training, measured by morphology-derived probes,
+    without more day-nuisance encoding than central beyond the margin."
+    NOT allowed: "federated is as good as central" in general; anything
+    about vehicles; other partitions, client counts or sensors.
+  Q-F INFERIOR
+    "This FedAvg recipe, under these partitions, loses X." Attributed to a
+    cause only by the section 5.8 rules.
+    Note: the central recipe (T, steps, lr) was chosen in earlier phases
+    using days that are now evaluation days (Feb 7, 13, 25, 26). This
+    favours central, so an INFERIOR result is anti-conservative.
+  Q-F NON-INFERIOR or SUP on a metric
+    Stated as such. A SUP result is examined first for leakage or tuning
+    asymmetry before interpretation.
+  Q-F INCONCLUSIVE
+    "Not shown", with the CIs. Never "equal".
+  Q-S HELPS
+    "Pretraining on disjoint server days helps FedAvg on metric k, beyond
+    the effect of the extra compute (F-X+P)."
+  Gate FAIL
+    "More day-nuisance encoding than central is not excluded", or "is
+    shown". Never a privacy statement.
+  Every result
+    Exploratory with respect to the dataset: all days have been used in
+    earlier phases. SNR >= 20 only; one sensor, one site, winter; targets
+    are morphology-derived.
+
+
+--------------------------------------------------------------------------------
+10. EXECUTION STEPS AND COST (wall-clock assumes 4 runs in parallel)
+--------------------------------------------------------------------------------
+
+  #   step                                         GPU (seq.)    wall
+  --  -------------------------------------------  ------------  ----------
+  1   this document                                -             -
+  2   noise pools Feb 7, 13, 19, 25, 10            -             ~15 min CPU
+  3   simulator: folds, arms S+C, F-X+P, CJ, S0,   ~5 min        ~1 h dev
+      server; C0 and C0' rerun
+  4   evaluator + unit tests on M5 checkpoints     -             ~1.5 h
+  5   independent re-review of v2 + code           -             ~20 min
+  6   freeze (hashes)                              -             minutes
+  7   tuning: 28 runs (mean ~5.3 min per run)      ~2.5 h        ~1.6 h
+  8   dry run: C256 seeds 0-9 x 3 folds (30 runs)  ~1.6 h        ~1.1 h
+      + controls C1-C5, L1, L2 (evaluation only)
+  9   main runs, N_SEEDS = 5:
+        C64, F-IID, F-nat, S+F, S+C, F-X+P, CJ
+        x 3 folds x 5 = 105 runs, + 5 server       ~10.2 h       ~6.8 h
+        checkpoints
+      (N_SEEDS = 10: ~20.4 h GPU, ~13.6 h wall)
+  10  ablations (descriptive): F-nat reset         ~3.3 h        ~2.2 h
+      moments, R = 50; 3 folds x 5 seeds
+  11  scoring once (~175 checkpoints)              -             ~2.5 h CPU
+  12  independent recomputation                    -             ~1 h
+  13  final report                                 -             -
+  --  -------------------------------------------  ------------  ----------
+      TOTAL, N_SEEDS = 5                           ~17.6 h       ~11.7 h +
+                                                                 ~4 h CPU
+      TOTAL, N_SEEDS = 10                          ~27.8 h       ~18.5 h +
+                                                                 ~5 h CPU
+  Per-run times (member C, measured): C256 3.1 min, C64 6.4, FedAvg 6.5,
+  S+C 3.1, F-X+P ~7.6, CJ ~3.6, server pretraining ~0.5. Changes from the
+  earlier estimate: tuning 24 -> 28 runs, and arm CJ added (15 runs).
+
+================================================================================
+ End of report
+================================================================================

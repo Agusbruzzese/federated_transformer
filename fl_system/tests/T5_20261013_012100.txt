@@ -1,0 +1,2 @@
+{"server_rc": 0, "client_rc": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "out": "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs/t5_comms"}
+{"loopback_bytes": 52373364, "theoretical_payload_bytes": 60408320, "overhead_ratio": 0.867}

@@ -1,0 +1,172 @@
+embedded+probed simclr_tf
+embedded+probed simclr_cnn
+embedded+probed vicreg_tf
+embedded+probed mae_tf
+bootstrapped probe knn
+bootstrapped probe lin
+{
+ "pairs": [
+  {
+   "a": "simclr_tf",
+   "b": "simclr_cnn",
+   "score": "polarity",
+   "result": "no clear difference"
+  },
+  {
+   "a": "simclr_tf",
+   "b": "simclr_cnn",
+   "score": "lobes",
+   "result": "simclr_cnn better"
+  },
+  {
+   "a": "simclr_tf",
+   "b": "simclr_cnn",
+   "score": "duration",
+   "result": "no clear difference"
+  },
+  {
+   "a": "simclr_tf",
+   "b": "vicreg_tf",
+   "score": "polarity",
+   "result": "no clear difference"
+  },
+  {
+   "a": "simclr_tf",
+   "b": "vicreg_tf",
+   "score": "lobes",
+   "result": "simclr_tf better"
+  },
+  {
+   "a": "simclr_tf",
+   "b": "vicreg_tf",
+   "score": "duration",
+   "result": "no clear difference"
+  },
+  {
+   "a": "simclr_tf",
+   "b": "mae_tf",
+   "score": "polarity",
+   "result": "simclr_tf better"
+  },
+  {
+   "a": "simclr_tf",
+   "b": "mae_tf",
+   "score": "lobes",
+   "result": "simclr_tf better"
+  },
+  {
+   "a": "simclr_tf",
+   "b": "mae_tf",
+   "score": "duration",
+   "result": "simclr_tf better"
+  },
+  {
+   "a": "simclr_cnn",
+   "b": "vicreg_tf",
+   "score": "polarity",
+   "result": "no clear difference"
+  },
+  {
+   "a": "simclr_cnn",
+   "b": "vicreg_tf",
+   "score": "lobes",
+   "result": "simclr_cnn better"
+  },
+  {
+   "a": "simclr_cnn",
+   "b": "vicreg_tf",
+   "score": "duration",
+   "result": "no clear difference"
+  },
+  {
+   "a": "simclr_cnn",
+   "b": "mae_tf",
+   "score": "polarity",
+   "result": "simclr_cnn better"
+  },
+  {
+   "a": "simclr_cnn",
+   "b": "mae_tf",
+   "score": "lobes",
+   "result": "simclr_cnn better"
+  },
+  {
+   "a": "simclr_cnn",
+   "b": "mae_tf",
+   "score": "duration",
+   "result": "no clear difference"
+  },
+  {
+   "a": "vicreg_tf",
+   "b": "mae_tf",
+   "score": "polarity",
+   "result": "vicreg_tf better"
+  },
+  {
+   "a": "vicreg_tf",
+   "b": "mae_tf",
+   "score": "lobes",
+   "result": "vicreg_tf better"
+  },
+  {
+   "a": "vicreg_tf",
+   "b": "mae_tf",
+   "score": "duration",
+   "result": "no clear difference"
+  }
+ ],
+ "learning": {
+  "simclr_tf": {
+   "scores_beating_init": 3,
+   "learning": true
+  },
+  "simclr_cnn": {
+   "scores_beating_init": 1,
+   "learning": false
+  },
+  "vicreg_tf": {
+   "scores_beating_init": 3,
+   "learning": true
+  },
+  "mae_tf": {
+   "scores_beating_init": 0,
+   "learning": false
+  }
+ },
+ "rank": {
+  "simclr_cnn": 4,
+  "simclr_tf": 3,
+  "vicreg_tf": 0,
+  "mae_tf": -7
+ },
+ "leak": {
+  "simclr_tf": {
+   "is0204": 0.087,
+   "is0204_init": 0.029,
+   "testday": -0.038,
+   "testday_init": -0.038,
+   "leaks": true
+  },
+  "simclr_cnn": {
+   "is0204": 0.136,
+   "is0204_init": 0.061,
+   "testday": -0.003,
+   "testday_init": -0.043,
+   "leaks": true
+  },
+  "vicreg_tf": {
+   "is0204": 0.057,
+   "is0204_init": 0.029,
+   "testday": -0.054,
+   "testday_init": -0.038,
+   "leaks": false
+  },
+  "mae_tf": {
+   "is0204": 0.03,
+   "is0204_init": 0.04,
+   "testday": -0.049,
+   "testday_init": -0.035,
+   "leaks": false
+  }
+ }
+}

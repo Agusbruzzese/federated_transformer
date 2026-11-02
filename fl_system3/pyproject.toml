@@ -1,0 +1,41 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fl-system3"
+version = "1.0.0"
+description = "Federated SSL encoder with SecAgg+ secure aggregation (report 30, M3)"
+license = "Proprietary"
+dependencies = []          # runs in the SuperNode's environment (.venv-fl); no runtime installs
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
+[tool.flwr.app]
+publisher = "local"
+
+[tool.flwr.app.components]
+serverapp = "fl_system3.server_app:app"
+clientapp = "fl_system3.client_app:app"
+
+[tool.flwr.app.config]
+rounds = 3
+examples = 16384
+batch = 64
+lr = 0.001
+seed = 0
+fed = ""
+init = ""
+run-name = ""
+code-root = ""
+resume = false
+save-every = 50
+node-wait-s = 300
+max-retries = 2
+num-shares = 10
+reconstruction-threshold = 7
+clipping-range = 0.5
+quantization-range = 4194304
+modulus-range = 4294967296
+dump = false

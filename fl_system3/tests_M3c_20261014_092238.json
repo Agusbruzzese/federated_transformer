@@ -1,0 +1,56 @@
+{
+ "per_seed": {
+  "0": {
+   "weight_maxabs_vs_study": 0.05438067764043808,
+   "score_diff": {
+    "LOBES": 0.005700922389137331,
+    "POLARITY": 0.007676281333005797,
+    "DURATION": 0.00026842657823122895
+   },
+   "secagg_scores": {
+    "LOBES": 0.6732258193056685,
+    "POLARITY": 0.9062900951114519,
+    "DURATION": 0.8528919132333518
+   },
+   "rounds": 200,
+   "round_secs_median": 39.89,
+   "over_clip_total": 0,
+   "max_abs_update": 0.024754598736763
+  },
+  "1": {
+   "weight_maxabs_vs_study": 0.06648022681474686,
+   "score_diff": {
+    "LOBES": -0.01856066903791387,
+    "POLARITY": -0.00441773142404267,
+    "DURATION": 0.005081538715971168
+   },
+   "secagg_scores": {
+    "LOBES": 0.6783078274997919,
+    "POLARITY": 0.9004608410152612,
+    "DURATION": 0.8576870795949301
+   },
+   "rounds": 200,
+   "round_secs_median": 39.79,
+   "over_clip_total": 0,
+   "max_abs_update": 0.022199422121047974
+  },
+  "2": {
+   "weight_maxabs_vs_study": 0.0636383444070816,
+   "score_diff": {
+    "LOBES": -0.001154047060819563,
+    "POLARITY": 0.0008081336241730908,
+    "DURATION": 0.0018508177664928738
+   },
+   "secagg_scores": {
+    "LOBES": 0.6626131918434383,
+    "POLARITY": 0.8975292695127686,
+    "DURATION": 0.8545658997611282
+   },
+   "rounds": 200,
+   "round_secs_median": 39.76,
+   "over_clip_total": 0,
+   "max_abs_update": 0.021902913227677345
+  }
+ },
+ "M3c_PASS": false
+}

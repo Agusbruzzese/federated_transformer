@@ -1,0 +1,79 @@
+================================================================================
+ OPTION A, STEP M2: TLS ENCRYPTION AND SITE AUTHENTICATION
+ Report 32 (execution report; design = report 30; M1 = report 31)
+ Project: federated_transformer                Date: 2026-10-14
+ Code: fl_system2/ (run_deploy.py --superlink-args/--supernode-args/
+       --register-keys), tests_M2.sh, tests_M2b.sh, tests_M2b2.sh
+ Test PKI: fl_system2/pki/ (make_pki.sh; TEST MATERIAL ONLY; excluded from
+       version control)
+================================================================================
+
+1. WHAT M2 ADDS
+  - TLS: every connection between the sites (SuperNodes) and the server
+    (SuperLink) is encrypted and the server is authenticated by a
+    certificate. A private test certificate authority (CA) signed the
+    SuperLink certificate (SAN localhost, flserver, 127.0.0.1); the sites
+    trust only that CA.
+  - Site authentication: the SuperLink runs with --enable-supernode-auth.
+    Each site has an ECDSA P-384 key pair. Only sites whose public key was
+    registered by the operator ("flwr supernode register <key>") can
+    connect.
+  Flower 1.39 note: the static key-list option (--auth-list-public-keys)
+  has been removed; keys are registered through the Flower CLI. The
+  launcher does this automatically (--register-keys).
+
+2. RESULTS (criteria fixed in report 30)
+  M2a  computation unchanged: a 3-round TLS + authenticated run (m2a_tls)
+       vs the plaintext run (m1a5) -> final weights max |diff| 0.0 and
+       every round's global weights equal. BIT-IDENTICAL. PASS.
+       Confirmation that security was active: the TLS SuperLink log has no
+       "insecure" warning (the plaintext run has one); all 10 site keys
+       registered (rc 0); all 10 sites authenticated and trained.
+  M2b  refusals (SuperLink with TLS + auth; only site_00 and site_01
+       registered):
+         A  correct CA, registered key        -> ACTIVATED ("online")
+         B  plaintext, with keys               -> refused by the client's
+                                                  own check (exit 303: auth
+                                                  needs TLS)
+         C  trusts an unrelated CA             -> refused: TLS handshake
+                                                  CERTIFICATE_VERIFY_FAILED
+                                                  (exit 305)
+         D  correct CA, UNREGISTERED key       -> refused by the SuperLink:
+                                                  "Failed to activate
+                                                  SuperNode" (code 2004,
+                                                  exit 305)
+       SuperLink: 1 activation (A only). Node list: site_00 online;
+       site_01's key "registered" but never online (both its connection
+       attempts, B and C, were refused). PASS.
+       B2 (added, because B was refused only by its own client): a
+       plaintext SuperNode WITHOUT keys -> the SuperLink rejected it at the
+       TLS handshake ("WRONG_VERSION_NUMBER" on the server side);
+       0 activations. PASS: the server itself refuses plaintext.
+  M2c  overhead: loopback traffic for the same 3-round run is
+       251.7 MB with TLS vs 250.7 MB plaintext (+0.4 %); wall time 107 s vs
+       109 s (no measurable difference). Reported.
+
+3. NOTE ON TRAFFIC IN THE CURRENT RUNTIME
+  The loopback total (about 250 MB for 3 rounds) is about 4.8x the model
+  payload (51.8 MB), because each update is relayed through several local
+  hops (ClientApp -> SuperNode -> SuperLink -> ServerApp, and back). On
+  real separate machines only the SuperNode <-> SuperLink hop crosses the
+  network. That hop is the one TLS protects, and its size is about the
+  payload. Measured precisely in the container/multi-machine tests.
+
+4. VERDICT
+  M2 PASSES. Encryption and site authentication are in place, they do not
+  change the computation, and they reject unencrypted connections,
+  untrusted certificate authorities and unregistered sites.
+
+5. WHAT M2 DOES NOT DO
+  - The test CA and keys are local test material. A deployment needs
+    properly managed certificates (e.g. an organisation's CA) and key
+    distribution.
+  - TLS hides the traffic from the network, not from the server. The server
+    still sees each site's individual update: that is M3 (secure
+    aggregation).
+
+================================================================================
+ End of report
+================================================================================

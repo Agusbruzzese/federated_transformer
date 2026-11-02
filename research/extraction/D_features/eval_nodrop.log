@@ -1,0 +1,41 @@
+     split              rep  invariance_R@1  leak_date_skill  leak_hour_skill  sil_excess  ari_excess  proxy  leak_run_skill  leak_dropout_skill     PR    d  mean_rank
+0      dev         legacy70           0.516            0.811            0.830       0.214       0.517  0.334           0.996                 NaN  6.127   70      5.833
+1      dev    legacy_noconf           0.487            0.398            0.552       0.217       0.516  0.337           0.652                 NaN  5.669   67      5.500
+2      dev  legacy_fixed_io           0.347            0.145            0.362       0.111       0.192  0.429           0.179                 NaN  7.920   65      5.167
+3      dev           hht_lp           0.392            0.150            0.327       0.116       0.270  0.294           0.164                 NaN  4.560   36      5.333
+4      dev          wavelet           0.404            0.240            0.452       0.107      -0.065  0.360           0.322                 NaN  2.932   37      6.833
+5      dev             stft           0.748            0.207            0.374       0.088       0.012  0.453           0.263                 NaN  4.796   29      5.333
+6      dev            morph           0.917            0.043            0.366       0.120       0.080  0.841           0.070                 NaN  5.823   19      3.167
+7      dev         waveform           0.553            0.041            0.220       0.210       0.621  0.503           0.045                 NaN  5.927  256      2.167
+8      dev    morph+wavelet           0.662            0.259            0.460       0.080       0.104  0.789           0.328                 NaN  4.104   56      5.667
+0  holdout         legacy70           0.416            0.983            0.892       0.148       0.204  0.231             NaN                 NaN  5.661   70      6.500
+1  holdout    legacy_noconf           0.393            0.924            0.655       0.157       0.152  0.228             NaN                 NaN  5.268   67      6.833
+2  holdout  legacy_fixed_io           0.273            0.577            0.322       0.112       0.187  0.343             NaN                 NaN  7.502   65      6.167
+3  holdout           hht_lp           0.354            0.565            0.271       0.112       0.113  0.291             NaN                 NaN  4.552   36      6.333
+4  holdout          wavelet           0.371            0.771            0.383       0.138       0.198  0.349             NaN                 NaN  2.935   37      5.833
+5  holdout             stft           0.740            0.715            0.340       0.109       0.225  0.395             NaN                 NaN  4.636   29      4.667
+6  holdout            morph           0.896            0.047            0.228       0.120       0.213  0.810             NaN                 NaN  5.891   19      2.667
+7  holdout         waveform           0.529           -0.011            0.130       0.237       0.523  0.462             NaN                 NaN  5.348  256      1.833
+8  holdout    morph+wavelet           0.606            0.772            0.347       0.120       0.349  0.758             NaN                 NaN  4.125   56      4.167
+{
+ "per_criterion_rho": {
+  "invariance_R@1": 1.0,
+  "leak_date_skill": 0.9833333333333333,
+  "leak_hour_skill": 0.9333333333333332,
+  "sil_excess": 0.6166666666666666,
+  "ari_excess": -0.016666666666666666,
+  "proxy": 0.9166666666666666
+ },
+ "composite_rho": 0.5272012675161055,
+ "median_criterion_rho": 0.9249999999999999,
+ "top2_a": [
+  "waveform",
+  "morph"
+ ],
+ "top2_b": [
+  "waveform",
+  "morph"
+ ],
+ "same_top2": true,
+ "stable": false
+}

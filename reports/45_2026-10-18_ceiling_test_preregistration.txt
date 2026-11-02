@@ -1,0 +1,50 @@
+================================================================================
+ CEILING TEST: LOW-SNR-TRAINED MODELS SCORED WITH CLEAN LABELS
+ Report 45 (pre-registration; written before scoring)
+ Project: federated_transformer                Date: 2026-10-18
+ Follows: report 44 (H-client supported; possible label-noise ceiling)
+ Code: research/model/R_replication/rep3.py
+       sha256 68681cd0866b0c2117c02bef82d8fae06555d30ff566520f11c333d9f4bb794d
+================================================================================
+
+1. QUESTION
+  On the low-SNR tier, server pretraining showed no gain (reports 42, 44).
+  All trained models scored within about 0.03 on lobes, and the server
+  model alone matched them. Was the gain absent (reading A), or hidden
+  because the low-SNR probe labels are too noisy to separate good
+  representations (reading B)?
+
+2. METHOD (scoring only, no training)
+  - The models trained in reports 42 and 44 on the low-SNR tier are
+    re-scored with the study's frozen evaluator on its own data: probes
+    fitted on each fold's CLEAN (SNR >= 20) client events, scored on the
+    clean evaluation days.
+  - None of these models has seen any SNR >= 20 event: their training data
+    and their server's data are all low-SNR. The exception is S0clean /
+    Sclean+F, whose server is the study's clean server. That server saw
+    only the clean server days, never an evaluation day.
+  - Arms (10 seeds x 3 folds each): C256, C256rep (seeds 10-19), F-nat,
+    F-X+P, S+F (noisy server, lr 1e-3), Sclean+F, S+F@lrT (3e-4); plus
+    S0noisy, S0clean (server models alone) and INIT (untrained).
+
+3. PRE-REGISTERED DECISIONS (study functions and margins)
+  Validity (both required): C1 C256rep vs C256 EQUIVALENT; C3 INIT vs C256
+    INFERIOR.
+  PRIMARY: the study's QS rule for the report-42 arm S+F (Holm family
+    {S+F > F-nat, S+F > F-X+P} x {LOBES, POLARITY}, both deltas >= m/2 for
+    one metric).
+      HELPS          -> reading B: the gain exists on low-SNR clients and
+                        noisy labels hid it.
+      DOES NOT HELP  -> reading A: no gain, even with reliable labels.
+      INCONCLUSIVE   -> undecided.
+  SECONDARY (reported, not decisive): the same rule for Sclean+F and
+    S+F@lrT; F-nat vs C256; the server models alone vs F-nat; the ceiling
+    measures (lobes spread of trained arms; untrained-to-central gap),
+    compared with report 44 (0.03 and 0.10 on low-SNR labels).
+
+4. COST
+  About 40 min of scoring. Results in report 46.
+
+================================================================================
+ End of report
+================================================================================

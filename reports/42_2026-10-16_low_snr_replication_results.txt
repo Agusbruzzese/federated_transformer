@@ -1,0 +1,122 @@
+================================================================================
+ REPLICATION ON NEVER-USED EVENTS (LOW-SNR TIER): RESULTS
+ Report 42 (execution report; pre-registration = report 41)
+ Project: federated_transformer                Date: 2026-10-16
+ Results: research/model/R_replication/results_rep_20261016_154358.json
+          (scores/models: research/model/R_replication/scoring/*_rep10_20261016_154355.parquet)
+ Chain log: data/k_committee/replication_chain_*.log
+================================================================================
+
+SUMMARY
+-------
+Procedure VALID on the new events (C1, C3 and gate calibration pass).
+Of the 4 pre-registered claims:
+  SF  server-pretrained federated vs central   EQUIVALENT     REPLICATED
+  SA  SecAgg+ vs plain                         EQUIVALENT     REPLICATED
+  QF  federated vs central                     NON-INFERIOR   label not replicated;
+                                                              federated is BETTER on
+                                                              lobes (+0.023), by more
+                                                              than the margin allows
+                                                              for "equivalent"
+  QS  server pretraining helps                 DOES NOT HELP  NOT REPLICATED
+                                                              (no gain; slightly lower
+                                                              on lobes)
+The study's caveat (central batch 64 above batch 256) is REVERSED on these
+events.
+Bottom line:
+  - The federated system loses nothing against central training on new,
+    noisier vehicles; on lobes it is ahead.
+  - Secure aggregation stays harmless.
+  - The benefit of server pretraining does NOT carry over to low-SNR data.
+
+1. EXECUTION
+  - 190 training runs + 10 SecAgg+ runs, all rc 0, no collapsed model.
+  - SecAgg+ runs: 200 rounds, 0 clipped values each.
+  - Chain 2026-10-15 19:25 -> 2026-10-16 15:44. The protocol freeze was
+    verified at the start ("FREEZE OK"); the code hashes equal report 41.
+  - Each analysis ran once.
+
+2. PROCEDURE VALIDITY (required)
+  C1  independent central vs central: EQUIVALENT
+        lobes -0.004 [-0.013, +0.005]; polarity +0.002 [-0.006, +0.010]
+  C3  untrained vs central: INFERIOR (lobes -0.097, polarity -0.210)
+  L1  gate calibration: PASS (m_leak 0.03)
+  -> PROCEDURE_VALID. The decision procedure can pass and fail on this tier.
+
+3. RESULTS (two-stratum t, 90 % CI, 10 seeds x 9 unseen days)
+  Mean scores: lobes / polarity / duration
+    C256 (central)  0.408 / 0.850 / 0.427
+    F-nat           0.432 / 0.855 / 0.431
+    F-X+P           0.428 / 0.855 / 0.427
+    S+F             0.412 / 0.853 / 0.439
+    C64             0.370 / 0.831 / 0.486
+    untrained       0.312 / 0.640 / 0.315
+  Absolute scores are lower than in the study (central lobes 0.408 vs
+  0.600), as expected: at low SNR the shape probes and their labels are
+  noisier.
+
+  QF  F-nat vs C256 -> NON-INFERIOR (study: EQUIVALENT)
+        lobes    +0.023 [+0.005, +0.041]  NI (upper bound 0.0008 past the
+                 margin 0.04)
+        polarity +0.005 [-0.007, +0.017]  EQ
+      Gate: PASS. Federated encodes much LESS day information than central
+      (-0.099 [-0.108, -0.089]).
+      Per fold, lobes: +0.011 / +0.034 / +0.025. Seed-paired sensitivity:
+      NON-INFERIOR.
+      Reading: by the pre-registered rule the label differs. But the
+      difference is in the favourable direction: federated is not worse,
+      and on lobes it is better. "Equivalent" fails only because the CI
+      reaches a little past +0.04 on the upper side. The study's
+      practical claim, "federated loses nothing", is confirmed and
+      strengthened.
+
+  QS  server pretraining -> DOES NOT HELP (study: HELPS)
+        S+F vs F-nat  lobes -0.020 [-0.032, -0.007] EQ; polarity -0.002 EQ
+        S+F vs F-X+P  lobes -0.016 [-0.029, -0.003] EQ; polarity -0.002 EQ
+      No Holm rejection; S+F is equivalent to plain federated, slightly
+      below it on lobes. NOT REPLICATED. Seed-paired: DOES NOT HELP.
+
+  SF  S+F vs C256 -> EQUIVALENT (lobes +0.003 [-0.010, +0.017], polarity
+      +0.003 [-0.004, +0.011]). REPLICATED (pre-registered: NI or EQ).
+
+  SA  SecAgg+ vs plain S+F, fold 0, seed-paired (n = 10):
+        lobes -0.0002 [-0.007, +0.007]; polarity -0.001 [-0.004, +0.002];
+        duration EQ -> EQUIVALENT. REPLICATED.
+
+  Descriptive (the study's caveat):
+    C64 vs C256: lobes -0.039 [-0.051, -0.026], polarity -0.019. Batch 64
+      is now BELOW batch 256 (study: +0.035 above).
+    F-nat vs C64: lobes +0.062.
+    F-X+P vs C256: EQUIVALENT.
+
+4. INTERPRETATION (what changed, and what it does not prove)
+  a. Federated vs central holds on new vehicles, in the favourable
+     direction, and with clearly less day-specific nuisance in the
+     embedding. This is the study's central result, and it is confirmed.
+  b. Server pretraining helped on clean events (+0.049) but not on noisy
+     ones. Two explanations remain, and this test cannot separate them:
+       (i)  the server's own data are now noisy too (477 low-SNR events),
+            so pretraining learns less;
+       (ii) the S+F learning rate (1e-3) was tuned on the clean tier and
+            is not re-tuned here (by design).
+     The deployed recipe S+F is still safe: it is EQUIVALENT to central
+     and to plain federated on these events. Its ADVANTAGE is
+     tier-dependent.
+  c. The batch-64 caveat reverses, so the study's "fewer negatives help"
+     observation is tier-specific. It stays descriptive, as it always was.
+  d. Limits:
+       - same days, same sensor (not a new season or site);
+       - the margins were derived on the clean tier;
+       - low-SNR probe labels are noisier;
+       - SecAgg+ was tested on fold 0 only.
+
+5. CONSEQUENCES FOR THE PROJECT
+  - Federated deployment: confirmed on unseen events. Keep it.
+  - Secure aggregation: confirmed harmless. Keep it.
+  - Server pretraining: keep it (never worse), but stop claiming a gain in
+    general. Report 40's bottom-line point 2 must be read with this
+    restriction: the gain is shown for SNR >= 20 events only.
+
+================================================================================
+ End of report
+================================================================================

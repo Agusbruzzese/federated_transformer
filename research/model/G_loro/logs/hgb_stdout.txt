@@ -1,0 +1,15 @@
+P2 snr20: 63 jobs
+  cached 8 files (8/63)
+  cached 8 files (16/63)
+  cached 8 files (24/63)
+  cached 8 files (32/63)
+  cached 8 files (40/63)
+  cached 8 files (48/63)
+  cached 8 files (56/63)
+  cached 7 files (63/63)
+HGB_PART1_DONE
+P2 snr20: 21 jobs
+/home/augustin/Documents/federated_transformer/.venv/lib/python3.12/site-packages/joblib/externals/loky/backend/resource_tracker.py:444: UserWarning: resource_tracker: There appear to be 22 leaked semlock objects to clean up at shutdown: {'/loky-626943-568i3p0p': 1, '/loky-626943-j5xmsqqg': 1, '/loky-626943-eblqry3e': 1, '/loky-626943-inovvh7x': 1, '/loky-626943-4jsm5vd8': 1, '/loky-626943-mgjpza0y': 1, '/loky-626943-fgd3zknm': 1, '/loky-626943-8a0u2z01': 1, '/loky-626943-tqisxa2j': 1, '/loky-626943-dt3vqkz5': 1, '/loky-626943-7003wkl2': 1, '/loky-626943-2rfl782i': 1, '/loky-626943-t5i45r3f': 1, '/loky-626943-8w9z6a6x': 1, '/loky-626943-912lznl1': 1, '/loky-626943-mmxl9cs6': 1, '/loky-626943-9epx3e7c': 1, '/loky-626943-068yw8qc': 1, '/loky-626943-9f7jefez': 1, '/loky-626943-uhdk_5bg': 1, '/loky-626943-ke6b4omv': 1, '/loky-626943-hyp1hkow': 1}
+  warnings.warn(
+/home/augustin/Documents/federated_transformer/.venv/lib/python3.12/site-packages/joblib/externals/loky/backend/resource_tracker.py:444: UserWarning: resource_tracker: There appear to be 10 leaked folder objects to clean up at shutdown: {'/dev/shm/joblib_memmapping_folder_626943_6366a3d882454db18279b06bb3625ca8_cd0d223b1c0e45798c626635dadb94db': 1, '/dev/shm/joblib_memmapping_folder_626943_b716e14f5f814aa7ac4b2e221b8f2876_04a66bf4ceb04b9289dacc3d68f29150': 1, '/dev/shm/joblib_memmapping_folder_626943_081b1fa6bcbd474c8a4ff758c815f008_51292945eb4148dfa161523df5af18a3': 1, '/dev/shm/joblib_memmapping_folder_626943_dd2067fc413f4e83b32a510b93cb813e_5b77c64aaeef4a33876f0f56474ddfbf': 1, '/dev/shm/joblib_memmapping_folder_626943_3a11e3186531441d81d7932af5ef5bc6_e128ece3ab4e4f66a8740b0f5284cf6d': 1, '/dev/shm/joblib_memmapping_folder_626943_d14a5c7eeb2148a7929874f657aefa98_32c6c101efcb4ce0ac8b226c0e96ece8': 1, '/dev/shm/joblib_memmapping_folder_626943_90bec4ccc1d04cafabc81c851f826777_7ca94f73da9649f7bc05778610ecfc89': 1, '/dev/shm/joblib_memmapping_folder_626943_d49eb17f5c33454e9dc7afbefae6ae77_cae0e2508a4b44d6b55105ec6a5be1ad': 1, '/dev/shm/joblib_memmapping_folder_626943_b51bbe49246b47d497db42171f391098_091a726ed0f942d7a347aa7af82cef3c': 1, '/dev/shm/joblib_memmapping_folder_626943_6366a3d882454db18279b06bb3625ca8_4da4b8a680954fc0a18cade6e7835cf5': 1}
+  warnings.warn(

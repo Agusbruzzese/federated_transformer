@@ -1,0 +1,242 @@
+##############################################################################
+# spintronic_fl/docker-compose.yml
+# =============================================================================
+# 1 Flower server  +  15 spintronic sensor clients
+#
+# TWO ANCHORS — never nest one inside the other:
+#   x-client-svc : service-level keys (build, depends_on, networks, restart)
+#   x-client-env : environment variables only
+# This avoids the YAML cycle error from referencing a service-level anchor
+# from inside an environment block.
+##############################################################################
+
+x-client-svc: &client-svc
+  build:
+    context: ./client
+    dockerfile: Dockerfile
+  depends_on:
+    server:
+      condition: service_healthy
+  networks:
+    - fl_network
+  restart: on-failure
+  volumes:
+    - ${DATA_ROOT:-/tmp/spintronic_data}:/data:ro
+    - ./cache:/cache    # ← cache persistente entre runs
+
+x-client-env: &client-env
+  SERVER_ADDRESS:   "server:8080"
+  PROX_MU:          "0.1"
+  LOCAL_EPOCHS:     "5"
+  BATCH_SIZE:       "64"
+  LR:               "1e-4"
+  SIMULATE_DATA:    "false"   # set "true" for dry-run without BSD files
+  BASELINE_WIN_MIN: "120"
+  K_MAIN:           "4"
+  MIN_SUB_SIZE:     "20"
+  EMD_STAGGER_SECONDS: "60"   # each client waits CLIENT_ID × 60s before starting EMD
+  CACHE_DIR: "/cache"
+
+
+services:
+
+  # ── SERVER ─────────────────────────────────────────────────────────────────
+  server:
+    build:
+      context: ./server 
+      dockerfile: Dockerfile
+    networks:
+      - fl_network
+    ports:
+      - "8080:8080"
+    environment:
+      FL_ROUNDS:          "20"
+      MIN_CLIENTS:        "15"
+      PROX_MU:            "0.1"
+      PRETRAINED_WEIGHTS: "/app/global_model.pt"
+      SAVE_DIR:           "/app/checkpoints"
+      PORT:               "8080"
+    volumes:
+      - ./server/checkpoints:/app/checkpoints
+      - ./server/global_model.pt:/app/global_model.pt:ro
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import socket; s=socket.socket(); s.connect(('localhost',8080)); s.close()\" || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    restart: "no" #unless-stopped
+
+  # ── CLIENTS 01-08 — one full day each ──────────────────────────────────────
+
+  client_01:
+    <<: *client-svc
+    environment:
+      <<: *client-env
+      CLIENT_ID:    "1"
+      TARGET_DATE:  "20250204"
+      TIME_START_H: "0"
+      TIME_END_H:   "24"
+    volumes:
+      - ${DATA_ROOT:-/tmp/spintronic_data}:/data:ro
+
+  client_02:
+    <<: *client-svc
+    environment:
+      <<: *client-env
+      CLIENT_ID:    "2"
+      TARGET_DATE:  "20250205"
+      TIME_START_H: "0"
+      TIME_END_H:   "24"
+    volumes:
+      - ${DATA_ROOT:-/tmp/spintronic_data}:/data:ro
+
+  client_03:
+    <<: *client-svc
+    environment:
+      <<: *client-env
+      CLIENT_ID:    "3"
+      TARGET_DATE:  "20250206"
+      TIME_START_H: "0"
+      TIME_END_H:   "24"
+    volumes:
+      - ${DATA_ROOT:-/tmp/spintronic_data}:/data:ro
+
+  client_04:
+    <<: *client-svc
+    environment:
+      <<: *client-env
+      CLIENT_ID:    "4"
+      TARGET_DATE:  "20250207"
+      TIME_START_H: "0"
+      TIME_END_H:   "24"
+    volumes:
+      - ${DATA_ROOT:-/tmp/spintronic_data}:/data:ro
+
+  client_05:
+    <<: *client-svc
+    environment:
+      <<: *client-env
+      CLIENT_ID:    "5"
+      TARGET_DATE:  "20250208"
+      TIME_START_H: "0"
+      TIME_END_H:   "24"
+    volumes:
+      - ${DATA_ROOT:-/tmp/spintronic_data}:/data:ro
+
+  client_06:
+    <<: *client-svc
+    environment:
+      <<: *client-env
+      CLIENT_ID:    "6"
+      TARGET_DATE:  "20250209"
+      TIME_START_H: "0"
+      TIME_END_H:   "24"
+    volumes:
+      - ${DATA_ROOT:-/tmp/spintronic_data}:/data:ro
+
+  client_07:
+    <<: *client-svc
+    environment:
+      <<: *client-env
+      CLIENT_ID:    "7"
+      TARGET_DATE:  "20250210"
+      TIME_START_H: "0"
+      TIME_END_H:   "24"
+    volumes:
+      - ${DATA_ROOT:-/tmp/spintronic_data}:/data:ro
+
+  client_08:
+    <<: *client-svc
+    environment:
+      <<: *client-env
+      CLIENT_ID:    "8"
+      TARGET_DATE:  "20250211"
+      TIME_START_H: "0"
+      TIME_END_H:   "16.5"
+    volumes:
+      - ${DATA_ROOT:-/tmp/spintronic_data}:/data:ro
+
+  # ── CLIENTS 09-15 — 20250206 split into 7 x ~3.4h windows ─────────────────
+
+  client_09:
+    <<: *client-svc
+    environment:
+      <<: *client-env
+      CLIENT_ID:    "9"
+      TARGET_DATE:  "20250206"
+      TIME_START_H: "0"
+      TIME_END_H:   "3.4"
+    volumes:
+      - ${DATA_ROOT:-/tmp/spintronic_data}:/data:ro
+
+  client_10:
+    <<: *client-svc
+    environment:
+      <<: *client-env
+      CLIENT_ID:    "10"
+      TARGET_DATE:  "20250206"
+      TIME_START_H: "3.4"
+      TIME_END_H:   "6.8"
+    volumes:
+      - ${DATA_ROOT:-/tmp/spintronic_data}:/data:ro
+
+  client_11:
+    <<: *client-svc
+    environment:
+      <<: *client-env
+      CLIENT_ID:    "11"
+      TARGET_DATE:  "20250206"
+      TIME_START_H: "6.8"
+      TIME_END_H:   "10.2"
+    volumes:
+      - ${DATA_ROOT:-/tmp/spintronic_data}:/data:ro
+
+  client_12:
+    <<: *client-svc
+    environment:
+      <<: *client-env
+      CLIENT_ID:    "12"
+      TARGET_DATE:  "20250206"
+      TIME_START_H: "10.2"
+      TIME_END_H:   "13.6"
+    volumes:
+      - ${DATA_ROOT:-/tmp/spintronic_data}:/data:ro
+
+  client_13:
+    <<: *client-svc
+    environment:
+      <<: *client-env
+      CLIENT_ID:    "13"
+      TARGET_DATE:  "20250206"
+      TIME_START_H: "13.6"
+      TIME_END_H:   "17.0"
+    volumes:
+      - ${DATA_ROOT:-/tmp/spintronic_data}:/data:ro
+
+  client_14:
+    <<: *client-svc
+    environment:
+      <<: *client-env
+      CLIENT_ID:    "14"
+      TARGET_DATE:  "20250206"
+      TIME_START_H: "17.0"
+      TIME_END_H:   "20.4"
+    volumes:
+      - ${DATA_ROOT:-/tmp/spintronic_data}:/data:ro
+
+  client_15:
+    <<: *client-svc
+    environment:
+      <<: *client-env
+      CLIENT_ID:    "15"
+      TARGET_DATE:  "20250206"
+      TIME_START_H: "20.4"
+      TIME_END_H:   "24.0"
+    volumes:
+      - ${DATA_ROOT:-/tmp/spintronic_data}:/data:ro
+
+networks:
+  fl_network:
+    driver: bridge
+    name: spintronic_fl_net

@@ -1,0 +1,35 @@
+{
+ "weight_maxabs": 0.0,
+ "bit_identical": true,
+ "score_diff": {
+  "LOBES": 0.0,
+  "POLARITY": 0.0,
+  "DURATION": 0.0
+ },
+ "C1b_PASS": true,
+ "C4": {
+  "distinct_ips": true,
+  "ips": {
+   "flserver": "172.18.0.2",
+   "client_00": "172.18.0.11",
+   "client_01": "172.18.0.4",
+   "client_02": "172.18.0.7",
+   "client_03": "172.18.0.6",
+   "client_04": "172.18.0.9",
+   "client_05": "172.18.0.5",
+   "client_06": "172.18.0.8",
+   "client_07": "172.18.0.10",
+   "client_08": "172.18.0.3",
+   "client_09": "172.18.0.12"
+  },
+  "sampled_round": 200,
+  "server_bytes_rx_tx": [
+   1746099806,
+   1745670403
+  ],
+  "bytes_per_round_measured": 17458851,
+  "bytes_per_round_payload": 17259520,
+  "overhead": 0.0115
+ },
+ "wall_s": 297.0
+}

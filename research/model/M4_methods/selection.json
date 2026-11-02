@@ -1,0 +1,6 @@
+{
+ "mae_tf": 0,
+ "simclr_cnn": 0,
+ "simclr_tf": 0,
+ "vicreg_tf": 1
+}

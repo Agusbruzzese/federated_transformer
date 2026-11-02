@@ -1,0 +1,9 @@
+.venv/
+Spintronic Sensor Dataset*/
+__pycache__/
+*.npz
+*.pkl
+data/
+
+# test PKI / private keys for the federated system (report 30, M2)
+fl_system2/pki/

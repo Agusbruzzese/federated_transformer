@@ -1,0 +1,151 @@
+================================================================================
+ STEP 4: EVALUATOR AND PROOF THAT THE DECISION PROCEDURE CAN PASS AND FAIL
+ Report 12 (execution report; protocol v2 = report 09, sections 5-6, 8.2)
+ Project: federated_transformer                Date: 2026-10-10
+ Code: research/model/K_committee/protocol/evaluator.py
+       research/model/K_committee/protocol/test_evaluator.py
+ Result: protocol/test_evaluator_20261010_124310.json (ALL_PASS = true)
+================================================================================
+
+1. PURPOSE
+  Implement the single scoring and decision procedure used for every arm,
+  and prove, BEFORE any federated model exists, that it:
+    (a) computes what the protocol says;
+    (b) keeps its false-positive rate;
+    (c) declares equivalence when two models are truly alike;
+    (d) refuses equivalence when a model is degraded, including just past
+        the margin;
+    (e) detects planted day information.
+
+2. WHAT WAS BUILT (evaluator.py)
+  Scoring, per model and fold:
+  - Embed the fold's client events and evaluation-day events (eval view).
+  - Probes are fitted on the client events and scored per evaluation day:
+      kNN       k = 15, StandardScaler
+      linear    LogisticRegression(C = 1, lbfgs, float64, tol 1e-8, up to
+                10 000 iterations; non-convergence recorded) / RidgeCV;
+                StandardScaler
+  - Primary: LOBES and POLARITY, each the mean of kNN and linear skill.
+    Secondary: DURATION.
+  Nuisance-encoding gate:
+  - Q = skill(day | [embedding PCA-19, morph8, hour bin, has_dropout])
+    - skill(day | [morph8, hour bin, has_dropout]), logistic regression,
+    GroupKFold(5) over 30-min blocks, on the fold's 3 evaluation days.
+  - Null: 50 block permutations of the day labels. Z = Q - null mean.
+  - Unconditioned Z also kept (secondary).
+  Statistics:
+  - two-stratum t (seed stratum = per-seed means over all days; day stratum
+    = day-level differences; Satterthwaite df; 90 % CI);
+  - per-metric outcome (EQ / NI / SUP / INC / INF);
+  - contrast label (INFERIOR / INCONCLUSIVE / EQUIVALENT / NON-INFERIOR);
+  - gate test (Welch t over seeds, one-sided 95 %);
+  - margin rule for m_leak; Holm; partition-dependence flag.
+
+3. PASS CRITERIA (written into test_evaluator.py before the first run)
+  T1  decision table: every one of 200 000 random CIs gets exactly one
+      outcome; boundary cases and the contrast rule as in report 09.
+  T2  simulated type I error (P(EQ) at true Delta = +-m) <= 0.07, for LOBES
+      and POLARITY, n = 5 vs 5, D = 9, B's variance components.
+  T3  Holm on a known example.
+  T4  scoring the same checkpoint twice gives identical numbers.
+  T5  planted controls on real checkpoints over the 3 folds (9 days):
+        C1  central vs independent central       -> not INFERIOR
+        C3  untrained init vs central             -> INFERIOR
+        C4  central + noise (tau = 0.5 SD)        -> INFERIOR
+        C5  central + noise at the margin edge    -> not EQUIVALENT
+        L1  gate, central vs central              -> PASS
+        L2  planted per-day offset (grid)         -> FAIL for some offset
+  T5 is a PROCEDURE TEST ONLY. The checkpoints are M5 models (A = seeds
+  0-4), committee B's extra M5-recipe seeds (B = seeds 5-7) and the
+  untrained weights of A (I). They were trained on some of these
+  evaluation days, so nothing here is a result about central vs federated.
+
+4. RESULTS (all criteria met; runtime 29.6 min CPU, mostly the 114 gates)
+
+  T1  PASS. 200 000 random CIs, each with exactly one outcome. Boundaries
+      exact. 25 outcome pairs mapped as specified.
+  T2  PASS.
+                 type I (Delta=-m)  type I (Delta=+m)  power (Delta=0)
+      LOBES      0.033              0.038              0.79
+      POLARITY   0.035              0.038              1.00
+      (The 0.79 lobe power matches member E's simulation, 0.77, under the
+      same assumptions.)
+  T3  PASS (Holm rejects [T, F, F, T] as expected).
+  T4  PASS (bit-identical scores on repetition).
+
+  T5  planted controls (Delta = arm minus reference, 90 % CI):
+
+  control  metric    Delta     90 % CI             outcome  label
+  -------  --------  --------  ------------------  -------  ------------
+  C1       LOBES     -0.013    [-0.032, +0.005]    EQ       EQUIVALENT
+  A vs B   POLARITY  -0.000    [-0.006, +0.005]    EQ
+           DURATION  +0.006    [-0.002, +0.015]    EQ
+  C3       LOBES     -0.329    [-0.370, -0.289]    INF      INFERIOR
+  I vs B   POLARITY  -0.161    [-0.190, -0.132]    INF
+  C4       LOBES     -0.111    [-0.146, -0.075]    INF      INFERIOR
+  tau 0.5  POLARITY  -0.025    [-0.034, -0.017]    INC
+  C5       LOBES     -0.049    [-0.078, -0.020]    INC      INCONCLUSIVE
+  tau*     POLARITY  -0.007    [-0.015, +0.000]    EQ       (correctly not
+  =0.188                                                    EQUIVALENT)
+
+  C5: tau* came from 8 bisection steps on fold 0 only, targeting a LOBES
+  Delta of -1.25 m = -0.050 (reached -0.0505), then applied to all folds.
+  A degradation just past the lobe margin is refused as "equivalent",
+  while polarity, which it barely affects, still reads EQ. The procedure
+  separates the two metrics.
+
+  Nuisance gate:
+    Fold-averaged Z per seed: A -0.027, -0.015, -0.027, -0.010, -0.014;
+    B -0.016, -0.016, -0.017. Central models encode no day information
+    beyond the physical confounds (Z < 0, i.e. below the permutation null
+    mean).
+    m_leak by the rule = max(0.03, 2 |Delta|, 2 SE) = 0.03 (the floor).
+    L1  Delta -0.002, upper bound 0.005  -> PASS
+    L2  planted offset (fraction of the embedding norm per evaluation day):
+          kappa   0.005   0.01    0.02    0.03    0.05    0.10
+          Delta   -0.000  +0.000  +0.006  +0.022  +0.069  +0.430
+          U        0.007   0.010   0.019   0.035   0.090   0.485
+          gate    PASS    PASS    PASS    FAIL    FAIL    FAIL
+        The gate responds monotonically and flags a planted day signal of
+        3 % of the embedding scale or more.
+
+  Partition-dependence flag: raised only for C3 LOBES (per-fold Deltas
+  spread more than 0.04 when the gap is very large), as expected.
+
+5. FINDINGS TO CARRY FORWARD
+  - The procedure behaves as designed on real data: it passes independent
+    central models and refuses degraded ones, including a near-margin one.
+    This is the proof required before the dry run (step 8).
+  - C1 passed even with only 3 seeds in the reference group. The step-8
+    dry run (5 vs 5 new seeds, no evaluation-day leakage) is the binding
+    version of this control.
+  - The gate costs about 15 s per model-fold with 12 threads. Step 11
+    (about 175 checkpoints x 3 folds) therefore needs about 2-2.5 h of CPU
+    for the gates, within the step-11 estimate.
+  - Z sits slightly below 0 for central models. The permutation null of
+    the conditional difference is slightly positive (extra features
+    overfit noise). Centring on the null mean corrects this, which is why
+    the protocol uses Z and not Q.
+  - The linear probes converged in every fit checked (no
+    ConvergenceWarning).
+
+6. DEVIATIONS FROM PROTOCOL v2
+  None. Implementation details not spelled out in report 09, now fixed:
+    - day-level skill uses the classes present that day (m4.skill
+      convention);
+    - PCA-19 of the gate is fitted on the evaluation-day embeddings
+      (unsupervised);
+    - the hour bin is a 4-level one-hot (6-h bins);
+    - the gate permutation seed is 20261010;
+    - planted controls use seeded Gaussian noise scaled by the per-dimension
+      SD of the client embeddings, and seeded unit vectors per evaluation
+      day.
+
+7. NEXT STEP
+  Step 5: independent re-review of protocol v2 and of the code (fedsim2,
+  evaluator, tests) by a reviewer with no part in it. Then step 6: freeze
+  by hashes.
+
+================================================================================
+ End of report
+================================================================================

@@ -1,0 +1,57 @@
+{
+ "morph8": {
+  "knn_polarity": 1.0,
+  "knn_lobes": 0.876737104556446,
+  "knn_duration": 0.9444842926690249,
+  "lin_polarity": 1.0,
+  "lin_lobes": 1.0,
+  "lin_duration": 0.9915775671360241
+ },
+ "noisy_lobes": {
+  "knn_polarity": 0.04737734993451137,
+  "knn_lobes": 0.5882892496016652,
+  "knn_duration": 0.044192864503576956,
+  "lin_polarity": 0.010238774293494624,
+  "lin_lobes": 0.6744114222629546,
+  "lin_duration": 0.08528602561896304
+ },
+ "noisy_duration": {
+  "knn_polarity": 0.015429519804247782,
+  "knn_lobes": 0.011764814555430029,
+  "knn_duration": 0.7176606159376059,
+  "lin_polarity": 0.0,
+  "lin_lobes": 0.006040848818512116,
+  "lin_duration": 0.7895512599562311
+ },
+ "noise": {
+  "knn_polarity": -0.028110591652912964,
+  "knn_lobes": -0.005706095147088937,
+  "knn_duration": -0.08044179000857277,
+  "lin_polarity": 0.004903010172019773,
+  "lin_lobes": -0.0017382203717607458,
+  "lin_duration": -0.010210314566106327,
+  "is0204": 0.010469255663430488,
+  "testday": -0.015126024449318765
+ },
+ "noise+run": {
+  "knn_polarity": 0.020765283925722855,
+  "knn_lobes": 0.0023373451944880643,
+  "knn_duration": -0.06691417627978824,
+  "lin_polarity": 0.006067762823213085,
+  "lin_lobes": -0.0009950022372382517,
+  "lin_duration": -0.01276030370703185,
+  "is0204": 1.0,
+  "testday": 1.0
+ },
+ "noise+day": {
+  "knn_polarity": 0.003471239126481507,
+  "knn_lobes": -0.001126961375408612,
+  "knn_duration": -0.07110672421538711,
+  "lin_polarity": 0.005025009955642812,
+  "lin_lobes": -0.002355546454925306,
+  "lin_duration": -0.006880967100141744,
+  "is0204": 1.0,
+  "testday": 1.0
+ },
+ "PASS": true
+}

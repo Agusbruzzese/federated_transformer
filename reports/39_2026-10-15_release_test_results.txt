@@ -1,0 +1,77 @@
+================================================================================
+ RELEASE TEST: RESULTS
+ Report 39 (execution report; pre-registration = report 38)
+ Project: federated_transformer                Date: 2026-10-15
+ Results: fl_system5/results_rel_20261015_134134.json
+ Chain log: fl_system5/rel_chain_20261015_110939.log
+================================================================================
+
+SUMMARY
+-------
+RELEASE_PASS. The deployment configuration was run with everything on at
+once:
+  - 11 containers;
+  - TLS + site authentication;
+  - SecAgg+ with the round-continuity guard;
+  - an emulated WAN link per site.
+It computed the full 200-round S+F model BIT-IDENTICAL to the earlier local
+SecAgg+ run. Every container saw only what it should. Every intruder was
+refused. A site killed mid-round stopped the run cleanly, and the resume
+was exact. The hashes printed by the chain equal those frozen in report 38.
+
+1. RESULTS (criteria of report 38)
+  R1 exactness: full S+F recipe, seed 0, 200 rounds, full stack + WAN
+     (rel_SpF_s0) vs local SecAgg+ m3c_SpF_s0.
+     Global weights at rounds 1, 2, 3, 50, 100, 150, 200 and the final
+     model: max |diff| 0.0. BIT-IDENTICAL. PASS.
+     Therefore, by report 36, the model is equivalent to plain FedAvg, and
+     by report 24 to the study's conclusions.
+  R2 isolation, listed inside each container:
+       - site k: only client_k, its own key pair, the CA certificate;
+       - server: only federation.json + server/, the public site keys, its
+         own certificate/key and the CA certificate (no CA key, no site
+         private key, no site data).
+     PASS for all 11 containers.
+  R3 intruders (only site_00 registered):
+       site_00                    online
+       plaintext with keys        exit 1 (refused)
+       foreign CA                 exit 1 (TLS verification failed)
+       unregistered key           exit 1 (activation refused)
+       plaintext without keys     kept retrying, never online (the server
+                                  log shows the rejected handshakes)
+     Exactly 1 node online. PASS.
+  R4 fault: site 3's container was killed during round 3 (5-round
+     schedule).
+       - The first attempt stopped unfinished; the guard fired ("no skipped
+         round"); last committed round 2.
+       - Rounds were committed in order with none missing.
+       - The resume with fresh containers finished.
+       - Global r1, r2, r3, r5 and the final model are BIT-IDENTICAL to
+         the exact simulator.
+     PASS.
+  R5 cost (WAN emulation: 20 ms + 50 Mbit/s site uplink, 20 ms + 1 Gbit/s
+     server):
+       - per site per round (median over 199 rounds): 0.97 MB down,
+         1.90 MB up;
+       - per site per run: about 570 MB;
+       - model payload 0.86 MB (float32). The upload is about 2.2x the
+         payload: SecAgg+ sends 64-bit masked integers (1.73 MB), plus TLS
+         and protocol overhead. The download is about 1.12x the payload.
+       - Round time: median 40.9 s vs 39.9 s locally without WAN (+2.6 %);
+         full run 2.4 h including start-up.
+       - Network time is small next to compute on this bench (one GPU
+         shared by 10 sites). On separate machines each site computes in
+         parallel, but uploads 1.9 MB per round on its own link: about
+         0.3 s at 50 Mbit/s.
+
+2. VERDICT
+  The release configuration (fl_system5/app, runbook fl_system5/RUNBOOK.md)
+  is VALIDATED on this bench. It carries the study's result unchanged,
+  keeps each site's data and keys where they belong, rejects the tested
+  intruders, and recovers exactly from a site failure.
+  Not covered: real separate machines and real WAN impairments (packet
+  loss, outages longer than a round); see report 40 sec. 7.
+
+================================================================================
+ End of report
+================================================================================

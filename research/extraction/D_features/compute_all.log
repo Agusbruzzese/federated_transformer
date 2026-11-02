@@ -1,0 +1,9 @@
+time 525.222742319107
+wavelet            0.006021
+stft               0.000645
+morph              0.001477
+waveform           0.000321
+hht_lp             0.027134
+legacy_fixed_io    0.027333
+legacy66           0.034826
+dtype: float64

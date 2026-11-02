@@ -1,0 +1,14 @@
+{"finished": false, "wall_s": 2457.6, "last_round": 67, "killed_at_s": null}
+Traceback (most recent call last):
+  File "<stdin>", line 5, in <module>
+  File "/home/augustin/Documents/federated_transformer/.venv/lib/python3.12/site-packages/torch/serialization.py", line 1565, in load
+    with _open_file_like(f, "rb") as opened_file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/augustin/Documents/federated_transformer/.venv/lib/python3.12/site-packages/torch/serialization.py", line 795, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/augustin/Documents/federated_transformer/.venv/lib/python3.12/site-packages/torch/serialization.py", line 776, in __init__
+    super().__init__(open(name, mode))  # noqa: SIM115
+                     ^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs2/m1b_SpF_s0/final.pt'
+CHAIN_EXIT 0

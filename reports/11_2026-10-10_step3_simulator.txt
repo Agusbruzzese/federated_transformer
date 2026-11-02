@@ -1,0 +1,121 @@
+================================================================================
+ STEP 3: SIMULATOR FOR PROTOCOL v2 (fedsim2) AND ITS PROOFS
+ Report 11 (execution report; protocol v2 = report 09)
+ Project: federated_transformer                Date: 2026-10-10
+ Code: research/model/K_committee/protocol/fedsim2.py      (sha 638febb1...)
+       research/model/K_committee/protocol/test_fedsim2.py (sha fea081c7...)
+ Results: protocol/test_fedsim2_20261010_123652.json,
+          protocol/selftest_fedsim2.json
+ Runs (test only): data/k_committee/protocol/runs/test_*_20261010_123652,
+          selftest_central_v2; data/k_committee/protocol/selftest_m5_v2
+================================================================================
+
+1. PURPOSE
+  Provide one simulator that can train every arm of protocol v2 on the
+  frozen folds, under the protocol's data rules, and prove that it does
+  what it claims before any real run is made.
+
+2. WHAT WAS BUILT
+  fedsim2.py is a NEW file. It is a copy of committee C's simulator after
+  the B1 fix (C_federated/fedsim.py; that file is left as is), extended as
+  follows:
+  - Folds: --fold 0|1|2 reads folds.json (sha 79f3b1ff...). IID clients
+    have the same sizes as the natural clients, with events assigned by a
+    seeded permutation (seed 1000 + fold).
+  - Arms:
+      --arm central (C256, C64, and S+C with --init)
+      --arm fed     (F-nat, F-IID, F-X+P, and S+F with --init)
+      --arm server  (server pretraining on Feb 18 + 20)
+      --arm cj      (central on clients + server events)
+    S0 needs no training (evaluation of the server checkpoint).
+  - --lr sets the peak learning rate (tuning grid, report 09 section 4).
+  - Noise: the per-day pool v2 from step 2.
+  - Guard: numpy.load refuses the pooled ssl_central bgpool.npy. Only the
+    M5 selftest path (fold "m5", noise "m4") may switch the guard off, and
+    the code asserts that.
+  - Firewall per fold, in code: no training event may come from that fold's
+    evaluation days, the tuning day or (except CJ) the server days. The
+    server may not use any fold's evaluation days or the tuning day. The
+    m4 "role" firewall was removed, as the protocol requires.
+  - Monitoring: Feb 10 with Feb 10's own noise pool; no external reference
+    model.
+  - Provenance: each run records the sha256 of fedsim2, folds.json, the
+    noise pool and the --init checkpoint.
+  - Never overwrites: a run refuses to start if its output exists, and logs
+    are opened in exclusive-create mode.
+  - --plan-only builds the partition and the budget plan without training.
+
+3. PROOFS AND TESTS (all PASS)
+  G   The guard blocks the pooled noise file: PASS (a RuntimeError is
+      raised).
+  W   Firewall: all 7 arm types x 3 folds pass. Negative test: planting 3
+      events from a fold's evaluation day into a client raises: PASS.
+  P   Partitions: each fold has 10 clients; IID sizes equal natural sizes;
+      every event appears exactly once and IID covers the same events; every
+      IID client mixes days.
+        fold 0 sizes  434 301 81 61 324 297 403 53 366 253  (2 573)
+        fold 1 sizes  404 301 81 300 61 297 403 53 384 253  (2 537)
+        fold 2 sizes  404 387 81 300 61 324 403 53 384 366  (2 763)
+  C0  FedAvg proofs on fedsim2 (fold 0, 10 natural clients, 2 rounds):
+        C0a identical start weights for all clients in both rounds: PASS
+        C0b client and global weights bit-identical under reversed client
+            order: PASS
+        C0c global = example-weighted mean of the clients: max |diff|
+            1.6e-7: PASS
+  C0' fedsim2 central on M5's training set with M5's noise vs m5.train
+      (40 steps, run into a new scratch directory): loss curves identical,
+      max weight difference 0.0: PASS.
+  S   Smoke run, 1 round of every arm on fold 0, monitoring on: all 9
+      (server, C256, C64, F-nat, F-IID, F-X+P, CJ, S+F, S+C) produced
+      finite losses. S+F and S+C recorded the hash of the server checkpoint
+      they started from (5eef7037...). Round time 0.2-2.0 s.
+
+4. BUDGET ACCOUNTING (plan-only, every arm x fold; X = 2 560 000,
+   P = 423 936)
+
+  arm     fold 0                 fold 1                 fold 2
+  ------  ---------------------  ---------------------  ---------------------
+  C256    X exactly, 10 000      X exactly, 10 000      X exactly, 10 000
+          steps, 995 ep          steps, 1 009 ep        steps, 927 ep
+  C64     X exactly, 40 000      X exactly, 40 000      X exactly, 40 000
+          steps                  steps                  steps
+  F-nat   0.9945 X, 40 000       0.9995 X, 40 200       0.9995 X, 40 200
+          steps, 948-1 012 ep    steps, 948-1 024 ep    steps, 909-1 000 ep
+  F-IID   same as F-nat          same as F-nat          same as F-nat
+  F-X+P   0.994 (X+P),           0.999 (X+P)            1.004 (X+P)
+          1 105-1 179 ep         1 105-1 193 ep         1 059-1 165 ep
+  CJ      X+P exactly, 11 656    same                   same
+          steps, 992 ep          1 004 ep               933 ep
+  server  P exactly, 1 656 steps, 977 epochs (all folds; same server data)
+
+  ("ep" = epochs per event.) Federated totals differ from the budget by at
+  most 0.6 %, from rounding the local step counts. As the protocol states,
+  this is reported as is.
+
+5. TIMINGS (smoke runs; consistent with committee C)
+  One FedAvg round about 1.9 s (200 rounds about 6.5 min). Central rounds
+  0.9-1.9 s depending on batch. Server pretraining about 0.2 s per round.
+  GPU memory was released after the tests (110 MiB in use).
+
+6. FINDINGS
+  - No defects found. Every protocol requirement for step 3 is implemented
+    and proven.
+  - The F-X+P budget in fold 2 is 0.4 % above X+P, because 233 rounds
+    round up there. Within the rounding tolerance stated in report 09
+    section 3.2.
+
+7. DEVIATIONS FROM PROTOCOL v2
+  None in substance. Implementation choices not spelled out in report 09
+  (they fix rounding only and are logged here):
+    - rounds per arm: central arms R = 200, CJ R = 188 and server R = 184
+      (chosen so that the budget divides exactly);
+    - monitoring every 10 rounds by default.
+
+8. NEXT STEP
+  Step 4: the evaluator (probes, primary and secondary metrics, nuisance
+  gate with permutation null, two-stratum TOST, decision table) and its unit
+  tests on the planted controls, using the existing M5 checkpoints.
+
+================================================================================
+ End of report
+================================================================================

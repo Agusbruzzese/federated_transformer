@@ -1,0 +1,10 @@
+200a201c4c083be4906d76edb78d06c5f22f8a09111c5569b9b6144f7e1e1f35  fl_system3/analyze_M3cp.py
+{"finished": true, "wall_s": 7965.1, "last_round": 200, "killed_at_s": null}
+{"finished": true, "wall_s": 7958.1, "last_round": 200, "killed_at_s": null}
+{"finished": true, "wall_s": 7909.2, "last_round": 200, "killed_at_s": null}
+{"finished": true, "wall_s": 7902.7, "last_round": 200, "killed_at_s": null}
+{"finished": true, "wall_s": 7968.6, "last_round": 200, "killed_at_s": null}
+{"finished": true, "wall_s": 7971.0, "last_round": 200, "killed_at_s": null}
+{"finished": true, "wall_s": 7913.2, "last_round": 200, "killed_at_s": null}
+PRIMARY EQUIVALENT SECONDARY EQUIVALENT -> /home/augustin/Documents/federated_transformer/fl_system3/results_M3cp_20261015_012144.json
+CHAIN_EXIT 0

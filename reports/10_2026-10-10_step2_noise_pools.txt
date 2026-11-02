@@ -1,0 +1,83 @@
+================================================================================
+ STEP 2: OWN-DAY BACKGROUND-NOISE POOLS FOR EVERY DAY
+ Report 10 (execution report; protocol v2 = report 09, section 2.3)
+ Project: federated_transformer                Date: 2026-10-10
+ Code: research/model/K_committee/protocol/noisepool_v2.py
+ Output: data/k_committee/protocol/bgpool_day_v2.npy + _meta.parquet,
+         research/model/K_committee/protocol/noisepool_v2.json
+================================================================================
+
+1. PURPOSE
+  SimCLR adds real background noise to each training view. In a federated
+  setting a client may only use noise recorded on its own days. Protocol v2
+  therefore requires every training event, in every arm, to draw noise only
+  from its own day. The reviewer (M1) found that 5 needed days had no pool:
+  Feb 7, 13, 19 and 25 (client days in the fold design) and Feb 10 (tuning
+  and monitoring).
+
+2. RULE (fixed in report 09 before this step ran)
+  - Strict pool: rule I5 of ssl_central/bgpool.py, with committee C's
+    per-day block choice (6 blocks per day, evenly spaced, deterministic).
+    A stretch is rejected if any detection of any SNR lies within 3 s, if it
+    contains a dropout flag, or if it exceeds 6 robust sigma.
+  - If a day has fewer than N_MIN = 50 strict segments, its relaxed segments
+    are added (up to 10 % flagged samples, bridged; detections still veto).
+  - Clarification, made before building the new pools: the relaxed rule also
+    accepts every strict-clean stretch, so segments are de-duplicated by
+    (run, position), keeping the strict copy.
+
+3. PROCEDURE
+  - Committee C's functions were reused unchanged: the planner
+    noisepool.plan, the strict job ssl_central.bgpool._job and the relaxed
+    job noisepool._job_relaxed. Only the list of days was changed.
+  - The new segments were merged with C's existing pool, which was read
+    only; C's files are unchanged.
+  - Output rows are sorted by day, run and position.
+  - Runtime: 7 min 12 s on 12 CPU processes; no GPU.
+
+4. RESULTS
+  New days, strict counts: Feb 7: 1, Feb 10: 1, Feb 13: 659, Feb 19: 661,
+  Feb 25: 692. Feb 7 and Feb 10 (dropout-dense run 0204) fell below 50, so
+  relaxed segments were added (81 and 125).
+
+  Final pool, segments per day (strict + relaxed = total):
+    Feb 04  617 +   0 = 617     Feb 13  659 +   0 = 659
+    Feb 05  469 +   0 = 469     Feb 14  371 +   0 = 371
+    Feb 06   44 + 100 = 144     Feb 18  603 +   0 = 603
+    Feb 07    1 +  81 =  82     Feb 19  661 +   0 = 661
+    Feb 08    1 +  56 =  57     Feb 20  479 +   0 = 479
+    Feb 09    0 + 140 = 140     Feb 24  651 +   0 = 651
+    Feb 10    1 + 125 = 126     Feb 25  692 +   0 = 692
+    Feb 11    0 +  35 =  35     Feb 26  517 +   0 = 517
+    Feb 12  705 +   0 = 705     Feb 27  191 +   0 = 191
+  Total 7 199 segments x 640 samples.
+  sha256 07b52c9a70b58f574d758454bb3107aed01188b180bd63b39e472556bbf09214
+
+5. CHECKS (all passed)
+  - No duplicated (run, position) after merging. 36 duplicates were removed:
+    35 inherited from C's v1 pool (Feb 6: 34, Feb 8: 1), which had given
+    those stretches double weight, and 1 new.
+  - All values finite. Every row is at unit robust sigma (median, p5 and p95
+    of the row robust SD are all 1.000).
+  - Every one of the 18 recording days has its own pool.
+
+6. FINDINGS TO CARRY FORWARD
+  - Feb 11 has 35 segments (0 strict), below N_MIN even after the relaxed
+    rule. The rule defines no further step, so the day is used as is. It is
+    reported, not changed after the fact.
+  - Relaxed segments are noisier than strict ones on the same days (median
+    sigma 136-164 vs 108-151 counts). All arms use identical pools, so no
+    arm is favoured, but the run-0204 days may be slightly more
+    identifiable. The nuisance gate (report 09, section 6) measures this in
+    every arm.
+
+7. DEVIATIONS FROM PROTOCOL v2
+  None. The de-duplication clarification was added to report 09 section
+  2.3 before the build. Report 09 also received an execution-record note
+  for this step (the only edit made to it after it was written; from now on
+  every step is reported in its own file and earlier reports are not
+  edited).
+
+================================================================================
+ End of report
+================================================================================

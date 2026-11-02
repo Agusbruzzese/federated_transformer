@@ -1,0 +1,34 @@
+test,target,n,skill
+"all, runs 1-3 only",run_id,8964,0.18048836979326058
+"all, runs 1-3 only",date,8964,0.13752217255568647
+"all, run 0204 only",date,6296,0.3139682681377089
+"all, run 0218 only",date,2735,0.28451388192091714
+"all, weekdays 07-19 h only",run_id,9564,0.2252173338059363
+"all, weekdays 07-19 h only",date,9564,0.11887764190744396
+SNR 0-10,run_id,5601,0.3512406713203757
+SNR 0-10,date,5601,0.2381177107289105
+SNR 10-20,run_id,5284,0.3450362249425978
+SNR 10-20,date,5284,0.22774659215458481
+SNR 20-1000000000.0,run_id,4375,0.14439348683972342
+SNR 20-1000000000.0,date,4375,0.02396422361905415
+"all, local sigma alone (not a morph feature)",run_id,15260,0.020872085036673333
+"all, SNR alone",run_id,15260,0.007053393133083914
+"all, single feature m_log_amp",run_id,15260,0.08914998589169554
+"all, single feature m_polarity",run_id,15260,0.0
+"all, single feature m_pos_frac",run_id,15260,0.07515896128470072
+"all, single feature m_neg_frac",run_id,15260,0.0647613986761481
+"all, single feature m_dur10",run_id,15260,0.06874576311103293
+"all, single feature m_dur50_main",run_id,15260,0.1626963286651059
+"all, single feature m_rise_main",run_id,15260,0.1514350296599556
+"all, single feature m_fall_main",run_id,15260,0.17180160874782432
+"all, single feature m_asym",run_id,15260,0.00854186549805743
+"all, single feature m_n_lobes",run_id,15260,0.022114512501773875
+"all, single feature m_first_lobe_sign",run_id,15260,0.0
+"all, single feature m_t_pp",run_id,15260,0.003272580205242681
+"all, single feature m_area_pos_n",run_id,15260,0.01384610905490713
+"all, single feature m_area_neg_n",run_id,15260,0.006837492529250995
+"all, single feature m_log_area_abs",run_id,15260,0.05288354799312408
+"all, single feature m_log_energy",run_id,15260,0.07041578588081521
+"all, single feature m_t_spread",run_id,15260,0.012056040832861529
+"all, single feature m_zc_rate",run_id,15260,0.005773636010575789
+"all, single feature m_kurt_env",run_id,15260,0.011377113536721847

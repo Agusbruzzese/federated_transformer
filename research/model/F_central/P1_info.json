@@ -1,0 +1,66 @@
+[
+ {
+  "tier": "snr20",
+  "n_events": 837,
+  "n_blocks": 93,
+  "events_per_block": {
+   "count": 93.0,
+   "mean": 9.0,
+   "std": 12.23,
+   "min": 1.0,
+   "25%": 2.0,
+   "50%": 5.0,
+   "75%": 10.0,
+   "max": 75.0
+  },
+  "targets": "y"
+ },
+ {
+  "tier": "snr30",
+  "n_events": 668,
+  "n_blocks": 73,
+  "events_per_block": {
+   "count": 73.0,
+   "mean": 9.15,
+   "std": 12.74,
+   "min": 1.0,
+   "25%": 2.0,
+   "50%": 4.0,
+   "75%": 10.0,
+   "max": 73.0
+  },
+  "targets": "y"
+ },
+ {
+  "tier": "all",
+  "n_events": 2735,
+  "n_blocks": 104,
+  "events_per_block": {
+   "count": 104.0,
+   "mean": 26.3,
+   "std": 13.82,
+   "min": 7.0,
+   "25%": 15.75,
+   "50%": 26.0,
+   "75%": 32.25,
+   "max": 85.0
+  },
+  "targets": "y"
+ },
+ {
+  "tier": "snr20",
+  "n_events": 837,
+  "n_blocks": 93,
+  "events_per_block": {
+   "count": 93.0,
+   "mean": 9.0,
+   "std": 12.23,
+   "min": 1.0,
+   "25%": 2.0,
+   "50%": 5.0,
+   "75%": 10.0,
+   "max": 75.0
+  },
+  "targets": "y21"
+ }
+]

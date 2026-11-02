@@ -1,0 +1,9 @@
+fold 0 eval∩clients set() eval∩server set() eval∩tuning set() clients∩server set() clients∩tuning set() n client days 12
+fold 1 eval∩clients set() eval∩server set() eval∩tuning set() clients∩server set() clients∩tuning set() n client days 12
+fold 2 eval∩clients set() eval∩server set() eval∩tuning set() clients∩server set() clients∩tuning set() n client days 12
+9 eval days distinct: True ['2025-02-05', '2025-02-06', '2025-02-07', '2025-02-11', '2025-02-13', '2025-02-14', '2025-02-25', '2025-02-26', '2025-02-27']
+runs checked 150 sha ok 150 fold ok 150 trained days == fold client days 150
+init by arm: {'C256': Counter({'None': 30}), 'F-nat': Counter({'None': 30}), 'S+F': Counter({'eeeec6c7ef4b': 3, 'df880c11cf44': 3, '4dc436a8da86': 3, 'a01229cc36c8': 3, 'b0fdae7186e0': 3, 'f6b7ad671688': 3, '2f2076a648cd': 3, '3e63343d2148': 3, '911bc0910de1': 3, '5e43a1d8ba3b': 3}), 'F-X+P': Counter({'None': 30}), 'S+C': Counter({'eeeec6c7ef4b': 3, 'df880c11cf44': 3, '4dc436a8da86': 3, 'a01229cc36c8': 3, 'b0fdae7186e0': 3, 'f6b7ad671688': 3, '2f2076a648cd': 3, '3e63343d2148': 3, '911bc0910de1': 3, '5e43a1d8ba3b': 3})}
+server_hashes.json: {'0': 'eeeec6c7ef4b1ddf76a6185793e3f294a00a424303347566f472eb9f94e24585', '1': 'df880c11cf443b3723544c74339b86db7559f65e43d8fddb22e2b741e550c62c', '2': '4dc436a8da86c10d5e63fe54743a740377c93371f8ab6cdece4f78d253a2f831', '3': 'a01229cc36c802a84a5bf837ab8c019a677fa2ce2247212ddb8f155c53b6cf99', '4': 'b0fdae7186e0016e7c7a9828336cc34e144a3499158ca7a15aeea9ce7f47e25c', '5': 'f6b7ad6716880fecda6dd0259916
+S-arm init == server_hashes[seed]: True []
+data/k_committee/protocol/runs3/v21_server_s0 server train days: ['2025-02-18', '2025-02-20'] sha ok True

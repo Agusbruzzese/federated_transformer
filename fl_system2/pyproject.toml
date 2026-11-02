@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fl-system2"
+version = "1.0.0"
+description = "Federated SSL encoder (report 30, M1): strict FedAvg on Flower's current runtime (SuperLink/SuperNode, Grid API)"
+license = "Proprietary"
+dependencies = []          # runs in the SuperNode's environment (.venv-fl); no runtime installs
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
+[tool.flwr.app]
+publisher = "local"
+
+[tool.flwr.app.components]
+serverapp = "fl_system2.server_app:app"
+clientapp = "fl_system2.client_app:app"
+
+[tool.flwr.app.config]
+rounds = 3
+examples = 16384
+batch = 64
+lr = 0.001
+seed = 0
+fed = ""
+init = ""
+run-name = ""
+code-root = ""
+resume = false
+save-every = 50
+node-wait-s = 300
+max-retries = 2

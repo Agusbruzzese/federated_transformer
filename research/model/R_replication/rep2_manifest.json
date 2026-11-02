@@ -1,0 +1,1812 @@
+{
+ "chosen": {
+  "F-nat": 0.0003,
+  "S+F": 0.0003
+ },
+ "lr_changed": {
+  "F": false,
+  "S": true
+ },
+ "runs": [
+  {
+   "id": "rep2_ScleanF_f0_s0",
+   "arm": "Sclean+F",
+   "seed": 0,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "0",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f0_s0"
+   ],
+   "init": [
+    "study",
+    0
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f0_s1",
+   "arm": "Sclean+F",
+   "seed": 1,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "1",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f0_s1"
+   ],
+   "init": [
+    "study",
+    1
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f0_s2",
+   "arm": "Sclean+F",
+   "seed": 2,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "2",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f0_s2"
+   ],
+   "init": [
+    "study",
+    2
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f0_s3",
+   "arm": "Sclean+F",
+   "seed": 3,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "3",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f0_s3"
+   ],
+   "init": [
+    "study",
+    3
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f0_s4",
+   "arm": "Sclean+F",
+   "seed": 4,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "4",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f0_s4"
+   ],
+   "init": [
+    "study",
+    4
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f0_s5",
+   "arm": "Sclean+F",
+   "seed": 5,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "5",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f0_s5"
+   ],
+   "init": [
+    "study",
+    5
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f0_s6",
+   "arm": "Sclean+F",
+   "seed": 6,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "6",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f0_s6"
+   ],
+   "init": [
+    "study",
+    6
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f0_s7",
+   "arm": "Sclean+F",
+   "seed": 7,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "7",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f0_s7"
+   ],
+   "init": [
+    "study",
+    7
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f0_s8",
+   "arm": "Sclean+F",
+   "seed": 8,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "8",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f0_s8"
+   ],
+   "init": [
+    "study",
+    8
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f0_s9",
+   "arm": "Sclean+F",
+   "seed": 9,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "9",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f0_s9"
+   ],
+   "init": [
+    "study",
+    9
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f1_s0",
+   "arm": "Sclean+F",
+   "seed": 0,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "0",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f1_s0"
+   ],
+   "init": [
+    "study",
+    0
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f1_s1",
+   "arm": "Sclean+F",
+   "seed": 1,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "1",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f1_s1"
+   ],
+   "init": [
+    "study",
+    1
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f1_s2",
+   "arm": "Sclean+F",
+   "seed": 2,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "2",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f1_s2"
+   ],
+   "init": [
+    "study",
+    2
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f1_s3",
+   "arm": "Sclean+F",
+   "seed": 3,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "3",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f1_s3"
+   ],
+   "init": [
+    "study",
+    3
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f1_s4",
+   "arm": "Sclean+F",
+   "seed": 4,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "4",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f1_s4"
+   ],
+   "init": [
+    "study",
+    4
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f1_s5",
+   "arm": "Sclean+F",
+   "seed": 5,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "5",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f1_s5"
+   ],
+   "init": [
+    "study",
+    5
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f1_s6",
+   "arm": "Sclean+F",
+   "seed": 6,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "6",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f1_s6"
+   ],
+   "init": [
+    "study",
+    6
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f1_s7",
+   "arm": "Sclean+F",
+   "seed": 7,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "7",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f1_s7"
+   ],
+   "init": [
+    "study",
+    7
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f1_s8",
+   "arm": "Sclean+F",
+   "seed": 8,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "8",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f1_s8"
+   ],
+   "init": [
+    "study",
+    8
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f1_s9",
+   "arm": "Sclean+F",
+   "seed": 9,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "9",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f1_s9"
+   ],
+   "init": [
+    "study",
+    9
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f2_s0",
+   "arm": "Sclean+F",
+   "seed": 0,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "0",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f2_s0"
+   ],
+   "init": [
+    "study",
+    0
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f2_s1",
+   "arm": "Sclean+F",
+   "seed": 1,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "1",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f2_s1"
+   ],
+   "init": [
+    "study",
+    1
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f2_s2",
+   "arm": "Sclean+F",
+   "seed": 2,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "2",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f2_s2"
+   ],
+   "init": [
+    "study",
+    2
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f2_s3",
+   "arm": "Sclean+F",
+   "seed": 3,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "3",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f2_s3"
+   ],
+   "init": [
+    "study",
+    3
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f2_s4",
+   "arm": "Sclean+F",
+   "seed": 4,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "4",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f2_s4"
+   ],
+   "init": [
+    "study",
+    4
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f2_s5",
+   "arm": "Sclean+F",
+   "seed": 5,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "5",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f2_s5"
+   ],
+   "init": [
+    "study",
+    5
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f2_s6",
+   "arm": "Sclean+F",
+   "seed": 6,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "6",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f2_s6"
+   ],
+   "init": [
+    "study",
+    6
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f2_s7",
+   "arm": "Sclean+F",
+   "seed": 7,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "7",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f2_s7"
+   ],
+   "init": [
+    "study",
+    7
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f2_s8",
+   "arm": "Sclean+F",
+   "seed": 8,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "8",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f2_s8"
+   ],
+   "init": [
+    "study",
+    8
+   ]
+  },
+  {
+   "id": "rep2_ScleanF_f2_s9",
+   "arm": "Sclean+F",
+   "seed": 9,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "9",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.001",
+    "--tag",
+    "rep2_ScleanF_f2_s9"
+   ],
+   "init": [
+    "study",
+    9
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f0_s0",
+   "arm": "S+F@lrT",
+   "seed": 0,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "0",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f0_s0"
+   ],
+   "init": [
+    "rep",
+    0
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f0_s1",
+   "arm": "S+F@lrT",
+   "seed": 1,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "1",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f0_s1"
+   ],
+   "init": [
+    "rep",
+    1
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f0_s2",
+   "arm": "S+F@lrT",
+   "seed": 2,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "2",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f0_s2"
+   ],
+   "init": [
+    "rep",
+    2
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f0_s3",
+   "arm": "S+F@lrT",
+   "seed": 3,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "3",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f0_s3"
+   ],
+   "init": [
+    "rep",
+    3
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f0_s4",
+   "arm": "S+F@lrT",
+   "seed": 4,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "4",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f0_s4"
+   ],
+   "init": [
+    "rep",
+    4
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f0_s5",
+   "arm": "S+F@lrT",
+   "seed": 5,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "5",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f0_s5"
+   ],
+   "init": [
+    "rep",
+    5
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f0_s6",
+   "arm": "S+F@lrT",
+   "seed": 6,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "6",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f0_s6"
+   ],
+   "init": [
+    "rep",
+    6
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f0_s7",
+   "arm": "S+F@lrT",
+   "seed": 7,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "7",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f0_s7"
+   ],
+   "init": [
+    "rep",
+    7
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f0_s8",
+   "arm": "S+F@lrT",
+   "seed": 8,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "8",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f0_s8"
+   ],
+   "init": [
+    "rep",
+    8
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f0_s9",
+   "arm": "S+F@lrT",
+   "seed": 9,
+   "fold": 0,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "0",
+    "--kind",
+    "natural",
+    "--seed",
+    "9",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f0_s9"
+   ],
+   "init": [
+    "rep",
+    9
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f1_s0",
+   "arm": "S+F@lrT",
+   "seed": 0,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "0",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f1_s0"
+   ],
+   "init": [
+    "rep",
+    0
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f1_s1",
+   "arm": "S+F@lrT",
+   "seed": 1,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "1",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f1_s1"
+   ],
+   "init": [
+    "rep",
+    1
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f1_s2",
+   "arm": "S+F@lrT",
+   "seed": 2,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "2",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f1_s2"
+   ],
+   "init": [
+    "rep",
+    2
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f1_s3",
+   "arm": "S+F@lrT",
+   "seed": 3,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "3",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f1_s3"
+   ],
+   "init": [
+    "rep",
+    3
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f1_s4",
+   "arm": "S+F@lrT",
+   "seed": 4,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "4",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f1_s4"
+   ],
+   "init": [
+    "rep",
+    4
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f1_s5",
+   "arm": "S+F@lrT",
+   "seed": 5,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "5",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f1_s5"
+   ],
+   "init": [
+    "rep",
+    5
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f1_s6",
+   "arm": "S+F@lrT",
+   "seed": 6,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "6",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f1_s6"
+   ],
+   "init": [
+    "rep",
+    6
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f1_s7",
+   "arm": "S+F@lrT",
+   "seed": 7,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "7",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f1_s7"
+   ],
+   "init": [
+    "rep",
+    7
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f1_s8",
+   "arm": "S+F@lrT",
+   "seed": 8,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "8",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f1_s8"
+   ],
+   "init": [
+    "rep",
+    8
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f1_s9",
+   "arm": "S+F@lrT",
+   "seed": 9,
+   "fold": 1,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "1",
+    "--kind",
+    "natural",
+    "--seed",
+    "9",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f1_s9"
+   ],
+   "init": [
+    "rep",
+    9
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f2_s0",
+   "arm": "S+F@lrT",
+   "seed": 0,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "0",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f2_s0"
+   ],
+   "init": [
+    "rep",
+    0
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f2_s1",
+   "arm": "S+F@lrT",
+   "seed": 1,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "1",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f2_s1"
+   ],
+   "init": [
+    "rep",
+    1
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f2_s2",
+   "arm": "S+F@lrT",
+   "seed": 2,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "2",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f2_s2"
+   ],
+   "init": [
+    "rep",
+    2
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f2_s3",
+   "arm": "S+F@lrT",
+   "seed": 3,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "3",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f2_s3"
+   ],
+   "init": [
+    "rep",
+    3
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f2_s4",
+   "arm": "S+F@lrT",
+   "seed": 4,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "4",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f2_s4"
+   ],
+   "init": [
+    "rep",
+    4
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f2_s5",
+   "arm": "S+F@lrT",
+   "seed": 5,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "5",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f2_s5"
+   ],
+   "init": [
+    "rep",
+    5
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f2_s6",
+   "arm": "S+F@lrT",
+   "seed": 6,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "6",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f2_s6"
+   ],
+   "init": [
+    "rep",
+    6
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f2_s7",
+   "arm": "S+F@lrT",
+   "seed": 7,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "7",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f2_s7"
+   ],
+   "init": [
+    "rep",
+    7
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f2_s8",
+   "arm": "S+F@lrT",
+   "seed": 8,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "8",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f2_s8"
+   ],
+   "init": [
+    "rep",
+    8
+   ]
+  },
+  {
+   "id": "rep2_S+F_lrT_f2_s9",
+   "arm": "S+F@lrT",
+   "seed": 9,
+   "fold": 2,
+   "cli": [
+    "--arm",
+    "fed",
+    "--fold",
+    "2",
+    "--kind",
+    "natural",
+    "--seed",
+    "9",
+    "--rounds",
+    "200",
+    "--batch",
+    "64",
+    "--examples",
+    "2560000",
+    "--lr",
+    "0.0003",
+    "--tag",
+    "rep2_S+F_lrT_f2_s9"
+   ],
+   "init": [
+    "rep",
+    9
+   ]
+  }
+ ]
+}

@@ -1,0 +1,48 @@
+chunks scanned 29417 | n==n_v all: True | t_first/t_last match index: True
+timestamps non-positive deltas: 0 | min dt ticks: 50
+
+--- VALUES over ALL 29417 chunks (2942 M samples)
+vmin 11185946  vmax 11969218  top_byte max 0  zeros 0  max identical run 3  isolated spikes(>20 MAD) 1
+chunks with spikes: 1
+
+--- DROPOUTS (exact)
+dropout events 188102, missing samples 16462690 (0.557 % of 2958063330 slots); late-stamp-only events 16621
+size histogram (n_missing: count): {1: 16732, 2: 6808, 3: 7630, 4: 163, 5: 41, 6: 17, 7: 12, 8: 7, 9: 5, 10: 2, 11: 4, 12: 1, 13: 2, 14: 1, 15: 1, 16: 1, 17: 1, 18: 2, 21: 1, 23: 2, 24: 4, 25: 1, 26: 1, 30: 1, 32: 1, 56: 1, 77: 1, 79: 1, 100: 2568, 101: 714, 102: 174, 103: 455, 104: 28091, 105: 120918, 106: 3728, 107: 9, 108: 1}
+binned: {Interval(0, 1, closed='right'): 16732, Interval(1, 2, closed='right'): 6808, Interval(2, 5, closed='right'): 7834, Interval(5, 20, closed='right'): 56, Interval(20, 99, closed='right'): 14, Interval(99, 103, closed='right'): 3911, Interval(103, 106, closed='right'): 152737, Interval(106, 110, closed='right'): 10, Interval(110, 1000, closed='right'): 0, Interval(1000, 1000000000, closed='right'): 0}
+TRUE max timestamp gap: 45534 ticks = 45.53 ms(ticks) , 108 missing samples (20250204 #6870)
+max n_missing single event: 108
+ambiguous dt ratios in (1.3,1.7) (potential hidden 1-sample losses): 31937
+spacing between consecutive dropouts in a chunk: min 4, fraction <=1: 0.0000, <=8: 0.0480, <=40: 0.210
+spacing-1 events (sample sandwiched between two dropouts; slot +-1 ambiguous): 0
+
+edge estimate error (est-exact): mean 3.43 sd 9.22 p1 -10.5 p99 41.3 max|.| 167.6
+
+per run:
+           chunks     samples   missing  events  max_gap    pct
+run_s                                                         
+20250204   14563  1456300000  15439786  170320      108  1.049
+20250212    4329   432900000    343807   11260      103  0.079
+20250218    4472   447200000    286280    2739      105  0.064
+20250224    6053   605200640    392817    3783      105  0.065
+
+per day (chunk-start date):
+               samples  events  missing  max_missing  ev_1_5  ev_100_106  ev_other  pct_missing
+date                                                                                          
+2025-02-04   74800000     651    67944          105       2         648         1        0.091
+2025-02-05  208600000    2524   264102          106      11        2508         5        0.126
+2025-02-06  207300000   16690  1586639          106    1553       15136         1        0.760
+2025-02-07  206300000   28450  2612952          108    3621       24822         7        1.251
+2025-02-08  206300000   30489  2700211          107    4830       25656         3        1.292
+2025-02-09  206300000   29425  2570268          106    5034       24391         0        1.231
+2025-02-10  205500000   35526  3200351          106    5029       30497         0        1.533
+2025-02-11  141200000   26565  2437319          107    3396       23164         5        1.697
+2025-02-12   81000000     857    13614          102     724         124         9        0.017
+2025-02-13  208700000    3817    45837          102    3396         405        16        0.022
+2025-02-14  143200000    6586   284356          103    3776        2781        29        0.198
+2025-02-18  111100000    1086   113285          105       1        1085         0        0.102
+2025-02-19  208600000    1220   127721          105       0        1219         1        0.061
+2025-02-20  127500000     433    45274          105       0         432         1        0.035
+2025-02-24   78900000     893    92793          104       0         892         1        0.117
+2025-02-25  208400000     929    96428          104       0         929         0        0.046
+2025-02-26  208500000     841    87077          105       0         840         1        0.042
+2025-02-27  109400640    1120   116519          105       1        1119         0        0.106

@@ -1,0 +1,51 @@
+M3c' chain finished: CHAIN_EXIT 0 at Thu Oct 15 01:23:53 AM CEST 2026
+b1a8a17359d0add2d8e5cfdef9091e6cfb0dfa9ef7da8d88d04c43baa62c5d4a  fl_system4/dp.py
+1ab98ba6bb2bf2c76836f91b0315eee877e73c311edc752609b0fe0e00258c27  fl_system4/dpsim.py
+1002dcb5aadb8c3e41840ac8a6f95fde2f551509b98cd2531bba6439221a0280  fl_system4/check_M4v.py
+1444a2d7601e342de20bb7ea4e3c31af29f27aab122fd47c125ce1ead6756bb4  fl_system4/analyze_M4.py
+c27a9e1833a045a85b897c2144588a95c51303ce2f56c6535c130e680b686f25  fl_system4/fl_system4/client_app.py
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  fl_system4/fl_system4/__init__.py
+8fde39f2c47eccbf111e38be7bba2d1ce5ea1e621612c9b2522b2b3d6a243f11  fl_system4/fl_system4/server_app.py
+[dpsim m4v1_s0] done 200 rounds in 403s
+[dpsim m4v1_s1] done 200 rounds in 403s
+[dpsim m4v1_s2] done 200 rounds in 404s
+{"per_seed": {"0": {"r001": 0.0, "r002": 0.0, "r003": 0.0, "r050": 0.0, "r100": 0.0, "r150": 0.0, "r200": 0.0, "final": 0.0}, "1": {"r001": 0.0, "r002": 0.0, "r003": 0.0, "r050": 0.0, "r100": 0.0, "r150": 0.0, "r200": 0.0, "final": 0.0}, "2": {"r001": 0.0, "r002": 0.0, "r003": 0.0, "r050": 0.0, "r100": 0.0, "r150": 0.0, "r200": 0.0, "final": 0.0}}, "V1_PASS": true} -> /home/augustin/Documents/federated_transformer/fl_system4/v1_M4_20261015_014416.json
+{"rule": "median of all site-round update L2 norms, dpsim m4v1_s0 (report 35)", "n": 2000, "C": 0.39749014344783984, "quantiles": {"0.1": 0.04491227880466989, "0.25": 0.18606414809553887, "0.5": 0.39749014344783984, "0.75": 0.7340869961535894, "0.9": 0.8551771249780021}} -> /home/augustin/Documents/federated_transformer/fl_system4/calib_M4_20261015_014417.json
+C=0.39749014344783984 CR(z=1)=1.3798819405335598
+[dpsim m4v2_sim_s0] done 3 rounds in 7s
+{"finished": true, "wall_s": 147.1, "last_round": 3, "killed_at_s": null}
+{"diffs": {"r001": 0.0, "r002": 0.0, "r003": 0.0, "final": 0.0}, "per_site_scale_and_noise_identical": true, "real_summary_accountant": {"z": 1.0, "T": 3, "delta": 1e-05, "mu_zero_out": 1.7320508075688772, "eps_zero_out": 8.385418924216516, "eps_replace_one": 20.125023545888183, "eps_rdp_zero_out": 9.8112907815777}, "V2_PASS": true} -> /home/augustin/Documents/federated_transformer/fl_system4/v2_M4_20261015_014709.json
+[dpsim m4c_z0_s0] done 200 rounds in 407s
+[dpsim m4c_z0_s1] done 200 rounds in 408s
+[dpsim m4c_z0_s2] done 200 rounds in 410s
+[dpsim m4c_z0.01_s0] done 200 rounds in 412s
+[dpsim m4c_z0.01_s1] done 200 rounds in 417s
+[dpsim m4c_z0.01_s2] done 200 rounds in 414s
+[dpsim m4c_z0.03_s0] done 200 rounds in 415s
+[dpsim m4c_z0.03_s1] done 200 rounds in 411s
+[dpsim m4c_z0.03_s2] done 200 rounds in 419s
+[dpsim m4c_z0.1_s0] done 200 rounds in 415s
+[dpsim m4c_z0.1_s1] done 200 rounds in 413s
+[dpsim m4c_z0.1_s2] done 200 rounds in 412s
+[dpsim m4c_z0.3_s0] done 200 rounds in 418s
+[dpsim m4c_z0.3_s1] done 200 rounds in 411s
+[dpsim m4c_z0.3_s2] done 200 rounds in 409s
+[dpsim m4c_z1_s0] done 200 rounds in 412s
+[dpsim m4c_z1_s1] done 200 rounds in 414s
+[dpsim m4c_z1_s2] done 200 rounds in 415s
+[dpsim m4c_z3_s0] done 200 rounds in 412s
+[dpsim m4c_z3_s1] done 200 rounds in 413s
+[dpsim m4c_z3_s2] done 200 rounds in 410s
+[dpsim m4c_z10_s0] done 200 rounds in 418s
+[dpsim m4c_z10_s1] done 200 rounds in 412s
+[dpsim m4c_z10_s2] done 200 rounds in 416s
+z=0 eps=inf label=INCONCLUSIVE LOBES=0.646(learns=False) POLARITY=0.898(learns=False) DURATION=0.856(learns=False)
+z=0.01 eps=1006030.4679078131 label=INCONCLUSIVE LOBES=0.652(learns=True) POLARITY=0.898(learns=False) DURATION=0.855(learns=False)
+z=0.03 eps=113120.604410011 label=INCONCLUSIVE LOBES=0.652(learns=True) POLARITY=0.897(learns=False) DURATION=0.852(learns=False)
+z=0.1 eps=10602.16143789907 label=INCONCLUSIVE LOBES=0.587(learns=False) POLARITY=0.886(learns=False) DURATION=0.835(learns=False)
+z=0.3 eps=1311.2027907044057 label=INFERIOR LOBES=0.452(learns=False) POLARITY=0.826(learns=False) DURATION=0.739(learns=False)
+z=1 eps=159.44148628736582 label=INFERIOR LOBES=0.262(learns=False) POLARITY=0.677(learns=False) DURATION=0.528(learns=False)
+z=3 eps=30.506279992712226 label=INFERIOR LOBES=0.213(learns=False) POLARITY=0.598(learns=False) DURATION=0.568(learns=False)
+z=10 eps=6.572970067030332 label=INFERIOR LOBES=0.235(learns=False) POLARITY=0.649(learns=False) DURATION=0.539(learns=False)
+{"z_star": null, "eps_star_zero_out": null, "eps_star_replace_one": null} -> /home/augustin/Documents/federated_transformer/fl_system4/results_M4_20261015_043407.json
+CHAIN_EXIT 0

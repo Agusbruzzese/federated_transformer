@@ -1,0 +1,87 @@
+================================================================================
+ TRAINING-TIER STUDY: RESULTS
+ Report 48 (execution report; pre-registration = report 47)
+ Project: federated_transformer                Date: 2026-10-19
+ Results: research/model/R_replication/results_rep4_20261019_033557.json
+          (scoring/*_rep4_20261019_033554.parquet)
+ Chain logs: data/k_committee/rep4_chain_*.log, rep4_chain_resume_*.log
+================================================================================
+
+SUMMARY
+-------
+Frozen decision rule output: "NO FILTER NEEDED (noisy events harmless)".
+  - The deployment recipe S+F trained on ALL events (SNR >= 10) is
+    EQUIVALENT to S+F trained on clean events only (SNR >= 20).
+  - Nuisance gate: PASS.
+Nuance, reported in full:
+  - S+F loses a small but statistically clear amount on lobes when noisy
+    events are added: -0.017 [-0.032, -0.003], inside the 0.04 margin.
+  - For central and plain federated, adding noisy events changes nothing
+    (-0.008, +0.000).
+Clear secondary result: training on noisy events ONLY is clearly worse
+(lobes -0.055 to -0.075 vs clean-only, INFERIOR for central and S+F).
+Mixing clean events back in recovers all of it.
+Data rule for the runbook:
+  - sites may train on all events with SNR >= 10;
+  - for the S+F recipe, SNR >= 20 is marginally better and is the
+    preferred default;
+  - never train on noisy events alone.
+
+1. EXECUTION
+  - 100 runs, all rc 0. FREEZE OK; hashes equal report 47.
+  - Incident: the PC rebooted at about 16:51 on 10-18 (user session
+    killed). The chain stopped after 56/100 runs. It was resumed at 21:58;
+    the interrupted run was retrained from scratch, and its partial folder
+    was kept as t10_F-nat_f1_s6.interrupted_*.
+  - Runs are deterministic, so the interruption has no effect on results.
+  - Scoring of 270 models (03:36) with reliable labels (SNR >= 20
+    evaluator).
+
+2. RESULTS (lobes / polarity means; 10 seeds x 9 unseen days; 90 % CI)
+               T20 (clean only)   T10 (all, NEW)   TLO (noisy only)
+    C256       0.600 / 0.914      0.592 / 0.916    0.541 / 0.906
+    F-nat      0.577 / 0.904      0.577 / 0.908    0.522 / 0.897
+    S+F        0.626 / 0.908      0.609 / 0.906    0.551 / 0.891
+
+  PRIMARY: S+F, T10 vs T20 -> EQUIVALENT
+    lobes -0.017 [-0.032, -0.003]; polarity -0.002 [-0.007, +0.003];
+    duration -0.004 EQ.
+    Gate S+F|T10 vs S+F|T20: +0.002 [-0.005, +0.008] < 0.03 -> PASS
+    (noisy events do not make the model store more day/run information).
+  SECONDARY:
+    C256   T10 vs T20  -0.008 [-0.019, +0.003] EQUIVALENT
+    F-nat  T10 vs T20  +0.000 [-0.016, +0.016] EQUIVALENT
+    TLO vs T20: C256 -0.059 INFERIOR; F-nat -0.055 INCONCLUSIVE;
+                S+F -0.075 INFERIOR
+    T10 vs TLO: +0.052 to +0.058 for all three arms (NON-INFERIOR, CIs
+                well above 0)
+
+3. NOTE ON THE PRE-REGISTERED RULE (stated openly)
+  Report 47's rule text lists two clauses that both match this result:
+    - "EQUIVALENT ... without a gain, gate PASS -> NO FILTER NEEDED";
+    - "the lobes CI entirely < 0 -> FILTER TO SNR >= 20".
+  The frozen code checks the EQUIVALENT clause first and returned NO FILTER
+  NEEDED. That is the pre-registered output and it is reported as such.
+  But the lobes CI for S+F lies entirely below 0, a small real loss
+  inside the margin. Both facts are reported. The practical recommendation
+  (sec. 4) takes the more conservative reading for S+F only.
+
+4. DATA RULE (for the runbook)
+  - Central or plain federated training: use all events with SNR >= 10.
+    It is equivalent to clean-only.
+  - The S+F recipe (recommended deployment): train on SNR >= 20 by
+    default. Adding noisy events is within the margin (equivalent) but
+    costs about 0.017 lobes.
+  - Never train on noisy events only: about 0.06-0.075 worse on lobes.
+  - Score models with clean-event labels (report 46).
+  - Noisy events do not introduce extra nuisance encoding (gate PASS).
+
+5. LIMITS
+  Fixed compute: T10 sees each event about half as often as T20 within the
+  same budget. A larger budget could change the T10 result. Same days,
+  same sensor. Probes are fitted on clean client events (the study
+  protocol; identical for T20 and T10).
+
+================================================================================
+ End of report
+================================================================================

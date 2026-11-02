@@ -1,0 +1,56 @@
+{
+ "M1c": {
+  "sites_traced": 10,
+  "data_files_opened_site3": [
+   "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs2/m1c/deploy/trace_site_03.txt",
+   "<own>/events.npz",
+   "<own>/info.json",
+   "<own>/noise.npz",
+   "<own>/runs2/m1c/state_r001.pt.tmp",
+   "<own>/runs2/m1c/state_r002.pt.tmp",
+   "<own>/runs2/m1c/state_r003.pt.tmp"
+  ],
+  "violations": {
+   "0": [
+    "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs2/m1c/deploy/trace_site_00.txt"
+   ],
+   "1": [
+    "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs2/m1c/deploy/trace_site_01.txt"
+   ],
+   "2": [
+    "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs2/m1c/deploy/trace_site_02.txt"
+   ],
+   "3": [
+    "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs2/m1c/deploy/trace_site_03.txt"
+   ],
+   "4": [
+    "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs2/m1c/deploy/trace_site_04.txt"
+   ],
+   "5": [
+    "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs2/m1c/deploy/trace_site_05.txt"
+   ],
+   "6": [
+    "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs2/m1c/deploy/trace_site_06.txt"
+   ],
+   "7": [
+    "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs2/m1c/deploy/trace_site_07.txt"
+   ],
+   "8": [
+    "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs2/m1c/deploy/trace_site_08.txt"
+   ],
+   "9": [
+    "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs2/m1c/deploy/trace_site_09.txt"
+   ]
+  },
+  "PASS": false
+ },
+ "M1d": {
+  "clean": "m1a4",
+  "killed_then_resumed": "m1d2",
+  "kill": "SIGKILL SuperNode 3 during round 2",
+  "refused_round": 2,
+  "final_maxabs": 0.0,
+  "rounds_equal": true,
+  "PASS": true
+ }
+}

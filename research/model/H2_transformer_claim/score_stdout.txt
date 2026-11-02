@@ -1,0 +1,68 @@
+fold 0204 done
+fold 0212 done
+fold 0218 done
+fold 0224 done
+all4 {'H1': False, 'H2': False, 'H3': False, 'H4': False, 'is0204_gap': nan, 'date_ok': False, 'verdict': 'Not supported'}
+      comp     score  mean_delta  runs_positive  runs_ci_above0  runs_ci_below0             outcome  sign_test_p
+    tfinit  polarity         NaN              0               0               0 no clear difference        0.062
+    tfinit     lobes         NaN              0               0               0 no clear difference        0.062
+    tfinit  duration         NaN              0               0               0 no clear difference        0.062
+    tfinit magnitude         NaN              0               0               0 no clear difference        0.062
+    tfinit    group4         NaN              0               0               0 no clear difference        0.062
+cnn_oracle  polarity         NaN              0               0               0 no clear difference        0.062
+cnn_oracle     lobes         NaN              0               0               0 no clear difference        0.062
+cnn_oracle  duration         NaN              0               0               0 no clear difference        0.062
+cnn_oracle magnitude         NaN              0               0               0 no clear difference        0.062
+cnn_oracle    group4         NaN              0               0               0 no clear difference        0.062
+     cnn01  polarity         NaN              0               0               0 no clear difference        0.062
+     cnn01     lobes         NaN              0               0               0 no clear difference        0.062
+     cnn01  duration         NaN              0               0               0 no clear difference        0.062
+     cnn01 magnitude         NaN              0               0               0 no clear difference        0.062
+     cnn01    group4         NaN              0               0               0 no clear difference        0.062
+     cnn02  polarity         NaN              0               0               0 no clear difference        0.062
+     cnn02     lobes         NaN              0               0               0 no clear difference        0.062
+     cnn02  duration         NaN              0               0               0 no clear difference        0.062
+     cnn02 magnitude         NaN              0               0               0 no clear difference        0.062
+     cnn02    group4         NaN              0               0               0 no clear difference        0.062
+       pca  polarity         NaN              0               0               0 no clear difference        0.062
+       pca     lobes         NaN              0               0               0 no clear difference        0.062
+       pca  duration         NaN              0               0               0 no clear difference        0.062
+       pca magnitude         NaN              0               0               0 no clear difference        0.062
+       pca    group4         NaN              0               0               0 no clear difference        0.062
+       raw  polarity         NaN              0               0               0 no clear difference        0.062
+       raw     lobes         NaN              0               0               0 no clear difference        0.062
+       raw  duration         NaN              0               0               0 no clear difference        0.062
+       raw magnitude         NaN              0               0               0 no clear difference        0.062
+       raw    group4         NaN              0               0               0 no clear difference        0.062
+excl0218 {'H1': False, 'H2': False, 'H3': False, 'H4': False, 'is0204_gap': nan, 'date_ok': False, 'verdict': 'Not supported'}
+      comp     score  mean_delta  runs_positive  runs_ci_above0  runs_ci_below0             outcome  sign_test_p
+    tfinit  polarity         NaN              0               0               0 no clear difference        0.125
+    tfinit     lobes         NaN              0               0               0 no clear difference        0.125
+    tfinit  duration         NaN              0               0               0 no clear difference        0.125
+    tfinit magnitude         NaN              0               0               0 no clear difference        0.125
+    tfinit    group4         NaN              0               0               0 no clear difference        0.125
+cnn_oracle  polarity         NaN              0               0               0 no clear difference        0.125
+cnn_oracle     lobes         NaN              0               0               0 no clear difference        0.125
+cnn_oracle  duration         NaN              0               0               0 no clear difference        0.125
+cnn_oracle magnitude         NaN              0               0               0 no clear difference        0.125
+cnn_oracle    group4         NaN              0               0               0 no clear difference        0.125
+     cnn01  polarity         NaN              0               0               0 no clear difference        0.125
+     cnn01     lobes         NaN              0               0               0 no clear difference        0.125
+     cnn01  duration         NaN              0               0               0 no clear difference        0.125
+     cnn01 magnitude         NaN              0               0               0 no clear difference        0.125
+     cnn01    group4         NaN              0               0               0 no clear difference        0.125
+     cnn02  polarity         NaN              0               0               0 no clear difference        0.125
+     cnn02     lobes         NaN              0               0               0 no clear difference        0.125
+     cnn02  duration         NaN              0               0               0 no clear difference        0.125
+     cnn02 magnitude         NaN              0               0               0 no clear difference        0.125
+     cnn02    group4         NaN              0               0               0 no clear difference        0.125
+       pca  polarity         NaN              0               0               0 no clear difference        0.125
+       pca     lobes         NaN              0               0               0 no clear difference        0.125
+       pca  duration         NaN              0               0               0 no clear difference        0.125
+       pca magnitude         NaN              0               0               0 no clear difference        0.125
+       pca    group4         NaN              0               0               0 no clear difference        0.125
+       raw  polarity         NaN              0               0               0 no clear difference        0.125
+       raw     lobes         NaN              0               0               0 no clear difference        0.125
+       raw  duration         NaN              0               0               0 no clear difference        0.125
+       raw magnitude         NaN              0               0               0 no clear difference        0.125
+       raw    group4         NaN              0               0               0 no clear difference        0.125

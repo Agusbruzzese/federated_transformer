@@ -1,0 +1,67 @@
+================================================================================
+ OPTION A, STEP M3c': PRE-REGISTERED EQUIVALENCE TEST, SecAgg+ vs PLAIN
+ Report 34 (pre-registration; written and frozen BEFORE any M3c' run)
+ Project: federated_transformer                Date: 2026-10-14
+ Follows: report 33 (M3c FAILED its per-seed criterion; exploratory analysis
+          suggested equivalence). User decision: do M3c' and M4.
+================================================================================
+
+1. QUESTION
+  Does training the deployment recipe (S+F, fold 0) through SecAgg+ give a
+  model EQUIVALENT to training it with plain FedAvg, within the study's
+  equivalence margins?
+
+2. DATA (fixed now)
+  - SecAgg+ arm: fl_system3, full S+F recipe (200 rounds, 2.56 M examples,
+    batch 64, lr 1e-3, SecAgg+ settings of report 33), init = pinned study
+    server checkpoint of the same seed. NEW seeds 3-9 (runs m3cp_SpF_s3..9).
+    Server inits for seeds 3-9 were copied hash-checked (provision.py
+    add-server-seed) before this report.
+  - Plain arm: the study's v21_S+F_f0_s{seed}. Plain fl_system2 reproduces
+    these bit for bit (report 31), so they ARE the plain-system result.
+  - Scores: frozen evaluator (protocol v2.1), fold 0 evaluation days
+    2025-02-05, 2025-02-11, 2025-02-25.
+
+3. ANALYSIS (fixed now; code fl_system3/analyze_M3cp.py,
+   sha256 200a201c4c083be4906d76edb78d06c5f22f8a09111c5569b9b6144f7e1e1f35;
+   chain fl_system3/run_M3cp.sh,
+   sha256 2b72bd75748b42cd7100d6548e73c2cc970fe9a959a8c9ce3274f97fd6ef1008)
+  PRIMARY: seeds 3-9 only (n = 7, never seen), D = 3 days.
+    Seed-paired two-stratum t (analyze.paired, the study's procedure),
+    90 % CI of the mean difference SecAgg+ minus plain.
+    Margins: LOBES 0.04, POLARITY 0.02. Outcomes by evaluator.outcome
+    (EQ / NI / SUP / INC / INF); label by evaluator.contrast_label:
+    EQUIVALENT only if both LOBES and POLARITY are EQ.
+  SECONDARY (reported, not decisive):
+    - seeds 0-9 (0-2 were already seen in M3c, hence not primary);
+    - DURATION (margin 0.03);
+    - unpaired two-stratum t as a sensitivity check;
+    - per-seed differences (descriptive).
+  VALIDITY: every SecAgg+ run must reach 200 committed rounds with 0
+    clipped values, or the analysis refuses (INVALID). A run stopped by a
+    platform failure is resumed exactly (proven in M1d/C3), at most twice.
+  The analysis is run ONCE, automatically, at the end of the chain.
+
+4. INTERPRETATION RULES (fixed now)
+  - EQUIVALENT: SecAgg+ does not change the learned model beyond the
+    study's margins. M3 is then accepted on this evidence, with M3c's
+    per-seed failure still reported.
+  - NON-INFERIOR / SUPERIOR: no loss beyond the margins; equivalence not
+    shown; reported as such.
+  - INCONCLUSIVE: not enough precision; reported; no claim.
+  - INFERIOR: SecAgg+ harms learning; must be fixed (e.g. quantisation)
+    before use.
+  Power note (honest): with only 3 evaluation days the day stratum has
+  2 degrees of freedom, which widens the CI. The exploratory 3-seed CI for
+  LOBES was [-0.032, +0.023]. INCONCLUSIVE is therefore a possible outcome.
+  It would be reported, not re-analysed.
+
+5. COST
+  7 runs x about 2.2 h = about 15.5 h GPU, detached (setsid nohup),
+  sequential; analysis about 5 min. While it runs, the GPU is not used for
+  anything else that could slow it. M4 is designed in parallel (report 35)
+  and its GPU work is queued after M3c'.
+
+================================================================================
+ End of report
+================================================================================

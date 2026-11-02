@@ -1,0 +1,70 @@
+{
+ "note": "EXPLORATORY, not pre-registered",
+ "days": [
+  "2025-02-05",
+  "2025-02-11",
+  "2025-02-25"
+ ],
+ "metrics": {
+  "LOBES": {
+   "margin": 0.04,
+   "mean_diff": -0.00467126456986533,
+   "paired_CI90": [
+    -0.03195297800268346,
+    0.0226104488629528
+   ],
+   "paired_outcome": "EQ",
+   "two_stratum_CI90": [
+    -0.03458672492170552,
+    0.025244195781974857
+   ],
+   "per_seed_diff": [
+    0.0057,
+    -0.0186,
+    -0.0012
+   ],
+   "study_seed_sd_fold0": 0.018123925666463182,
+   "max_abs_seed_diff_over_seed_sd": 1.0240976143628113
+  },
+  "POLARITY": {
+   "margin": 0.02,
+   "mean_diff": 0.0013555611777121095,
+   "paired_CI90": [
+    -0.008318741207146985,
+    0.011029863562571202
+   ],
+   "paired_outcome": "EQ",
+   "two_stratum_CI90": [
+    -0.007442045516280732,
+    0.01015316787170495
+   ],
+   "per_seed_diff": [
+    0.0077,
+    -0.0044,
+    0.0008
+   ],
+   "study_seed_sd_fold0": 0.0042695277208054435,
+   "max_abs_seed_diff_over_seed_sd": 1.797922823079287
+  },
+  "DURATION": {
+   "margin": 0.03,
+   "mean_diff": 0.0024002610202317567,
+   "paired_CI90": [
+    -0.0014230185650719643,
+    0.006223540605535477
+   ],
+   "paired_outcome": "EQ",
+   "two_stratum_CI90": [
+    -0.000628033600586754,
+    0.005428555641050267
+   ],
+   "per_seed_diff": [
+    0.0003,
+    0.0051,
+    0.0019
+   ],
+   "study_seed_sd_fold0": 5.8752323537840686e-05,
+   "max_abs_seed_diff_over_seed_sd": 86.49085533950868
+  }
+ }
+}

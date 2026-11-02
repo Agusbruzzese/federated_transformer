@@ -1,0 +1,10 @@
+{
+ "per_client_median_logamp_range": [
+  3.1267650494301398,
+  4.302514126233118
+ ],
+ "per_client_median_logdur_range": [
+  0.17017247476407216,
+  0.6164599558467465
+ ]
+}

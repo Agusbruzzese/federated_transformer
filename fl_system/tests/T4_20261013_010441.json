@@ -1,0 +1,10 @@
+{
+ "clean": "t4_ref",
+ "faulty_then_resumed": "t4_fault2",
+ "fault": "client 3 killed (exit 3) in round 2",
+ "server_refused_partial_round": true,
+ "last_committed_round_after_fault": 1,
+ "final_maxabs_resumed_vs_clean": 0.0,
+ "rounds_2_3_equal": true,
+ "PASS": true
+}

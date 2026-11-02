@@ -1,0 +1,139 @@
+{
+ "R1": {
+  "diffs": {
+   "r001": 0.0,
+   "r002": 0.0,
+   "r003": 0.0,
+   "r050": 0.0,
+   "r100": 0.0,
+   "r150": 0.0,
+   "r200": 0.0,
+   "final": 0.0
+  },
+  "PASS": true
+ },
+ "R2": {
+  "per_container": {
+   "0": true,
+   "1": true,
+   "2": true,
+   "3": true,
+   "4": true,
+   "5": true,
+   "6": true,
+   "7": true,
+   "8": true,
+   "9": true,
+   "superlink": true
+  },
+  "PASS": true
+ },
+ "R3": {
+  "containers": {
+   "site_00": [
+    "running",
+    0
+   ],
+   "intr_plaintext": [
+    "exited",
+    1
+   ],
+   "intr_foreign_ca": [
+    "exited",
+    1
+   ],
+   "intr_unregistered": [
+    "exited",
+    1
+   ],
+   "intr_plaintext_nokeys": [
+    "running",
+    0
+   ]
+  },
+  "online_count": 1,
+  "PASS": true
+ },
+ "R4": {
+  "killed": {
+   "rc": 0,
+   "after_round": 2,
+   "t": 112.0
+  },
+  "first_attempt_finished": false,
+  "stopped_by_guard": true,
+  "rounds_committed_in_order": true,
+  "resumed_finished": true,
+  "diffs": {
+   "r001": 0.0,
+   "r002": 0.0,
+   "r003": 0.0,
+   "r005": 0.0,
+   "final": 0.0
+  },
+  "PASS": true
+ },
+ "R5": {
+  "MB_per_round_median": {
+   "0": {
+    "down": 0.968,
+    "up": 1.896
+   },
+   "1": {
+    "down": 0.968,
+    "up": 1.896
+   },
+   "2": {
+    "down": 0.968,
+    "up": 1.897
+   },
+   "3": {
+    "down": 0.968,
+    "up": 1.897
+   },
+   "4": {
+    "down": 0.969,
+    "up": 1.897
+   },
+   "5": {
+    "down": 0.968,
+    "up": 1.896
+   },
+   "6": {
+    "down": 0.968,
+    "up": 1.896
+   },
+   "7": {
+    "down": 0.976,
+    "up": 1.902
+   },
+   "8": {
+    "down": 0.968,
+    "up": 1.897
+   },
+   "9": {
+    "down": 0.968,
+    "up": 1.897
+   }
+  },
+  "MB_per_run_site_total": {
+   "0": 570.2,
+   "1": 570.1,
+   "2": 570.4,
+   "3": 570.4,
+   "4": 570.6,
+   "5": 570.2,
+   "6": 570.2,
+   "7": 572.9,
+   "8": 570.2,
+   "9": 570.2
+  },
+  "rounds_measured": 199,
+  "round_secs_median": 40.93,
+  "round_secs_m3c_local": 39.89,
+  "wall_s": 8650.5,
+  "model_payload_MB_float32": 0.862976,
+  "netem": "qdisc netem 804e: root refcnt 23 limit 1000 delay 20ms rate 50Mbit"
+ },
+ "RELEASE_PASS": true
+}

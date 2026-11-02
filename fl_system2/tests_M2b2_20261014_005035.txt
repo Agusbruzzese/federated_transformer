@@ -1,0 +1,5 @@
+activated on superlink: 0
+superlink-side: 7 TLS-related lines
+I1014 00:50:42.102285  686105 ssl_transport_security.cc:2530] Handshake failed with error SSL_ERROR_SSL: error:100000f7:SSL routines:OPENSSL_internal:WRONG_VERSION_NUMBER: Invalid certificate verifica
+I1014 00:50:43.213610  686108 ssl_transport_security.cc:2530] Handshake failed with error SSL_ERROR_SSL: error:100000f7:SSL routines:OPENSSL_internal:WRONG_VERSION_NUMBER: Invalid certificate verifica
+logs: data/fl_system/m2b2_20261014_005035

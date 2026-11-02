@@ -1,0 +1,120 @@
+FREEZE OK
+60 runs to do in group dryrun
+v21_C256_f0_s3 rc 0 937.8s
+v21_C256_f0_s1 rc 0 938.6s
+v21_C256_f0_s2 rc 0 938.6s
+v21_C256_f0_s0 rc 0 938.7s
+v21_C256_f0_s4 rc 0 1014.1s
+v21_C256_f0_s5 rc 0 1016.8s
+v21_C256_f0_s7 rc 0 1016.6s
+v21_C256_f0_s6 rc 0 1016.8s
+v21_C256_f0_s8 rc 0 1016.5s
+v21_C256rep_f0_s11 rc 0 1023.1s
+v21_C256_f0_s9 rc 0 1023.4s
+v21_C256rep_f0_s10 rc 0 1023.6s
+v21_C256rep_f0_s12 rc 0 979.7s
+v21_C256rep_f0_s13 rc 0 999.0s
+v21_C256rep_f0_s14 rc 0 999.0s
+v21_C256rep_f0_s15 rc 0 999.1s
+v21_C256rep_f0_s16 rc 0 948.4s
+v21_C256rep_f0_s17 rc 0 965.9s
+v21_C256rep_f0_s18 rc 0 967.4s
+v21_C256rep_f0_s19 rc 0 967.1s
+v21_C256_f1_s0 rc 0 945.9s
+v21_C256_f1_s1 rc 0 962.5s
+v21_C256_f1_s2 rc 0 963.5s
+v21_C256_f1_s3 rc 0 963.5s
+v21_C256_f1_s4 rc 0 941.6s
+v21_C256_f1_s5 rc 0 954.9s
+v21_C256_f1_s6 rc 0 956.7s
+v21_C256_f1_s7 rc 0 957.2s
+v21_C256_f1_s8 rc 0 969.0s
+v21_C256_f1_s9 rc 0 981.6s
+v21_C256rep_f1_s10 rc 0 984.6s
+v21_C256rep_f1_s11 rc 0 984.6s
+v21_C256rep_f1_s12 rc 0 990.9s
+v21_C256rep_f1_s13 rc 0 994.7s
+v21_C256rep_f1_s14 rc 0 999.2s
+v21_C256rep_f1_s15 rc 0 999.3s
+v21_C256rep_f1_s16 rc 0 973.4s
+v21_C256rep_f1_s17 rc 0 970.9s
+v21_C256rep_f1_s18 rc 0 975.2s
+v21_C256rep_f1_s19 rc 0 975.5s
+v21_C256_f2_s0 rc 0 964.4s
+v21_C256_f2_s1 rc 0 966.6s
+v21_C256_f2_s2 rc 0 971.2s
+v21_C256_f2_s3 rc 0 971.7s
+v21_C256_f2_s4 rc 0 968.7s
+v21_C256_f2_s5 rc 0 969.0s
+v21_C256_f2_s6 rc 0 971.0s
+v21_C256_f2_s7 rc 0 971.7s
+v21_C256_f2_s8 rc 0 1024.3s
+v21_C256_f2_s9 rc 0 1037.9s
+v21_C256rep_f2_s10 rc 0 1048.7s
+v21_C256rep_f2_s11 rc 0 1049.9s
+v21_C256rep_f2_s12 rc 0 1071.5s
+v21_C256rep_f2_s13 rc 0 1071.7s
+v21_C256rep_f2_s14 rc 0 1078.2s
+v21_C256rep_f2_s15 rc 0 1079.2s
+v21_C256rep_f2_s16 rc 0 1059.7s
+v21_C256rep_f2_s17 rc 0 1030.9s
+v21_C256rep_f2_s18 rc 0 1016.2s
+v21_C256rep_f2_s19 rc 0 1013.4s
+failed: []
+FREEZE OK
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+OpenBLAS Warning : Detect OpenMP Loop and this application may hang. Please rebuild the library with USE_OPENMP=1 option.
+done dryrun 20261011_223009 2432 s
+scoring files: research/model/K_committee/protocol/scoring/scores_dryrun_20261011_223009.parquet research/model/K_committee/protocol/scoring/models_dryrun_20261011_223009.parquet
+/home/augustin/Documents/federated_transformer/research/model/K_committee/protocol/analyze.py:101: Pandas4Warning: Starting with pandas version 4.0 all arguments of mean will be keyword-only.
+  return piv.loc[sorted(seeds)].mean(1).to_numpy()
+/home/augustin/Documents/federated_transformer/research/model/K_committee/protocol/analyze.py:101: Pandas4Warning: Starting with pandas version 4.0 all arguments of mean will be keyword-only.
+  return piv.loc[sorted(seeds)].mean(1).to_numpy()
+/home/augustin/Documents/federated_transformer/research/model/K_committee/protocol/analyze.py:101: Pandas4Warning: Starting with pandas version 4.0 all arguments of mean will be keyword-only.
+  return piv.loc[sorted(seeds)].mean(1).to_numpy()
+/home/augustin/Documents/federated_transformer/research/model/K_committee/protocol/analyze.py:101: Pandas4Warning: Starting with pandas version 4.0 all arguments of mean will be keyword-only.
+  return piv.loc[sorted(seeds)].mean(1).to_numpy()
+/home/augustin/Documents/federated_transformer/research/model/K_committee/protocol/results_controls_20261011_231043.json

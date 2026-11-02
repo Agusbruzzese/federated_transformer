@@ -1,0 +1,5 @@
+[simclr_tf_s0] 10000 steps loss 5.9667 -> 0.7750 1040s
+[simclr_tf_s2] 10000 steps loss 6.0975 -> 0.8124 1040s
+[simclr_tf_s3] 10000 steps loss 6.0250 -> 0.8112 1040s
+[simclr_tf_s1] 10000 steps loss 6.0295 -> 0.6998 1040s
+[simclr_tf_s4] 10000 steps loss 6.1698 -> 0.7774 1041s

@@ -1,0 +1,526 @@
+================================================================================
+ CENTRAL SELF-SUPERVISED ENCODER FOR SPINTRONIC VEHICLE EVENTS
+ Training report
+ Project: federated_transformer                Date: 2026-10-04
+ Code: ssl_central/, research/model/M5_long/m5.py (+ M4_methods/m4.py)
+ Checkpoints: data/ssl_central/ckpt/ (phase F), data/m5/ckpt/ (phase M5)
+================================================================================
+
+ABSTRACT
+--------
+We trained small 1-D encoders (~208k parameters) with self-supervised
+objectives on 4 375 vehicle events of high signal-to-noise ratio (SNR >= 20),
+extracted from 340 h of a single tunnel-magneto-resistance (TMR) sensor
+(see reports/01_2026-10-04_extraction_report_v2.txt). Each event is a
+12 s, 50 Hz, max-normalised waveform of 600 samples. The encoder maps it to
+a 64-d embedding.
+
+Two architectures were compared: a GroupNorm CNN and a patch transformer.
+Three objectives were compared: SimCLR/NT-Xent, VICReg and a masked
+autoencoder (MAE). Training ran in two pre-registered phases:
+  F  : 100 epochs (~1 200 steps), validation-selected hyper-parameters,
+       evaluated on a held-out recording run.
+  M5 : 10 000 steps with warm-up, 5 seeds per method, compared against
+       untrained-network, raw and PCA baselines, evaluated on 4 held-out
+       days.
+
+Because no vehicle labels exist, representation quality was measured by
+frozen-embedding probes (kNN and linear) predicting three physical shape
+descriptors: polarity, lobe count and log duration.
+
+Main findings:
+  (i)   SimCLR-trained encoders encode lobe count clearly better than their
+        own untrained weights (+0.07 to +0.17 skill; every 95 % CI
+        excludes 0).
+  (ii)  On polarity and duration an untrained CNN is already near the SSL
+        level. The ceiling is near saturation.
+  (iii) With 10k steps the transformer matches the CNN on lobes and is best
+        on duration under a linear probe.
+  (iv)  MAE optimised but produced the weakest pooled embedding.
+  (v)   No representation identifies the problematic run 0204 above chance
+        on held-out days.
+  (vi)  Every encoder remains below the 19 hand-crafted morphology features
+        on these (morphology-derived, hence circular) targets.
+
+Under the strict pre-registered decision rule, no SSL method beat every
+baseline. An independent review showed that rule had about 5 % power for a
++0.05 gain. A re-verification on 2026-10-04 confirmed that all checkpoints
+load, are deterministic, are not collapsed, and reproduce the reported
+behaviour.
+
+Status: every result is EXPLORATORY. The targets are circular with respect
+to morphology, there are no external labels, and in M5 the test days had
+already been seen in an earlier phase (M4).
+
+
+--------------------------------------------------------------------------------
+1. PROBLEM STATEMENT
+--------------------------------------------------------------------------------
+
+Goal: learn, without labels, an event representation that can later be
+trained federatedly (one client per site, day or time slot). It should:
+  - encode the physical shape of the vehicle's magnetic signature (lobe
+    structure, polarity, duration);
+  - NOT encode nuisance identity (date, recording run, dropout artefacts),
+    which would make clients separable and harm federated generalisation;
+  - provide a central benchmark against which the federated model can be
+    compared.
+
+Why self-supervision: the dataset is unlabeled (14 days, ~15k detected
+events). Earlier repo work used KMeans pseudo-labels on EMD/HHT features.
+That approach was discarded because of an int16 read bug, unstable EMD and
+date leakage (see reports/01_2026-10-04_extraction_report_v2.txt,
+section 9).
+
+Research questions (from the pre-registrations):
+  Q1  Does SSL encode event shape better than untrained networks and raw
+      inputs?
+  Q2  Which architecture and objective work best?
+  Q3  Do the embeddings carry recording-run identity beyond what physical
+      features carry?
+
+
+--------------------------------------------------------------------------------
+2. DATA
+--------------------------------------------------------------------------------
+
+Source: data/events/ (extraction pipeline output). Each event has a 1050-sample
+baseline-subtracted window (~21 s at fs_eff 49.82-50.11 Hz), an event mask
+[onset, offset], a repair mask, and 19 morphology scalars on the central ~8 s
+(m8_*).
+
+Tier: SNR >= 20, giving 4 375 events. Lower tiers are dominated by
+non-vehicle detections and dropout blips from run 0204, which leak the run
+identity (run skill 0.30 at all-SNR).
+
+Splits:
+  Phase F (PREREG_central v2):
+      train      runs 0204, 0212, 0224 minus Feb 26          3 172 events
+      validation Feb 26 (hyper-parameter selection only)       366
+      holdout    run 0218, Feb 18-20 ("weakly held out")       837
+                 (93 thirty-minute blocks)
+  Phase M5 (same split as M4):
+      train      all remaining days                          2 636
+      validation Feb 10                                         327
+      test       Feb 7, 13, 19, 25                            1 412
+                 (167 thirty-minute blocks, 4 day-clusters)
+
+  A firewall (ssl_central/data.firewall) asserts, on event_id sets, that no
+  holdout or validation event enters training or selection. The sha256 of
+  the sorted training IDs is logged in every checkpoint's log.json.
+
+Encoder input (implementation choices I2/I3):
+  - The 1050-sample window is linearly interpolated onto an exact 50 Hz grid
+    (ratio fs_eff/50 differs from 1 by <= 0.23 %). A 600-sample (12 s) crop
+    is taken.
+  - Each view is divided by its own max|x| as the LAST step. The encoder
+    therefore sees SHAPE only; absolute amplitude is withheld by design.
+  - Evaluation view: deterministic crop centred on the detector's energy
+    centroid (window index 524.5), no stretch.
+
+Background-noise pool (ssl_central/bgpool.py), used for augmentation:
+  - 12.8 s stretches (640 samples) of the same feature path, taken from
+    TRAINING days only.
+  - A stretch is accepted only if no detection of any SNR lies within 3 s,
+    it has no dropout flag, and max|x - median| <= 6 robust sigma.
+  - Stored at unit robust sigma: 1 930 stretches. M5 excludes the
+    test/validation days from the pool.
+
+
+--------------------------------------------------------------------------------
+3. ARCHITECTURES  (ssl_central/models.py)
+--------------------------------------------------------------------------------
+
+Neither architecture uses BatchNorm. This avoids batch-statistics leakage in
+contrastive training and suits a later federated setting with small,
+non-IID client batches.
+
+3.1 1-D CNN  (210 592 parameters)
+   5 stages of Conv1d -> GroupNorm(8 groups) -> GELU
+       channels     32, 64, 96, 128, 128
+       kernel        9,  7,  7,   5,   5
+       stride        2,  2,  2,   2,   1      (600 -> 38 time steps)
+   global average pooling over time -> Linear(128 -> 64)  = embedding h
+
+3.2 Patch transformer  (207 424 parameters, -1.5 % vs the CNN)
+   patching   600 samples -> 24 non-overlapping patches of 25 samples (0.5 s)
+   embedding  Linear(25 -> 64) + learnable positional embedding (24 x 64)
+   encoder    4 pre-LayerNorm Transformer layers, d_model 64, 4 heads,
+              FFN 256, GELU, dropout 0
+   pooling    final LayerNorm, mean over tokens -> Linear(64 -> 64) = h
+
+3.3 Heads (discarded after training; the 64-d h is what is evaluated)
+   SimCLR projection head : Linear(64,64) -> ReLU -> Linear(64,64)
+                            (8 320 parameters)
+   VICReg expander        : Linear(64,256) -> ReLU -> Linear(256,256)
+   MAE decoder (M5)       : Linear(64,128) -> GELU -> Linear(128,25), plus a
+                            learnable [MASK] token (std 0.02 init)
+
+
+--------------------------------------------------------------------------------
+4. SELF-SUPERVISED OBJECTIVES
+--------------------------------------------------------------------------------
+
+4.1 SimCLR / NT-Xent (Chen et al., 2020) -- ssl_central/models.nt_xent
+   For a batch of B events, two augmented views give projections z1, z2.
+   After L2-normalisation, z = [z1; z2] (2B x 64) and the similarity matrix
+   is S = z z^T / T. For each anchor i, its positive is the other view of the
+   same event. The loss is cross-entropy over the row, excluding self:
+
+      L = -(1/2B) * sum_i log( exp(S_i,pos(i)) / sum_{k != i} exp(S_i,k) )
+
+   FALSE-NEGATIVE GUARD (project-specific): two different events whose
+   centroids are less than 30 s apart are removed from each other's
+   negatives (all four view combinations). Consecutive vehicles in a
+   platoon, or one vehicle split in two by the detector, would otherwise be
+   pushed apart. The fraction masked is logged; it is ~1e-3 to 1e-2.
+   Temperature T: 0.1 or 0.2 (grid in F); 0.1 in M5.
+
+4.2 VICReg (Bardes et al., 2022) -- M4_methods/m4.vicreg_loss
+      L = 25 * MSE(z1, z2)                                    invariance
+        + 25 * [mean ReLU(1 - sqrt(Var(z1) + 1e-4)) + same for z2]  variance
+        +  1 * [sum of squared off-diagonal cov(z1) / d + same for z2]
+                                                              covariance
+   No negatives. Collapse is prevented by the variance and covariance terms.
+
+4.3 Masked autoencoder (He et al., 2022, standard recipe) -- M5 MAE5
+   - 75 % of the 24 patch tokens are replaced by the [MASK] token. Positions
+     are added and the whole sequence is encoded (BERT-style; no token
+     dropping).
+   - The decoder predicts each masked patch. Targets are per-patch
+     normalised (zero mean, unit SD), and the MSE is computed on masked
+     patches only.
+   - Input: random crop only (no other augmentation).
+   - Embedding: the pooled, normalised tokens.
+
+4.4 Augmentations for SimCLR and VICReg views (ssl_central/augment.py), on
+    the GPU, in the pre-registered order:
+   1. time-stretch s ~ U(0.85, 1.18) together with a random 12 s crop. The
+      crop must contain the detector's [onset, offset] when it fits;
+      otherwise the event centre must lie in the middle half of the crop.
+      The main lobe is never cut away.
+   2. amplitude scale ~ U(0.8, 1.25). It comes BEFORE noise, so it changes
+      the event-to-noise ratio.
+   3. additive REAL background noise from the pool, scaled by
+      alpha * sigma_ev with alpha ~ U(0, 1). sigma_ev is the event's own
+      robust noise floor, measured outside its mask (+-1 s). This is
+      "SNR-matched" noise: the view's floor stays within sqrt(2) of the
+      original.
+   4. DC offset ~ U(-0.05, 0.05)*A plus end-to-end linear drift
+      ~ U(-0.05, 0.05)*A, where A = crop max|x|. This mimics residual
+      baseline wander.
+   5. max-normalisation.
+   FORBIDDEN, and therefore not implemented, because they change physics:
+     sign flip (polarity is physical: direction or lane), time reversal
+     (rise/fall asymmetry is physical), and masking below 4 Hz (vehicle
+     energy is below 2.5 Hz).
+
+
+--------------------------------------------------------------------------------
+5. TRAINING PROTOCOL
+--------------------------------------------------------------------------------
+
+                         Phase F                         Phase M5
+  ---------------------- ------------------------------- -----------------------
+  pre-registration       PREREG_central.md v2            M5_long/PREREG.md v2
+                         (sha d322a199...) +             (+ amendments C1-C10)
+                         addendum1 (94297f25...)
+  optimiser              AdamW, weight decay 1e-4        AdamW, weight decay 1e-4
+  batch                  256 (drop_last)                 256
+  length                 100 epochs = 12 steps/epoch     10 000 steps
+                         x 100 = 1 200 steps             (~1 000 epochs)
+  learning rate          grid {1e-3, 3e-4}               3e-4 (from M4 selection)
+  schedule               cosine decay to 0, no warm-up   linear warm-up 5 %,
+                                                         then cosine
+  temperature (SimCLR)   grid {0.1, 0.2}                 0.1
+  seeds                  3 (0, 1, 2) for the selected    5 (0-4) per method
+                         cell
+  checkpoint             final step (no early stopping)  final step
+  selection metric       mean of kNN [R2 log_amp, R2     none (fixed from M4)
+                         log_dur, polarity skill, lobes
+                         skill] on Feb 26, GroupKFold(5)
+                         by 30-min block
+  compute                ~25 s per run, 0.28 GB GPU      ~12-14 min per run
+  methods                SimCLR-CNN, SimCLR-TF           SimCLR-TF, VICReg-TF,
+                                                         MAE-TF, SimCLR-CNN
+
+  Hardware: NVIDIA RTX 4060 Laptop GPU (8 GB). PyTorch 2.14 with CUDA.
+  Determinism: torch.manual_seed(seed) is set before the model is built.
+  Separate generators drive augmentations and batch order. init.pt (weights
+  before step 1) is saved for every run and serves as the matched
+  random-initialisation baseline.
+
+  Selected F cells (data/ssl_central/selection.json):
+      CNN : lr 3e-4, T 0.2   (validation mean 0.639)
+      TF  : lr 3e-4, T 0.1   (validation mean 0.635)
+
+  Convergence (log.json):
+      F  TF  s0     NT-Xent 5.42 -> 1.52 over 100 epochs
+      M5 SimCLR-CNN NT-Xent ~6.15 -> 0.42-0.48 (5 seeds)
+      M5 SimCLR-TF  NT-Xent ~6.05 -> 0.71-0.76 (5 seeds)
+      M5 MAE        masked shape-MSE 0.74 on validation (init ~1.0)
+
+  Gates (M5, checked before test scoring):
+      G1 (MAE learned): masked-patch MSE <= 0.90 x a linear-interpolation
+         comparator. All 5 seeds pass (ratio 0.56-0.57). An earlier,
+         degenerate version of the gate was found and fixed BEFORE any test
+         scoring (amendment C10). The reviewer showed the pass also holds
+         against fairer comparators: zero-predictor 0.96, ratio 0.77.
+      G2 (learning sanity): validation kNN mean >= own init + 0.02.
+         Passed by SimCLR-TF 5/5, VICReg 5/5, MAE 3/5, SimCLR-CNN 3/5.
+
+
+--------------------------------------------------------------------------------
+6. EVALUATION METHODOLOGY
+--------------------------------------------------------------------------------
+
+Frozen encoders; the evaluation view (deterministic central crop) is
+embedded.
+
+Targets (from morphology on the central ~8 s; see extraction report):
+   polarity   sign of the largest excursion (2 classes)
+   lobes      number of alternating-sign lobes, capped at 4 (4 classes)
+   duration   log10(m8_dur10), duration above 10 % of peak (regression)
+   (F also used log_amp. That turned out to be SNR leakage through the noise
+    floor of a max-normalised view, and was dropped from later phases.)
+
+Metrics:
+   classification: chance-corrected balanced accuracy,
+                   skill = (BA - 1/K) / (1 - 1/K)
+   regression:     R^2
+
+Probes (fitted on training-split embeddings, scored on test):
+   kNN    k = 15, Euclidean, uniform weights, z-scored
+   linear LogisticRegression(C=1, max_iter=3000) for classes;
+          RidgeCV(alphas = logspace(-3, 3, 13)) for duration
+   Scaling (z-scored vs raw) chosen per representation on the VALIDATION day.
+
+Baselines (M5):
+   B1  untrained CNN (the init.pt of the same seeds as SimCLR-CNN)
+   B2  untrained transformer, unpooled tokens (24x64 = 1 536-d) and PCA-64
+   B3  raw 600-sample crop, and PCA-64
+   B4  PCA-64 of the crop
+   Ref the 19 m8_* morphology features: a ceiling only, and circular,
+       because the targets are computed from it
+
+Statistics (M5):
+   - Two-level hierarchical bootstrap: days with replacement, then 30-min
+     blocks within each day; B = 10 000. Seeds are resampled independently.
+   - Two-sided p-values with Holm correction over 66 tests per probe.
+   - "X beats Y": under BOTH probes, mean gap >= 0.02, Holm p < 0.05 and a
+     95 % CI excluding 0.
+   - Q1 decision: an SSL method must beat EACH of B1-B4 on >= 2 of 3 scores
+     and lose on none.
+
+Leakage (Q3): conditional run information
+   Delta = skill(is-0204 | [embedding PCA-19, morph8])
+         - skill(is-0204 | morph8)
+   Day-grouped CV with logistic regression. Flag if mean Delta > 0.05 and
+   the CI's lower bound > 0.
+
+Dry runs with planted controls (morph8 polarity >= 0.90, planted run column
+Delta >= 0.50, morph8 copy Delta <= 0.05) had to pass before any training.
+
+
+--------------------------------------------------------------------------------
+7. RESULTS
+--------------------------------------------------------------------------------
+
+7.1 Phase F (holdout run 0218; 3 seeds; kNN; source F_central/REPORT.md)
+
+                         CNN                         Transformer
+  P1 targets beating     3/4 (log_amp, polarity,     4/4
+  own init (Holm p<.05)  lobes; log_dur WORSE)
+  P1 mean SSL / init     0.723 / 0.654               0.705 / 0.503
+  P2 leakage skill       date 0.011, run 0.061       date -0.006, run 0.032
+  (morph8 ref)           (0.018 / 0.122)             (0.018 / 0.122)
+  Pre-registered verdict Positive                    Positive
+
+  Caveat: the log_amp "gain" equals what SNR alone predicts, so it is
+  leakage, not learned size. The audit judged the F criteria too loose. A
+  later tightened rerun holding out one run at a time (phase G,
+  ssl_central_v3/) confirmed shape learning in a fair single-space test
+  (transformer polarity +0.26, lobes +0.17, duration +0.07; CNN lobes +0.12).
+  H2 (4 held-out runs x 5 seeds) found the transformer learns shape and beats
+  PCA/raw, but is NOT better than a matched CNN at 1 200 steps.
+
+7.2 Phase M5 (test days Feb 7/13/19/25; mean over seeds; scores_abs.csv)
+
+                          ----------- kNN -----------   --------- linear --------
+  representation          polarity  lobes  duration    polarity  lobes  duration
+  SimCLR-TF               0.880     0.624  0.817       0.904     0.685  0.874
+  SimCLR-CNN              0.873     0.618  0.771       0.892     0.673  0.850
+  VICReg-TF               0.888     0.562  0.796       0.899     0.642  0.831
+  MAE-TF                  0.716     0.340  0.836       0.803     0.398  0.805
+  B1 untrained CNN        0.843     0.455  0.820       0.885     0.571  0.821
+  B2 untrained TF tokens  0.814     0.457  0.720       0.867     0.601  0.809
+  B3 raw crop             0.822     0.500  0.593       0.813     0.259  0.160
+  B4 PCA-64 of crop       0.857     0.510  0.654       0.813     0.227  0.158
+
+  Q1 (pre-registered): no SSL method beats all baselines ("beats_all" false
+     for all four). The best is SimCLR-CNN: one win over B1 (lobes), two over
+     B3, one over B4.
+  Q2 (pairwise wins - losses among SSL): SimCLR-TF +2, VICReg +2,
+     SimCLR-CNN +2, MAE -6.
+  Q3 (conditional run-0204 information, logistic Delta):
+     SimCLR-CNN 0.127 (flagged), SimCLR-TF 0.053, VICReg 0.031, MAE 0.033,
+     B1 0.021, B2 0.023, B3 0.018, B4 0.004.
+     Every representation alone has is-0204 skill <= chance (-0.23 to +0.02;
+     morph8 -0.14).
+
+7.3 Independent review of M5 (M5_long/review/REVIEW.md), with recomputation
+    from frozen checkpoints:
+  - All numbers reproduce exactly.
+  - Lobes: SimCLR (both backbones) is +0.07 to +0.17 over B1/B2 under both
+    probes; all 8 CIs exclude 0. This is a real gain.
+  - Power: the Q1 rule had about 1-5 % power against a uniform +0.05 gain
+    and about 70 % against +0.10. B1 is near the ceiling (polarity 0.885,
+    duration 0.82). "No evidence of value" is therefore partly a property of
+    the rule.
+  - Q2 "three-way tie" is a probe disagreement: under the linear probe,
+    SimCLR-TF beats VICReg (+0.043) and SimCLR-CNN (+0.023) on duration on
+    all 4 days.
+  - Q3: the SimCLR-TF flag lies inside a day-permutation null (95th
+    percentile 0.07-0.10). SimCLR-CNN's 0.127 exceeds the null (p ~ 0.016),
+    meaning it changes how morph8 generalises across days. It does NOT mean
+    run 0204 is decodable on unseen days.
+  - A bug in verdict() (baseline variant matched without filtering by probe)
+    affected 3 cells. Correcting it does not change Q1 or Q2. verdict.json
+    should be regenerated.
+
+7.4 Re-verification of the frozen checkpoints (2026-10-04)
+
+  Script: session scratchpad, check_central.py. kNN (k = 15) probes on the
+  original test sets; trained encoder compared with its own init.pt.
+
+  Checks passed for all 6 F and 10 M5 SimCLR checkpoints:
+    - loads into the current ssl_central.models. config.py sha256
+      1514130d... is identical to the one logged at training time.
+    - embeddings finite; two passes bit-identical (max |diff| = 0).
+    - no collapse. Effective rank of the 64-d training embeddings:
+        F-CNN 22-23, F-TF 16-18 (init 9-11),
+        M5-CNN 35-37, M5-TF 26-27 (init 9-11).
+
+  Mean over seeds, trained (init):
+                     polarity        lobes           log dur         log amp*
+  F CNN (3)          0.874 (0.850)   0.682 (0.482)   0.809 (0.832)   0.844 (0.762)
+  F TF (3)           0.867 (0.681)   0.546 (0.273)   0.853 (0.749)   0.834 (0.602)
+  M5 SimCLR-CNN (5)  0.871 (0.843)   0.620 (0.470)   0.771 (0.815)   0.866 (0.760)
+  M5 SimCLR-TF (5)   0.881 (0.693)   0.622 (0.275)   0.818 (0.775)   0.860 (0.617)
+  morph8 (ref, F)    1.000           0.932           0.949           0.963
+  * log amp: SNR leakage through the noise floor; not a learned quantity.
+
+  These figures agree with the reported M5 kNN scores (e.g. SimCLR-TF
+  0.880 / 0.624 / 0.817).
+
+
+--------------------------------------------------------------------------------
+8. DISCUSSION
+--------------------------------------------------------------------------------
+
+What the evidence supports (exploratory, SNR >= 20, morphology-derived
+targets):
+  1. Contrastive SSL learns lobe structure that random networks lack. This
+     is the most robust effect across F, G, H2, M4 and M5.
+  2. A random-init CNN is already a strong shape featuriser (an
+     architectural inductive bias: local convolution plus pooling). SSL adds
+     little to polarity or duration, and the CNN can even LOSE duration
+     information during SimCLR (0.815 -> 0.771). A plausible cause is the
+     time-stretch augmentation (0.85-1.18), which explicitly asks the
+     encoder to be invariant to duration.
+  3. The transformer gains most from SSL: untrained it is weak (effective
+     rank ~10). With 10k steps it matches the CNN and is best on duration
+     (linear probe). Because it is cleaner on leakage, it is the preferred
+     candidate for the federated phase.
+  4. VICReg is competitive and the cleanest on leakage. MAE trains but its
+     pooled embedding is poor at this data scale. Only one MAE recipe was
+     tried, so this does not mean masked modelling is worse in general.
+  5. All learned and untrained networks greatly outperform raw and PCA
+     inputs (linear lobes +0.38 to +0.46; duration R2 +0.65 to +0.72),
+     because the representation is shift-tolerant.
+
+Threats to validity:
+  - Circularity: the targets are functions of morph8, so morph8 is
+    trivially the ceiling. The scores measure shape descriptors, not vehicle
+    class.
+  - No labels: nothing links lobes or duration to vehicle type, axles or
+    speed yet.
+  - Re-use of test data: the M5 test days were seen in M4, and the F holdout
+    was "weakly held out". There is no fresh test data; all 340 h have been
+    used somewhere.
+  - Few clusters: 4 test days mean any comparison must be positive on all 4
+    days to pass Holm.
+  - Single sensor, single site, 14 days, winter only.
+  - The SNR >= 20 restriction (29 % of events) applies to every conclusion.
+
+
+--------------------------------------------------------------------------------
+9. CONCLUSIONS AND RECOMMENDATIONS
+--------------------------------------------------------------------------------
+
+  - Recommended central model: M5 SimCLR patch transformer
+    (data/m5/ckpt/simclr_tf_s{0..4}/final.pt; lr 3e-4, T 0.1, 10k steps).
+    It improves on its init on every target, has no run-0204 leakage beyond
+    the null, and its patch structure suits federated aggregation.
+    SimCLR-CNN is a close second, but carries some extra run-0204
+    information.
+  - Use it as the benchmark for the federated phase. The existing client/
+    and server/ code still uses the old EMD/KMeans pipeline and must be
+    rewired to these events, this encoder and NT-Xent with global
+    normalisation.
+  - The most valuable next step is external labels (camera, traffic counter
+    or axle log) for a few hundred events. With them, label-efficiency
+    curves (10/30/100/300 labels) of SSL vs untrained networks can be
+    measured on run-held-out splits. This removes the circularity and is the
+    only route to claims about vehicles.
+  - Alternatives: a fresh evaluation with >= 8 held-out days; reduce the
+    stretch augmentation range to preserve duration; pre-train on all SNR
+    tiers (about 3x more unlabeled data) with a blip filter; a transformer
+    patch-size ablation (0.1-0.2 s patches).
+
+
+--------------------------------------------------------------------------------
+10. REPRODUCTION
+--------------------------------------------------------------------------------
+
+  Phase F
+    .venv/bin/python -m ssl_central.bgpool --blocks-per-run 8 --procs 12
+    .venv/bin/python -m ssl_central.train --arch tf --lr 3e-4 --temp 0.1 --seed 0
+    .venv/bin/python -m ssl_central.select ; ... evaluate   (see F_central/REPORT.md)
+  Phase M5  (run from the repo root)
+    python research/model/M5_long/m5.py dryrun
+    python research/model/M5_long/m5.py train simclr_tf 0   # also vicreg_tf, mae_tf, simclr_cnn; seeds 0-4
+    python research/model/M5_long/m5.py gates
+    python research/model/M5_long/m5.py score
+  Loading a trained encoder:
+    import torch; from ssl_central import models as Mo, augment as A
+    enc = Mo.make("tf"); enc.load_state_dict(torch.load("data/m5/ckpt/simclr_tf_s0/final.pt"))
+    # (F checkpoints: ck = torch.load(...); enc = Mo.make(ck["arch"]); enc.load_state_dict(ck["enc"]))
+    h = enc.eval()(A.eval_view(W_tensor, fs_eff_tensor))     # [N, 64]
+
+  Software: Python 3.12.3, PyTorch 2.14 (CUDA), numpy 2.5.3, scipy 1.18.1,
+  pandas 3.0.6, scikit-learn 1.9.1, joblib (research/requirements.lock).
+
+  Key documents:
+    research/model/PREREG_central.md, PREREG_central_v3.md, M5_long/PREREG.md
+    research/model/F_central/REPORT.md, G_loro/REPORT.md,
+      H2_transformer_claim/, M4_methods/, M5_long/review/REVIEW.md
+    research/model/critique/CRITIQUE.md
+    research/RECAP.md (project overview)
+
+  References:
+    Chen T. et al., "A Simple Framework for Contrastive Learning of Visual
+      Representations" (SimCLR), ICML 2020.
+    Bardes A., Ponce J., LeCun Y., "VICReg: Variance-Invariance-Covariance
+      Regularization for Self-Supervised Learning", ICLR 2022.
+    He K. et al., "Masked Autoencoders Are Scalable Vision Learners",
+      CVPR 2022.
+    Dosovitskiy A. et al., "An Image is Worth 16x16 Words" (patch
+      transformers), ICLR 2021.
+    Wu Y., He K., "Group Normalization", ECCV 2018.
+    Holm S., "A simple sequentially rejective multiple test procedure",
+      Scand. J. Statist. 1979.
+
+================================================================================
+ End of report
+================================================================================

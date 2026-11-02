@@ -1,0 +1,22 @@
+{
+ "per_criterion_rho": {
+  "invariance_R@1": 1.0,
+  "leak_date_skill": 1.0,
+  "leak_hour_skill": 0.9333333333333332,
+  "sil_excess": 0.7999999999999999,
+  "ari_excess": 0.6333333333333333,
+  "proxy": 0.8333333333333333
+ },
+ "composite_rho": 0.7731365422707366,
+ "median_criterion_rho": 0.8833333333333333,
+ "top2_a": [
+  "waveform",
+  "morph"
+ ],
+ "top2_b": [
+  "waveform",
+  "morph"
+ ],
+ "same_top2": true,
+ "stable": false
+}

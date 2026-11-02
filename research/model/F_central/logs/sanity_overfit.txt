@@ -1,0 +1,8 @@
+[sanity_overfit_cnn] ep   0 loss 4.7609 guard 0.00e+00 0.77s
+[sanity_overfit_cnn] ep 190 loss 0.4154 guard 0.00e+00 0.01s
+[sanity_overfit_cnn] ep 199 loss 0.4709 guard 0.00e+00 0.01s
+done 2.0s, mem 0.08 GB, final loss 0.4709
+[sanity_overfit_tf] ep   0 loss 4.4856 guard 0.00e+00 0.36s
+[sanity_overfit_tf] ep 190 loss 1.4779 guard 0.00e+00 0.01s
+[sanity_overfit_tf] ep 199 loss 1.9329 guard 0.00e+00 0.01s
+done 2.3s, mem 0.08 GB, final loss 1.9329

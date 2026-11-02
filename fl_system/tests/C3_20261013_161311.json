@@ -1,0 +1,9 @@
+{
+ "clean": "c3b_ref",
+ "killed_then_resumed": "c3b_kill",
+ "kill": "docker kill client_03 during round 2 (exit 137)",
+ "server_exit_code_after_refusal": 2,
+ "final_maxabs": 0.0,
+ "all_rounds_equal": true,
+ "PASS": true
+}

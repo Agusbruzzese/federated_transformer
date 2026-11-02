@@ -1,0 +1,19 @@
+{
+ "diffs": {
+  "r001": 0.0,
+  "r002": 0.0,
+  "r003": 0.0,
+  "final": 0.0
+ },
+ "per_site_scale_and_noise_identical": true,
+ "real_summary_accountant": {
+  "z": 1.0,
+  "T": 3,
+  "delta": 1e-05,
+  "mu_zero_out": 1.7320508075688772,
+  "eps_zero_out": 8.385418924216516,
+  "eps_replace_one": 20.125023545888183,
+  "eps_rdp_zero_out": 9.8112907815777
+ },
+ "V2_PASS": true
+}

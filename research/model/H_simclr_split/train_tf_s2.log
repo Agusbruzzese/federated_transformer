@@ -1,0 +1,12 @@
+[h_tf_s2] ep   0 loss 5.8338 guard 2.66e-04 0.72s
+[h_tf_s2] ep  10 loss 2.8702 guard 3.04e-04 0.49s
+[h_tf_s2] ep  20 loss 2.3568 guard 2.71e-04 0.49s
+[h_tf_s2] ep  30 loss 2.1047 guard 2.63e-04 0.49s
+[h_tf_s2] ep  40 loss 1.9238 guard 2.45e-04 0.49s
+[h_tf_s2] ep  50 loss 1.7911 guard 3.32e-04 0.49s
+[h_tf_s2] ep  60 loss 1.7177 guard 2.78e-04 0.50s
+[h_tf_s2] ep  70 loss 1.6726 guard 2.91e-04 0.50s
+[h_tf_s2] ep  80 loss 1.6124 guard 2.73e-04 0.50s
+[h_tf_s2] ep  90 loss 1.5902 guard 2.73e-04 0.50s
+[h_tf_s2] ep  99 loss 1.5861 guard 2.91e-04 0.50s
+done 49.6s, mem 0.27 GB, final loss 1.5861

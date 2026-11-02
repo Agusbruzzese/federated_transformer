@@ -1,0 +1,227 @@
+================================================================================
+ FROM KMEANS PSEUDO-LABELS TO SIMCLR: WHY THE TRAINING OBJECTIVE CHANGED
+ Report 03
+ Project: federated_transformer                Date: 2026-10-07
+ Sources: research/extraction/D_features/REPORT.md (sections 5.2, 8),
+          research/extraction/SYNTHESIS.md, research/model/F_central/REPORT.md
+          (P5), research/model/C1_clustering/, research/model/C2_lookalikes/,
+          legacy code in client/ and server/
+================================================================================
+
+SUMMARY
+-------
+The original federation trained its encoder with NT-Xent on KMeans
+pseudo-labels: two windows in the same KMeans cluster were treated as a
+positive pair. The re-design replaced this with SimCLR: the only positive pair
+is two augmented views of the SAME event, and every other event is a negative.
+
+Reasons, in order of weight:
+  1. The input to the KMeans was broken (int16 read bug, about 41 % of event
+     windows corrupted) and partly made of time/drift features that leak the
+     date.
+  2. Even on correct inputs, the KMeans clusters have little structure beyond
+     a shuffled null, and they partly follow dropout artefacts.
+  3. Using clusters as positives teaches the encoder to reproduce whatever
+     the clusters encode, artefacts included.
+  4. The old "96 % downstream accuracy" predicted the same pseudo-labels, so
+     it was circular.
+
+After the switch, clustering was tested again on the new events and the new
+embeddings. There is no strong discrete cluster structure. At most there are
+about 7 coarse shape families, and inside each family the events form a
+continuum along amplitude and duration. The SimCLR encoder is therefore a
+representation learner, not a clustering method.
+
+
+--------------------------------------------------------------------------------
+1. THE LEGACY DESIGN (client/, server/, federation_run*.log)
+--------------------------------------------------------------------------------
+
+  Framework       Flower, FedProx (proximal strength mu = 0.1), 15 clients
+  Input unit      a 60 s sliding window (not a detected event)
+  Input features  70 per window: EMD/HHT features (56 IMF features =
+                  7 IMFs x 8), 5 "DC-relative" features, timing features
+                  including t_hours
+  Encoder         MLP, 70 -> hidden -> embedding
+  Pseudo-labels   KMeans, run locally on each client after "DC-relative"
+                  clustering (clustering.py, which was missing from the repo)
+  Loss            NT-Xent with T = 0.5. Positives: every pair of windows with
+                  the same pseudo-label. Negatives: pairs with different
+                  pseudo-labels. This is a supervised-contrastive (SupCon)
+                  loss whose labels come from KMeans.
+  Local training  5 epochs per federated round
+  Reported        loss 0.48 -> 0.35; "96 % downstream accuracy"
+
+
+--------------------------------------------------------------------------------
+2. WHAT WAS WRONG
+--------------------------------------------------------------------------------
+
+2.1 The input data
+  - int16 read bug (comparison/central_pipeline.py:94 on branch
+    origin/comparison-update). Each sample is a 24-bit code of about 11.5M
+    counts. Reading only its low 16 bits as int16 wraps every 65 536 counts,
+    so a slow vehicle signal becomes a sawtooth. About 41 % of event windows
+    were corrupted. This was reproduced bit-exactly and is now a regression
+    test (python -m extraction.tests).
+  - EMD/HHT features are not comparable across events:
+      * IMFs 1-5 are mains interference and noise;
+      * the vehicle-dominant IMF index varies from 6 to 12 between events;
+      * the IMF count changes under a 0.1 s shift for 34 % of events;
+      * augmentation invariance is the worst of all tested representations
+        (retrieval@1 0.26-0.44, against 0.89 for morphology).
+  - t_hours leaks the date (skill 0.98). Several legacy features have
+    0.93-1.00 date/hour skill.
+  - Per-client normalisation raises client identifiability (morph features:
+    leakage skill 0.02 -> 0.73) and changes the partitions (ARI vs global
+    scaling 0.29-0.70).
+
+2.2 KMeans pseudo-labels, even on correct inputs (D_features, finding D7)
+  Test: KMeans k = 5 on 9 candidate representations, compared with a
+  column-permuted null (each feature shuffled independently, which keeps the
+  marginals and destroys the joint structure).
+  - Silhouette exceeds the null by only 0.08-0.25.
+  - Bootstrap-ARI stability is 0.6-0.9 on real features, but the null
+    already reaches 0.3-0.7. KMeans gives "stable" partitions of structureless
+    data, so stability alone proves nothing.
+  - Cluster membership follows the dropout artefact (has_dropout):
+    Cramer's V 0.08-0.16, p < 1e-3, for 8 of 9 representations.
+  - Legacy70 clusters are driven by date/hour features.
+
+2.3 Why this matters for a contrastive loss
+  In the legacy loss, every same-cluster pair is pulled together. If the
+  clusters partly encode dropouts, date or noise level, the encoder is
+  explicitly trained to encode dropouts, date or noise level. In a federated
+  setting where clients are days or runs, that is the worst possible
+  property: it makes clients separable.
+
+2.4 The 96 % figure
+  It is a linear probe predicting the same KMeans pseudo-labels that the
+  encoder was trained on. It measures how well the encoder memorised its own
+  targets, not how good the representation is.
+
+Consequence: the earlier federation results (federation_run2-4.log) are not
+trustworthy and should not be cited.
+
+
+--------------------------------------------------------------------------------
+3. THE NEW DESIGN (ssl_central/, research/model/M5_long/)
+--------------------------------------------------------------------------------
+
+  Input unit      one detected event (HYST-BP detector), SNR >= 20
+  Input           the waveform itself: 12 s at 50 Hz (600 samples),
+                  baseline-subtracted, max-normalised (shape only). No
+                  hand-crafted features enter the encoder.
+  Encoder         1-D CNN (GroupNorm) or patch transformer, ~208k parameters,
+                  64-d embedding, no BatchNorm
+  Positive pair   two augmented views of the SAME event
+  Negatives       all other events in the batch, except events whose
+                  centroids are less than 30 s apart (platoons and detector
+                  splits)
+  Augmentations   chosen to be physically valid:
+                    time-stretch 0.85-1.18 (speed) with a random 12 s crop,
+                    amplitude 0.8-1.25 (distance), real background noise from
+                    quiet stretches (SNR-matched), small DC offset and drift
+  Forbidden       sign flip (polarity = direction/lane), time reversal
+                  (= opposite direction of travel), masking below 4 Hz
+  Normalisation   per-event max-normalisation for the waveform; global fixed
+                  scalings for any scalar features (never per client)
+
+What the objective asks for: "make the representation unchanged under
+nuisances (speed within +-18 %, distance within +-25 %, noise, baseline
+wander), and keep every event distinguishable from the others". Which
+nuisances to ignore is decided by the augmentation list, not by a clustering
+step. This is the key conceptual change: the old design said "these windows
+are the same kind" on the basis of an unreliable clustering, while the new one
+only says "this is the same event, seen differently".
+
+Alternatives considered:
+  - Hybrid SupCon with PHYSICALLY defined weak labels (polarity, duration
+    tertiles): possible later, not KMeans.
+  - VICReg and masked autoencoding: tested in M4/M5. VICReg is competitive;
+    MAE trains but gives the weakest pooled embedding.
+
+
+--------------------------------------------------------------------------------
+4. CLUSTERING RE-EXAMINED AFTER THE SWITCH
+--------------------------------------------------------------------------------
+
+4.1 Phase F, P5 (KMeans on the held-out run 0218, k = 3...10)
+  - Silhouette <= 0.28 for every representation (SSL, random-init, morph8),
+    flat in k, with no preferred number of clusters.
+  - SSL partitions are more stable (bootstrap ARI 0.68-0.93) than random-init
+    ones (0.53-0.78), but no better separated.
+  - PCA-64 silhouettes look higher (0.5-0.6 at k <= 6) but are unstable
+    (ARI 0.1-0.3).
+  Reading: a continuum of shapes, not discrete groups.
+
+4.2 C1, clustering by magnetic signature (pre-registered)
+  - morph8 was the only representation that passed the pre-registered rule.
+    On inspection, its clusters are a coarse taxonomy made of discrete
+    features (polarity x first-lobe sign x lobe count), spanning 3.9x in
+    amplitude.
+  - The best "look-alike" groups came from SimCLR seeds 0, 1 and 3
+    (17 clusters, ARI ~0.9 across days and runs, 33-40 % coverage). Seeds 2
+    and 4 collapsed into degenerate partitions.
+
+4.3 C2, look-alike groups (exploratory)
+  - About 7 shape families (Louvain on waveform correlation >= 0.9) cover
+    88 % of events and are reproducible across runs (leave-one-run-out
+    agreement 0.58-0.70).
+  - Inside a family, amplitude and duration vary continuously. Fine groups
+    (106 groups meeting a strict tolerance) are arbitrary tiles of that
+    continuum: a shuffled-shape null still produces 93 groups.
+  - No evidence that SSL embeddings help find look-alikes (inconclusive).
+
+4.4 What this means
+  - KMeans pseudo-labels could not have been a sound training signal: the
+    data do not contain the discrete classes KMeans assumes.
+  - The SimCLR encoder should not be judged as a clustering method. It is a
+    feature extractor: its value would show up in a downstream task with
+    labels (classification with few labels, same-vehicle retrieval).
+  - If grouping is needed as a product, the recommended form is a two-level
+    index: (1) shape family, then (2) a continuous amplitude/duration
+    look-alike query, or a prototype library (10 prototypes cover 48 % of
+    events, 100 cover 82 %).
+
+
+--------------------------------------------------------------------------------
+5. SIDE-BY-SIDE
+--------------------------------------------------------------------------------
+
+                     Legacy (KMeans + NT-Xent)       New (SimCLR)
+  ------------------ ------------------------------- -------------------------
+  unit               60 s sliding window             detected event
+  input              70 EMD/HHT + DC + time feats    raw waveform (shape)
+  data read          int16 (41 % corrupted)          24-bit, verified
+  positive pair      same KMeans cluster             same event, 2 views
+  source of          clustering (weak, artefact-     physics-based
+  invariances        driven)                         augmentations
+  normalisation      per client                      per event / global
+  leakage            date skill up to 0.98           date ~0; run-0204 small
+  evaluation         probe on own pseudo-labels      frozen probes on held-out
+                     (circular)                      days/runs, vs untrained
+                                                     and raw baselines
+  status             discarded                       central benchmark;
+                                                     federated version pending
+
+
+--------------------------------------------------------------------------------
+6. CONSEQUENCES AND OPEN POINTS
+--------------------------------------------------------------------------------
+
+  - client/ and server/ still implement the legacy design (70 features, MLP,
+    KMeans pseudo-labels via clustering.py, which is missing). They must be
+    rewired to data/events/, the ssl_central encoders, SimCLR augmentations
+    and global normalisation before any new federated run.
+  - The SimCLR evaluation targets are still morphology-derived, so they are
+    circular. The new objective has been shown to learn shape structure
+    (lobe count most robustly), but not yet anything about vehicles. See
+    report 04 for the plan to test this.
+  - Clustering-oriented SSL (DINO, SwAV-style prototypes) was not tried.
+    Given the continuum found in sections 4.1-4.3, it is unlikely to reveal
+    classes that are not there, so it has low priority.
+
+================================================================================
+ End of report
+================================================================================

@@ -1,0 +1,36 @@
+training days {'2025-02-04': np.int64(47), '2025-02-05': np.int64(357), '2025-02-06': np.int64(387), '2025-02-08': np.int64(46), '2025-02-09': np.int64(35), '2025-02-11': np.int64(300), '2025-02-12': np.int64(61), '2025-02-14': np.int64(297), '2025-02-18': np.int64(144), '2025-02-20': np.int64(290), '2025-02-24': np.int64(53), '2025-02-26': np.int64(366), '2025-02-27': np.int64(253)} blocks 343
+          rep     which seed   skill
+0          tf     final    0  0.0331
+1          tf     final    1  0.0229
+2          tf     final    2  0.0098
+3          tf     final    3  0.0247
+4          tf     final    4  0.0459
+5          tf      init    0 -0.0149
+6          tf      init    1 -0.0197
+7          tf      init    2 -0.0201
+8          tf      init    3 -0.0234
+9          tf      init    4 -0.0162
+10        cnn     final    0  0.0709
+11        cnn     final    1  0.0493
+12        cnn     final    2  0.0602
+13        cnn     final    3  0.0570
+14        cnn     final    4  0.0575
+15        cnn      init    0  0.0006
+16        cnn      init    1  0.0036
+17        cnn      init    2  0.0098
+18        cnn      init    3  0.0108
+19        cnn      init    4  0.0134
+20     morph8  baseline    0 -0.0087
+21  raw_pca64  baseline    0  0.0040
+                      mean     std     min     max
+rep       which                                   
+cnn       final     0.0590  0.0078  0.0493  0.0709
+          init      0.0076  0.0053  0.0006  0.0134
+morph8    baseline -0.0087     NaN -0.0087 -0.0087
+raw_pca64 baseline  0.0040     NaN  0.0040  0.0040
+tf        final     0.0273  0.0134  0.0098  0.0459
+          init     -0.0189  0.0034 -0.0234 -0.0149
+                 rep  null_mean  null_sd  null_q95  null_max  observed
+0  morph8|baseline|0    -0.0193   0.0108   -0.0015    0.0060   -0.0087
+1         tf|final|0    -0.0155   0.0088    0.0004    0.0022    0.0331
+2          tf|init|0    -0.0199   0.0102   -0.0022    0.0058   -0.0149

@@ -1,0 +1,105 @@
+================================================================================
+ FEDERATED SYSTEM ACROSS REAL CONTAINERS: RESULTS
+ Report 29 (execution report; design = report 28)
+ Project: federated_transformer                Date: 2026-10-13
+ Code: fl_system/containers/ (Dockerfile, run_compose.py,
+       check_isolation.sh, run_C3.sh, run_C1b.sh)
+ Results: fl_system/tests/T1_20261013_155952.json (C1a),
+          C2_*.txt, C3_20261013_161311.json, T1_20261013_161313.json,
+          C1b_C4_20261013_161902.json
+================================================================================
+
+SUMMARY
+-------
+The federated system runs as 11 real Docker containers: 1 server and 10
+site clients, each with its own filesystem, its own network namespace and
+IP, communicating over a private container network. It computes models
+BIT-IDENTICAL to the study's (full 200-round run included). Container
+boundaries enforce data isolation: other sites' data do not even exist
+inside a client container. A container killed mid-round is handled
+safely, and recovery is exact. All acceptance criteria of report 28 pass.
+
+1. SETUP
+  - Docker 29.1.3, Compose 2.40.3 and the NVIDIA container runtime,
+    installed by the user.
+  - Image fl-base:2026-10-13: ubuntu:24.04 + python3.12
+    3.12.3-1ubuntu0.17, the same package version as the host. The validated
+    environments and code are mounted read-only.
+  - One Compose file is generated per run (new file per run; the legacy
+    docker-compose.yml is untouched). Private internal bridge network;
+    server reachable as flserver:8080; nothing published to the host; all
+    containers run as uid 1000.
+  - Data mounts:
+      server    federation.json + its server/ folder only;
+      client k  its own client folder only.
+
+2. RESULTS (criteria fixed in report 28)
+
+  C1a  3 rounds in containers vs the frozen simulator: max |diff| 0.0 in
+       every round and final. BIT-IDENTICAL. PASS.
+  C1b  full deployment recipe (S+F, 200 rounds, 2.56 M examples, lr 1e-3,
+       seed 0) in containers vs the study's v21_S+F_f0_s0: weights
+       bit-identical (max |diff| 0.0); score difference 0.000 on lobes,
+       polarity and duration. PASS. Wall time 297 s.
+  C2   isolation, probed from inside the containers:
+       client_03 container: the only data that exists is its own folder.
+         Opening other clients' events, the server checkpoint,
+         federation.json, the study noise pools, the raw event windows,
+         research/ and reports/ all fail with FileNotFoundError.
+       server container: only federation.json and its server/ folder
+         exist; no client data.
+       PASS (enforced by the container filesystem, not by convention).
+  C3   fault and recovery:
+       - "docker kill" of client_03 during round 2 (exit 137);
+       - the server refused partial aggregation ("round 2: 1 client
+         failure(s), 9/10 results") and EXITED with code 2;
+       - last committed round 1; restart with --resume;
+       - final weights and every round BIT-IDENTICAL to the uninterrupted
+         container run.
+       PASS. The clean run at this budget (10x per round) is also
+       bit-identical to the simulator.
+  C4   network: 11 distinct container IPs (172.18.0.2-12), i.e. separate
+       network namespaces. Server interface over the 200-round run:
+       1.746 GB received and 1.746 GB sent, i.e. 17.46 MB per round vs a
+       17.26 MB payload: 1.2 % gRPC/TCP overhead. Consistent with the
+       loopback measurement in report 27 (1.1 %).
+
+3. DEFECT FOUND BY THE CONTAINER TEST (fixed)
+  In the first C3 attempt (run c3_kill) the server correctly refused the
+  partial round, but its PROCESS DID NOT EXIT: Flower's gRPC threads kept
+  it alive and the container hung. In the local tests the launcher's
+  watchdog had killed it, which hid the problem; a real deployment would
+  have hung.
+  Fix:
+    - server.py catches the failure, logs "[server] FAILED: ..." and exits
+      with code 2 (pre-fix copy: fl_system/tests/server_pre_C3fix.py.txt);
+    - the container orchestrator has the same backup watchdog as
+      run_local.py.
+  Re-tested in run c3b (PASS). The training path is unchanged: the
+  simulator check of c3b_ref is bit-identical.
+  Operational slips, no effect on evidence:
+    - killing the stuck orchestrator let the test script start an
+      uncontrolled resume (c3_kill/containers_resume, partly on pre-fix
+      code); it is DISCARDED, and the evidence is c3b;
+    - IP addresses were first read after the containers had stopped;
+      fixed by reading them while the containers run.
+
+4. WHAT THIS ESTABLISHES, AND THE REMAINING GAP
+  Established:
+    - the deployed system works across real container boundaries
+      (filesystem, process and network isolation);
+    - it produces exactly the study's models;
+    - it isolates site data structurally;
+    - it fails safely and recovers exactly.
+  Remaining gap: all containers shared one physical machine and GPU. On
+  physically separate machines (different GPUs, drivers or library
+  builds), bit-identity is not expected. Equivalence within the study's
+  margins should be re-checked there, as in T2/C1b. TLS, secure
+  aggregation and the Flower runtime migration remain open (report 27).
+
+5. HOW TO RUN
+  fl_system/containers/README_containers.md
+
+================================================================================
+ End of report
+================================================================================

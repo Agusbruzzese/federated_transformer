@@ -1,0 +1,101 @@
+================================================================================
+ FEDERATED SYSTEM, STEPS A1-A3: BUILD, EXACT EQUIVALENCE, ISOLATION, FAULTS
+ Report 26 (execution report; design = report 25)
+ Project: federated_transformer                Date: 2026-10-13
+ Code: fl_system/ (provision.py, core.py, client.py, server.py,
+       run_local.py, tests/)
+ Environment: .venv-fl (Flower 1.39.0; numpy 2.5.3 / torch 2.14 / scipy /
+       sklearn / pandas identical to the study env; lock file
+       research/requirements_fl.lock). The study env .venv is unchanged.
+ Data: data/fl_system/fold0_v2/ (fold0/ = v1, superseded, see section 4)
+================================================================================
+
+1. WHAT WAS BUILT
+  - provision.py: splits fold 0 into 10 client folders (events, own-day
+    noise, info with hashes) and a server folder (pinned server checkpoint,
+    hash-checked) plus federation.json. Client sizes 434, 301, 81, 61, 324,
+    297, 403, 53, 366, 253 (2 573 events): exactly the study's fold-0
+    clients.
+  - core.py: the simulator's local step, schedule, batching and FedAvg
+    formula, copied verbatim. Clients never import study code; the frozen
+    simulator reads the pooled noise file at import, which a client must
+    never touch.
+  - client.py: a long-lived Flower client (compat start_client). It keeps
+    its own AdamW state, RNG streams and data on its own GPU context, and
+    saves its state after every round (last 3 rounds kept) to roll back to
+    the last committed round on restart. It checks its data hashes at
+    start.
+  - server.py: Flower server with a StrictFedAvg strategy. All 10 clients
+    every round; aggregation in client order with the simulator's formula;
+    it REFUSES to aggregate a round with any failure; it saves the global
+    model every round (last + checkpoints) and can resume (--resume).
+  - run_local.py: starts 1 server + 10 client processes on this machine,
+    with a watchdog (a client that exits early stops the run instead of
+    hanging) and fault injection.
+
+2. TESTS (criteria fixed in report 25 before implementation)
+  T1  exact equivalence with the frozen simulator fedsim3 (fold 0, seed 0,
+      server checkpoint, lr 1e-3, 3 rounds, small budget; per-client local
+      steps 14, 10, 3, 2, 11, 10, 13, 2, 12, 8):
+        global weights after rounds 1, 2, 3 and final: max |diff| = 0.0,
+        0.0, 0.0, 0.0. BIT-IDENTICAL. PASS (tests/T1_20261013_010145.json).
+        Re-run after the client changes of T4 (run t4_ref): again
+        BIT-IDENTICAL (tests/T1_20261013_010443.json).
+  T6  reproducibility: two independent real-system runs (smoke3, t6_t3)
+      have bit-identical globals in every round and identical final
+      weights. PASS (tests/T6_T3_20261013_010226.json).
+  T3  data isolation, by audit hook on every file each client process
+      opened (3 057 files per client, mostly libraries): the only data files
+      each client opened are its own events.npz, info.json and noise.npz.
+      No other client's folder, no server folder, no study data, no
+      research/ or reports/ file. PASS in substance.
+      The test flagged one item per client: the client's own trace output
+      file, written by the test harness at exit into the server run folder.
+      This is a harness artefact (a write of the trace itself), not a data
+      read. Verified for all 10 clients.
+  T4  fault handling (tests/run_T4.sh; tests/T4_20261013_010441.json):
+      - client 3 killed (exit 3) during round 2. The server refused partial
+        aggregation ("round 2: 1 client failure(s), 9/10 results ->
+        stopping"); the launcher watchdog stopped the run; the last
+        committed round stayed 1;
+      - restart with --resume: every client restored its state to the end
+        of round 1, and the run completed;
+      - the resumed run's rounds 2-3 and final weights are BIT-IDENTICAL to
+        an uninterrupted run (max |diff| 0.0).
+      PASS. A failure, then recovery, does not change the result at all.
+
+3. DEFECTS FOUND AND FIXED DURING THE BUILD (honest record)
+  a. The launcher created the run folder, and the server then refused it
+     (FileExistsError). The server now accepts an existing folder but
+     still refuses an existing rounds.jsonl (no overwrite).
+  b. provision v1 stored day and event-id columns as Python object arrays.
+     Clients (correctly) refused to load them without pickle. The fix
+     stores fixed-width text arrays, in a new folder fold0_v2/ (fold0/ is
+     kept as a superseded artefact).
+  c. With all clients dead at start, the server waited forever. The
+     launcher watchdog now stops the run when a client exits early.
+  d. Design flaw found while planning T4, before it caused a failure:
+     clients that completed an un-aggregated round would have been one
+     round ahead after a restart. The fix is per-round client state with
+     rollback to the last committed round.
+  e. The first resume failed (RNG state loaded onto the GPU; it must stay
+     on the CPU). Fixed and re-tested (t4_fault2 PASS). The failed attempt
+     t4_fault is kept with its logs.
+  f. An operational slip: a pkill pattern matched its own shell. No
+     effect on data or results.
+
+4. NUMBERS
+  Round time (3-round smoke runs, small budget): about 0.6 s per round
+  after a start-up of about 5 s. Full-budget timing is measured in T2.
+  Payload: 215 744 float32 parameters = 0.86 MB per model; 10 clients x 2
+  directions = 17.3 MB per round.
+
+5. REMAINING (report 25)
+  T2  full-run equivalence: the deployment recipe S+F, 200 rounds, full
+      budget, seeds 0-2, fold 0; compared with the study's own S+F runs.
+  T5  communication accounting over full runs; runbook for real separate
+      machines; final system report.
+
+================================================================================
+ End of report
+================================================================================

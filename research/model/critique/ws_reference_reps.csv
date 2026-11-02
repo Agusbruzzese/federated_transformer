@@ -1,0 +1,7 @@
+rep,probe,amp_resid,log_dur,n_lobes,polarity
+morph8,transfer,0.181,0.953,0.842,1.0
+morph8,within_run,0.152,0.915,0.684,0.995
+pca64,transfer,-0.019,0.355,0.197,0.689
+pca64,within_run,-0.016,0.364,0.147,0.671
+snr,transfer,-0.003,0.586,0.074,0.059
+snr,within_run,0.032,0.579,0.094,0.069

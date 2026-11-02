@@ -1,0 +1,14 @@
+register site_00 rc 0
+register site_01 rc 0
+activated on superlink: 1
+A_good          node_id=16822287127231555287   errors=0 | 
+B_no_tls        node_id=                       errors=1 | [91mERROR [0m:     Exit Code: 303
+C_wrong_ca      node_id=                       errors=6 | [93mWARNING [0m:   Connection attempt failed, retrying in 0.40 seconds
+D_unregistered  node_id=                       errors=4 | [93mWARNING [0m:   Connection attempt failed, retrying in 0.62 seconds
+┃       Node ID        ┃ Owner ┃   Status   ┃ Elapsed ┃   Status Changed @   ┃
+┡━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━━
+│ 16822287127231555287 │ none  │ online     │ 44s     │ 2026-10-13 22:49:27Z │
+├──────────────────────┼───────┼────────
+│ 1624630508587289485  │ none  │ registered │         │ N/A                  │
+└──────────────────────┴───────┴────────
+logs: data/fl_system/m2b_20261014_004919

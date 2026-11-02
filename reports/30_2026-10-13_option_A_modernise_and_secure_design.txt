@@ -1,0 +1,112 @@
+================================================================================
+ OPTION A: MODERNISE AND SECURE THE FEDERATED SYSTEM - DESIGN AND CRITERIA
+ Report 30 (design; written before implementation)
+ Project: federated_transformer                Date: 2026-10-13
+ Builds on: reports 25-29 (fl_system validated, local and in containers)
+================================================================================
+
+1. WHY
+  The validated system (fl_system/) uses Flower's long-lived legacy API
+  (start_server / compat start_client), deprecated in Flower 1.39. Its
+  traffic is unencrypted, sites are not authenticated, and the server
+  sees every site's individual model update in the clear. Option A fixes
+  these three points one at a time. Each step is proven with the same
+  rigour as before: the training result must not change, except where a
+  privacy mechanism changes it on purpose, and then the change is
+  measured against the study's margins.
+
+2. WHAT FLOWER 1.39 PROVIDES (checked on the installed package)
+  - Runtime: flower-superlink (coordinator), flower-supernode (one per
+    site, long-lived), ServerApp / ClientApp, Grid.send_and_receive
+    (message API), Context.state (per-site state kept between rounds),
+    --node-config (per-site settings such as the data folder).
+  - TLS: superlink --ssl-ca-certfile/--ssl-certfile/--ssl-keyfile;
+    supernode --root-certificates. Site authentication:
+    superlink --enable-supernode-auth --auth-list-public-keys; supernode
+    --auth-supernode-private-key / --auth-supernode-public-key.
+  - Secure aggregation: client mod secaggplus_mod, server
+    SecAggPlusWorkflow.
+  - Differential privacy: client- and server-side clipping strategies
+    (fixed and adaptive), LocalDpMod, and a PrivacyAccountant.
+
+3. STEPS AND ACCEPTANCE CRITERIA (fixed now)
+
+ M1  MIGRATION to the current runtime. New package fl_system2/;
+     fl_system/ is kept unchanged as the validated reference.
+     - ServerApp drives the rounds with the Grid API. It keeps the same
+       strict rules: all 10 sites every round, aggregation in site order
+       with the simulator's formula, no partial round, a checkpoint every
+       round, resume.
+     - ClientApp: the same local step (fl_system/core.py, unchanged). The
+       per-site optimiser state, RNG states and batch stream live in
+       Context.state between rounds, and are also saved to the site's own
+       folder for restarts.
+     - Each site runs a SuperNode whose node-config points to its own
+       data folder.
+     Criteria:
+       M1a  3-round run vs the frozen simulator: bit-identical (as T1),
+            max |diff| <= 1e-5.
+       M1b  full S+F run (200 rounds, seed 0) vs the study model: weights
+            and scores identical (as T2/C1b), score diff <= 0.01.
+       M1c  isolation: a site's ClientApp can open only its own folder
+            (file trace, as T3); in containers, other sites' data do not
+            exist (as C2).
+       M1d  fault: a SuperNode killed mid-round -> no partial
+            aggregation, clean stop; resume -> bit-identical to an
+            uninterrupted run (as T4/C3).
+       M1e  overhead: round time and traffic vs fl_system (reported).
+
+ M2  TLS + SITE AUTHENTICATION
+     - A self-signed certificate authority for the test; SuperLink with
+       certificates; SuperNodes with the CA.
+     - Only listed site keys may join.
+     Criteria:
+       M2a  a TLS + auth run gives a model bit-identical to the plaintext
+            run (encryption must not change the computation);
+       M2b  a SuperNode without TLS is refused; one trusting a different
+            CA is refused; one with an unlisted key is refused;
+       M2c  traffic overhead of TLS (reported).
+
+ M3  SECURE AGGREGATION (SecAgg+)
+     Sites mask their updates, so that the server can decode only the SUM
+     of all sites' updates, never an individual one.
+     - Updates are sent as differences from the global model, with a
+       clipping range and quantisation chosen from measured update sizes.
+     - Weighting: each site sends n_k-weighted values, so the decoded sum
+       gives FedAvg's weighted mean. The design is checked against the
+       Flower implementation before running.
+     Criteria:
+       M3a  correctness: the decoded aggregate of one round equals the
+            plain weighted aggregate within the theoretical quantisation
+            error (computed from the range and bit settings).
+       M3b  confidentiality: the vectors the server receives from each
+            site are uncorrelated with that site's true update
+            (|correlation| < 0.01), while the decoded sum matches (M3a).
+       M3c  effect on learning: full S+F runs with SecAgg+ for seeds 0-2
+            vs the same seeds without (study models): per-seed score
+            difference <= 0.01 on LOBES and POLARITY (as T2).
+       M3d  cost: time and traffic per round vs plain (reported).
+     The strict all-sites rule is kept. SecAgg+'s own dropout recovery is
+     tested only as an extra (reported, not used).
+
+ M4  DIFFERENTIAL PRIVACY (optional; decided after M3 with the user)
+     Client-side clipping + Gaussian noise, with the privacy accountant.
+     The privacy budget (epsilon) is reported against the accuracy cost,
+     measured with the frozen evaluator against the study's margins.
+
+4. COST (estimates)
+  M1 about 1 day of work + about 30 min GPU; M2 about 2-3 h; M3 about
+  0.5-1 day + about 1 h GPU; M4 about 0.5 day + 1-2 h GPU.
+  One report per step (31+). Nothing in the frozen study or in fl_system/
+  is modified.
+
+5. WHAT A DOES NOT DO
+  - It does not make "privacy" a blanket claim. SecAgg+ hides individual
+    updates from the server, but not the aggregate model, which still
+    carries information about all sites together. Only DP (M4) bounds that
+    formally, and only for the epsilon reported.
+  - No change to the study's conclusions.
+
+================================================================================
+ End of report
+================================================================================

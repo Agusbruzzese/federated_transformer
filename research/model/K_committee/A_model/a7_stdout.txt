@@ -1,0 +1,43 @@
+          rep  seed  loss@100  loss@500  loss@1000  loss@2000  loss@5000  loss@7500  loss@10000  drop_last_half
+0   simclr_tf     0     5.297     2.284      1.600      1.258      0.900      0.776       0.740           0.160
+1   simclr_tf     1     5.401     2.331      1.565      1.221      0.894      0.779       0.750           0.144
+2   simclr_tf     2     5.728     2.273      1.602      1.235      0.880      0.774       0.734           0.146
+3   simclr_tf     3     5.442     2.317      1.652      1.255      0.908      0.793       0.755           0.153
+4   simclr_tf     4     5.602     2.321      1.669      1.282      0.911      0.795       0.754           0.157
+5  simclr_cnn     0     5.110     1.447      1.008      0.779      0.562      0.489       0.461           0.102
+6  simclr_cnn     1     5.166     1.403      0.980      0.754      0.544      0.470       0.450           0.095
+7  simclr_cnn     2     5.228     1.453      1.018      0.776      0.562      0.494       0.470           0.093
+8  simclr_cnn     3     5.212     1.402      1.000      0.763      0.540      0.462       0.441           0.099
+9  simclr_cnn     4     5.035     1.363      0.983      0.766      0.560      0.485       0.457           0.103
+M4 simclr_tf c0 final-epoch loss [1.668, 1.67, 1.685, 1.716, 1.819] epochs 100 n_train 2636
+{'rep': 'm4_1k', 'seed': 0, 'rankme_test': 16.701481561204105, 'knn_polarity': np.float64(0.8612816422552005), 'knn_lobes': np.float64(0.5479289692558339), 'knn_duration': np.float64(0.8534753044835164), 'lin_polarity': np.float64(0.8935402265512964), 'lin_lobes': np.float64(0.6114620204297889), 'lin_duration': np.float64(0.8676149287440074)}
+{'rep': 'm5_10k', 'seed': 0, 'rankme_test': 25.838438447969253, 'knn_polarity': np.float64(0.8848322042598642), 'knn_lobes': np.float64(0.6296422904719412), 'knn_duration': np.float64(0.8302352958929976), 'lin_polarity': np.float64(0.9012054959751581), 'lin_lobes': np.float64(0.6680534312116385), 'lin_duration': np.float64(0.8867371110320162)}
+{'rep': 'm4_1k', 'seed': 1, 'rankme_test': 14.313213518968896, 'knn_polarity': np.float64(0.8696236651957636), 'knn_lobes': np.float64(0.52174775382227), 'knn_duration': np.float64(0.8604088481744038), 'lin_polarity': np.float64(0.8957477320700602), 'lin_lobes': np.float64(0.5784546709910267), 'lin_duration': np.float64(0.8714386399813866)}
+{'rep': 'm5_10k', 'seed': 1, 'rankme_test': 24.4133815754352, 'knn_polarity': np.float64(0.8794964401383893), 'knn_lobes': np.float64(0.5981951976270162), 'knn_duration': np.float64(0.8198394038776852), 'lin_polarity': np.float64(0.9013274957587811), 'lin_lobes': np.float64(0.7158611311644133), 'lin_duration': np.float64(0.8677279264103227)}
+{'rep': 'm4_1k', 'seed': 2, 'rankme_test': 14.840226904851532, 'knn_polarity': np.float64(0.8729959233657207), 'knn_lobes': np.float64(0.4942927917942), 'knn_duration': np.float64(0.834450817679984), 'lin_polarity': np.float64(0.8745934299663696), 'lin_lobes': np.float64(0.5661359527070511), 'lin_duration': np.float64(0.8568494131426321)}
+{'rep': 'm5_10k', 'seed': 2, 'rankme_test': 25.61811576625308, 'knn_polarity': np.float64(0.8837894513922939), 'knn_lobes': np.float64(0.5766528941200858), 'knn_duration': np.float64(0.8110038105462536), 'lin_polarity': np.float64(0.9096695186993442), 'lin_lobes': np.float64(0.6717851784187029), 'lin_duration': np.float64(0.8697624600520674)}
+{'rep': 'm4_1k', 'seed': 3, 'rankme_test': 14.905074024935374, 'knn_polarity': np.float64(0.887161709562251), 'knn_lobes': np.float64(0.5275684749488178), 'knn_duration': np.float64(0.8412084964832979), 'lin_polarity': np.float64(0.8858749571274345), 'lin_lobes': np.float64(0.6201570975243834), 'lin_duration': np.float64(0.8767583911406617)}
+{'rep': 'm5_10k', 'seed': 3, 'rankme_test': 25.328840162304168, 'knn_polarity': np.float64(0.8792524405711433), 'knn_lobes': np.float64(0.6706177174477902), 'knn_duration': np.float64(0.8214711039797021), 'lin_polarity': np.float64(0.8978332378052007), 'lin_lobes': np.float64(0.7337152470422174), 'lin_duration': np.float64(0.8747828543930382)}
+{'rep': 'm4_1k', 'seed': 4, 'rankme_test': 13.902435912734804, 'knn_polarity': np.float64(0.8731179231493438), 'knn_lobes': np.float64(0.5469595563425345), 'knn_duration': np.float64(0.8437211146781577), 'lin_polarity': np.float64(0.8757581826175629), 'lin_lobes': np.float64(0.5502729435796972), 'lin_duration': np.float64(0.8610309730803004)}
+{'rep': 'm5_10k', 'seed': 4, 'rankme_test': 25.310143861812048, 'knn_polarity': np.float64(0.8727519237984747), 'knn_lobes': np.float64(0.642459940018825), 'knn_duration': np.float64(0.8024116254967621), 'lin_polarity': np.float64(0.9109562711341606), 'lin_lobes': np.float64(0.681311520362775), 'lin_duration': np.float64(0.8688761814532365)}
+rep                  m4_1k   m5_10k
+rankme_test  mean  14.9325  25.3018
+             std    1.0704   0.5427
+knn_polarity mean   0.8728   0.8800
+             std    0.0093   0.0048
+knn_lobes    mean   0.5277   0.6235
+             std    0.0220   0.0369
+knn_duration mean   0.8467   0.8170
+             std    0.0103   0.0106
+lin_polarity mean   0.8851   0.9042
+             std    0.0098   0.0058
+lin_lobes    mean   0.5853   0.6941
+             std    0.0298   0.0291
+lin_duration mean   0.8667   0.8736
+             std    0.0080   0.0078
+                              cka                   knn15                
+                             mean     min     max    mean     min     max
+group                                                                    
+m4_1k_pairs                0.9280  0.8995  0.9511  0.6825  0.6641  0.6983
+m4_1k_vs_m5_10k_same_seed  0.7864  0.7100  0.8555  0.4848  0.4739  0.5025
+m5_10k_pairs               0.8513  0.7861  0.8876  0.6994  0.6856  0.7152

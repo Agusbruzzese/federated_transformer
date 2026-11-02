@@ -1,0 +1,17 @@
+[f0_cnn_lr0.0003_t0.1_s3] n=2575 pool=1630 loss 5.250 -> 1.031 guard 3.7e-04 67s
+[f0_tf_lr0.0003_t0.1_s2] n=2575 pool=1630 loss 5.900 -> 1.709 guard 3.7e-04 64s
+[f0_cnn_lr0.0003_t0.1_s0_nostretch] n=2575 pool=1630 loss 5.110 -> 0.808 guard 3.7e-04 63s
+[f0_cnn_lr0.0003_t0.1_s3_nostretch] n=2575 pool=1630 loss 5.218 -> 0.802 guard 3.7e-04 68s
+[f1_cnn_lr0.0003_t0.1_s2] n=3693 pool=1080 loss 5.070 -> 0.881 guard 2.6e-04 95s
+[f1_tf_lr0.001_t0.1_s1] n=3693 pool=1080 loss 5.504 -> 1.158 guard 2.6e-04 92s
+[f1_tf_lr0.001_t0.1_s4] n=3693 pool=1080 loss 5.871 -> 1.272 guard 2.6e-04 89s
+[f1_cnn_lr0.0003_t0.1_s2_nostretch] n=3693 pool=1080 loss 4.982 -> 0.681 guard 2.6e-04 98s
+[f2_cnn_lr0.0003_t0.1_s1] n=3538 pool=1930 loss 4.999 -> 0.901 guard 2.5e-04 91s
+[f2_cnn_lr0.0003_t0.1_s4] n=3538 pool=1930 loss 4.934 -> 0.875 guard 2.5e-04 91s
+[f2_tf_lr0.0003_t0.1_s3] n=3538 pool=1930 loss 5.548 -> 1.604 guard 2.5e-04 83s
+[f2_cnn_lr0.0003_t0.1_s1_nostretch] n=3538 pool=1930 loss 4.925 -> 0.656 guard 2.5e-04 90s
+[f2_cnn_lr0.0003_t0.1_s4_nostretch] n=3538 pool=1930 loss 4.886 -> 0.703 guard 2.5e-04 92s
+[f3_cnn_lr0.0003_t0.2_s3] n=3319 pool=1150 loss 5.504 -> 2.433 guard 2.7e-04 86s
+[f3_tf_lr0.001_t0.1_s2] n=3319 pool=1150 loss 5.715 -> 1.321 guard 2.7e-04 79s
+[f3_cnn_lr0.0003_t0.2_s0_nostretch] n=3319 pool=1150 loss 5.353 -> 2.286 guard 2.7e-04 81s
+[f3_cnn_lr0.0003_t0.2_s3_nostretch] n=3319 pool=1150 loss 5.483 -> 2.271 guard 2.7e-04 86s

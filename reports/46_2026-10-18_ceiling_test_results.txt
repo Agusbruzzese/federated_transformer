@@ -1,0 +1,93 @@
+================================================================================
+ CEILING TEST: RESULTS
+ Report 46 (execution report; pre-registration = report 45)
+ Project: federated_transformer                Date: 2026-10-18
+ Results: research/model/R_replication/results_rep3_20261018_090507.json
+          (scores: scoring/scores_rep3_20261018_090504.parquet)
+================================================================================
+
+SUMMARY
+-------
+PRIMARY: HELPS -> READING B. Server pretraining DOES help low-SNR clients.
+The gain was hidden by the noisy low-SNR labels.
+Scored with reliable (clean-tier) labels, the report-42 arm S+F beats
+plain federated by +0.029 on lobes and beats equal-compute federated by
++0.023. On noisy labels the same models had shown -0.020.
+The two other pretrained variants point the same way (+0.025 and +0.015
+over plain federated, both significant). Their labels are "DOES NOT HELP"
+only because one of their two gains is below the half-margin threshold
+(0.02).
+The procedure was valid (C1 equivalent, C3 inferior).
+
+1. RESULTS (models trained on low-SNR events only; probes and labels from
+   SNR >= 20 events; 10 seeds x 9 unseen days; 90 % CI)
+  Mean scores (lobes / polarity):
+    C256 0.541 / 0.906   F-nat 0.522 / 0.897   F-X+P 0.528 / 0.899
+    S+F 0.551 / 0.891    Sclean+F 0.547 / 0.899   S+F@lrT 0.537 / 0.896
+    server alone: S0noisy 0.535 / 0.899; S0clean 0.555 / 0.901
+    untrained 0.276 / 0.756
+
+  PRIMARY, S+F (noisy server, lr 1e-3; Holm family):
+    vs F-nat   lobes +0.029 [+0.017, +0.040] p = 0.0002 (rejected);
+               polarity -0.007
+    vs F-X+P   lobes +0.023 [+0.012, +0.033] p = 0.0005 (rejected);
+               polarity -0.009
+    Both lobes deltas >= 0.02 -> HELPS. Consistent across folds (+0.031,
+    +0.025, +0.029).
+  SECONDARY (same rule, not decisive):
+    Sclean+F  vs F-nat +0.025 (p = 0.003); vs F-X+P +0.019 (p = 0.011,
+              just below m/2) -> rule "DOES NOT HELP"
+    S+F@lrT   vs F-nat +0.015 (p = 0.024); vs F-X+P +0.009 -> "DOES NOT
+              HELP"
+    Direction: all three pretrained variants are above plain federated.
+  OTHERS:
+    F-nat vs C256: -0.018 [-0.031, -0.005] EQUIVALENT. This is the
+      study's direction (study: -0.023). The "federated better than
+      central" of report 42 (+0.023 on noisy labels) does not survive
+      reliable labels; it was a label artifact too. QF is in substance
+      replicated: EQUIVALENT.
+    Server models alone vs F-nat: S0noisy +0.013 (EQ), S0clean +0.032
+      (NI).
+
+2. CEILING MEASURES
+  Untrained -> central gap on lobes: 0.26 with clean labels vs 0.10 with
+  low-SNR labels (report 44). The low-SNR labels compressed the
+  measurable range by about 2.6x, which hid differences of 0.02-0.03.
+  The spread of trained arms is still small (0.029). The models
+  themselves, trained on noisy data, are close to each other.
+
+3. WHAT THIS SETTLES (answers "why did the gain disappear?")
+  - The gain did not disappear; the measurement lost it. With low-SNR
+    probe labels the evaluator cannot resolve differences of 0.02-0.03
+    (reading B).
+  - With reliable labels, pretraining helps low-SNR clients on lobes
+    (+0.015 to +0.029 depending on the variant). That is smaller than on
+    clean clients (+0.049), but it is real.
+  - Reports 42 and 44 should be read with this correction:
+      - their low-SNR-label conclusions on QS (no gain) and QF (federated
+        better) are artifacts of label noise;
+      - with clean labels: QF EQUIVALENT, QS HELPS. Both match the
+        study.
+  - Server data quality: the clean server alone (0.555) is the best
+    model of all. Federated training on noisy clients does not improve
+    it (Sclean+F 0.547). Noisy client data add little beyond a good
+    starting point.
+  - Learning rate: on clean labels the original 1e-3 is better than the
+    re-tuned 3e-4 (+0.029 vs +0.015 over plain federated). The tuning-day
+    signal on noisy labels (report 44) was itself misleading. Keep 1e-3.
+
+4. LESSONS FOR METHOD
+  - Evaluate with reliable labels. Derived labels from noisy waveforms
+    can compress or invert real differences.
+  - When the untrained-to-trained gap shrinks strongly, suspect the
+    measurement before the method.
+
+5. LIMITS
+  Same days and same sensor. The clean-tier labels are the study's own
+  evaluation data (used before for other models, never for these). The
+  primary is one pre-registered comparison; the secondaries agree in
+  direction but not by the full rule.
+
+================================================================================
+ End of report
+================================================================================

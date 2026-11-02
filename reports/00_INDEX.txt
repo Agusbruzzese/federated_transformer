@@ -1,0 +1,147 @@
+REPORTS INDEX
+=============
+Naming: NN_YYYY-MM-DD_short_name.txt
+  NN    next free number (never reuse or renumber)
+  date  date the report was written
+A revised report gets a NEW number and date; old files are never overwritten.
+
+01_2026-10-04_extraction_report_v2.txt           raw .bsd files -> data/events/
+02_2026-10-04_central_model_training_report.txt  central SSL encoders (F, M5)
+03_2026-10-07_kmeans_to_simclr.txt               why KMeans pseudo-labels were
+                                                 replaced by SimCLR; clustering
+                                                 re-examined (F P5, C1, C2)
+04_2026-10-07_research_plan_training_and_tests.txt
+                                                 plan: ground truth, training
+                                                 design, test battery T1-T12
+05_2026-10-07_label_free_plan.txt                no labels/video: federated vs
+                                                 central, dipole simulation,
+                                                 time-locked recurrence
+06_2026-10-08_synthetic_event_generator.txt      family-conditioned synthetic
+                                                 events (synth/), congruence
+                                                 tests vs held-out days
+07_2026-10-08_dataset_vs_generator_14_days.txt   14-day synthetic run vs whole
+                                                 dataset: density, cluster mix,
+                                                 no new clusters, waveforms
+08_2026-10-10_committee_protocol_central_vs_federated.txt
+                                                 committee (A-D) findings and
+                                                 protocol v1 DRAFT: central vs
+                                                 FedAvg-10 vs pretrained server
+09_2026-10-10_protocol_v2_central_vs_federated.txt
+                                                 protocol v2 DRAFT: answers the
+                                                 independent review point by
+                                                 point; supersedes 08 sec. 4-7
+10_2026-10-10_step2_noise_pools.txt              step 2: own-day noise pools,
+                                                 all 18 days (7 199 segments)
+11_2026-10-10_step3_simulator.txt                step 3: fedsim2 (folds, all
+                                                 arms, firewall, guard); proofs
+                                                 C0, C0', G, W, P, smoke PASS
+12_2026-10-10_step4_evaluator.txt                step 4: evaluator + planted
+                                                 controls; C1 EQ, C3/C4 INF,
+                                                 C5 not EQ, gate L1/L2 ok
+13_2026-10-11_step5_independent_review.txt       step 5: reviewer F, FREEZE AFTER
+                                                 REQUIRED CHANGES (R1-R4); user:
+                                                 N_SEEDS=10, PRIVACY=no
+14_2026-10-11_protocol_v2_1_amendment.txt        protocol v2.1 (normative):
+                                                 manifest, controls 10v10,
+                                                 formulas, frozen file list
+15_2026-10-11_step5b_required_changes.txt       step 5b: R1-R4 implemented;
+                                                 test_step5b ALL_PASS (run 3)
+16_2026-10-11_step5c_confirmation_fixes.txt      step 5c: F confirmation; fixes
+                                                 F1-F3; end-to-end smoke PASS
+17_2026-10-11_step6_freeze.txt                   step 6: FREEZE of protocol v2.1
+                                                 (record freeze_v2_1.json,
+                                                 sha 7f3754d03c589dc6)
+18_2026-10-11_step7_servers_and_tuning.txt       step 7: 10 servers pinned; tuning
+                                                 C256 1.5e-4, S+F/CJ 1e-3, rest
+                                                 3e-4; timing revised (~26 h left)
+19_2026-10-11_step8_dry_run_controls.txt         step 8: dry run ALL_PASS (C1 EQ,
+                                                 C3/C4 INF, C5 INC, L1/L2 ok);
+                                                 m_leak 0.03; GO for main runs
+20_2026-10-12_step9_main_runs.txt                step 9: 210/210 main runs OK
+                                                 (~16 h); health check, no collapse
+21_2026-10-12_step10_ablations.txt               step 10: ablations (reset, R50)
+                                                 equivalent to F-nat (descr.)
+22_2026-10-12_step11_results.txt                 step 11 RESULTS: Q-F EQUIVALENT
+                                                 (gate PASS); Q-S HELPS (lobes);
+                                                 pending recomputation
+23_2026-10-12_step12_independent_recomputation.txt
+                                                 step 12: REPRODUCED exactly
+                                                 (900/900 cells, all statistics)
+24_2026-10-12_final_report_central_vs_federated.txt
+                                                 FINAL REPORT: FL equivalent to
+                                                 central; server pretraining helps
+25_2026-10-13_federated_system_design.txt        option A: real FL system design +
+                                                 acceptance tests T1-T6
+26_2026-10-13_fl_system_build_and_exactness.txt  A1-A3: fl_system built; T1 real =
+                                                 simulator BIT-IDENTICAL; T3, T4
+                                                 (exact resume), T6 PASS
+27_2026-10-13_fl_system_final.txt                FL SYSTEM FINAL: VALIDATED; full
+                                                 runs bit-identical to the study
+                                                 (T2); runbook fl_system/README.md
+28_2026-10-13_container_test_design.txt          containers test design + C1-C4
+29_2026-10-13_container_test_results.txt         11 Docker containers: bit-identical
+                                                 to the study; isolation enforced;
+                                                 kill+resume exact; 1.2% overhead
+30_2026-10-13_option_A_modernise_and_secure_design.txt
+                                                 option A design: M1 migration,
+                                                 M2 TLS+auth, M3 SecAgg+, M4 DP
+31_2026-10-14_option_A_M1_migration.txt          M1: current Flower runtime;
+                                                 full run bit-identical (incl. 2
+                                                 replayed rounds)
+32_2026-10-14_option_A_M2_tls_and_auth.txt       M2: TLS + site auth; bit-identical;
+                                                 intruders refused
+33_2026-10-14_option_A_M3_secure_aggregation.txt M3: SecAgg+; correct + confidential
+                                                 (PASS); M3c FAIL seed 1 lobes -0.019
+34_2026-10-14_option_A_M3cprime_preregistration.txt
+                                                 M3c': pre-registered SecAgg+ vs plain
+                                                 equivalence, seeds 3-9 (running)
+35_2026-10-14_option_A_M4_differential_privacy_design.txt
+                                                 M4: site-level DP design, exact sim,
+                                                 unit tests PASS, pre-registered curve
+36_2026-10-15_option_A_M3cprime_results.txt     M3c': SecAgg+ EQUIVALENT to plain
+                                                 (prereg, seeds 3-9); M3 accepted
+37_2026-10-15_option_A_M4_differential_privacy_results.txt
+                                                 M4: sim exact (V1/V2); site-level DP
+                                                 unusable at 10 sites (z* = None)
+38_2026-10-15_release_test_design_and_dev_findings.txt
+                                                 Release test prereg (full stack, WAN);
+                                                 defect found+fixed: SecAgg+ skipped round
+39_2026-10-15_release_test_results.txt          Release test: RELEASE_PASS (exact,
+                                                 isolated, intruders refused, resume)
+40_2026-10-15_consolidated_final_report.txt    CONSOLIDATED FINAL REPORT (study +
+                                                 system + security + release); runbook
+                                                 fl_system5/RUNBOOK.md
+41_2026-10-15_low_snr_replication_preregistration.txt
+                                                 Replication prereg on never-used
+                                                 SNR 10-20 events (190 runs + SecAgg)
+42_2026-10-16_low_snr_replication_results.txt  Replication: SF + SecAgg REPLICATED;
+                                                 QF NON-INFERIOR (fed better on lobes);
+                                                 QS NOT replicated (no pretraining gain)
+43_2026-10-16_pretraining_gain_diagnostic_preregistration.txt
+                                                 Diagnostic prereg: H-data (clean server)
+                                                 / H-lr (re-tune) / H-client
+44_2026-10-17_pretraining_gain_diagnostic_results.txt
+                                                 H-client supported (clean server and
+                                                 re-tuned lr do not restore the gain);
+                                                 possible label-noise ceiling
+45_2026-10-18_ceiling_test_preregistration.txt Ceiling test prereg (clean-label scoring)
+46_2026-10-18_ceiling_test_results.txt         READING B: pretraining DOES help noisy
+                                                 clients (+0.029); noisy labels hid it;
+                                                 QF equivalent with clean labels
+47_2026-10-18_training_tier_study_preregistration.txt
+                                                 Tier study prereg: train on SNR>=20 vs
+                                                 >=10 vs low only (clean-label scoring)
+48_2026-10-19_training_tier_study_results.txt  Tier study: all events (SNR>=10)
+                                                 EQUIVALENT to clean-only (S+F -0.017,
+                                                 in margin); noisy-only INFERIOR
+49_2026-10-19_consolidation_addendum.txt       ADDENDUM to 40: updated bottom line,
+                                                 fairness, figures (reports/figures/),
+                                                 RUNBOOK_v2
+50_2026-10-19_data_intake_kit.txt              Intake kit for new recordings (one
+                                                 command); self-test bit-identical;
+                                                 frozen external-test rules
+51_2026-10-20_central_vs_federated_fairness_audit.txt
+                                                 Fairness audit central vs federated:
+                                                 extraction -> training -> evaluation
+
+Detailed evidence lives in research/ (start at research/RECAP.md).

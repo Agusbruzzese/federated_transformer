@@ -1,0 +1,105 @@
+================================================================================
+ FEDERATED SYSTEM (OPTION A): DESIGN AND ACCEPTANCE CRITERIA
+ Report 25 (design; written before any implementation)
+ Project: federated_transformer                Date: 2026-10-13
+ Builds on: report 24 (final study report), protocol code in
+            research/model/K_committee/protocol/
+================================================================================
+
+1. GOAL
+  Turn the validated recipe into a real federated system: separate client
+  and server processes that communicate only model weights over the
+  network. The recipe is report 24's best result: server pretraining on the
+  server's own data, then FedAvg over day-clients with own-day noise.
+  The system must be PROVEN to compute the same thing as the simulator
+  (fedsim3) that produced the study's results. Then the study's conclusions
+  transfer to the real system.
+
+2. STARTING POINT
+  - client/ and server/ (legacy): Flower 1.8 + Docker, 15 clients, MLP on 70
+    EMD features, KMeans pseudo-labels, FedProx. Discredited (report 03) and
+    importing modules that do not exist. NOT reused and NOT modified.
+  - Tools: no Docker on this machine; Flower not installed (latest 1.39).
+    Processes on localhost replace containers; each client is a separate OS
+    process with its own data folder.
+  - The protocol code (fedsim3 and the evaluator) is frozen and is not
+    modified. The new system lives in a NEW folder, fl_system/.
+
+3. ARCHITECTURE
+  provisioning  fl_system/provision.py splits the dataset into one folder
+                per client ("site"): its events, metadata, own-day noise
+                pool, client id. Plus one server folder: the server days and
+                their noise. A client process receives only its own folder
+                path. Data isolation is structural.
+  server        Flower server. It loads the pinned server-pretrained
+                checkpoint (or pretrains it from its own folder), runs R
+                rounds of FedAvg weighted by examples, with all clients every
+                round (cross-silo). It saves the global checkpoint each
+                round, logs bytes, timings and losses, and can resume from
+                the last round.
+  client        Flower client. It holds its own data, its own persistent
+                AdamW state and its own RNG streams. Each round it receives
+                the global weights, trains s_k local steps with the fedsim3
+                rules (batch min(64, n_k), learning-rate schedule on the
+                central-equivalent step axis), and returns its weights and
+                example count.
+  shared core   fl_system/core.py: the local-training step, extracted
+                verbatim from fedsim3's loop, so that client and simulator
+                execute the same arithmetic.
+  environment   .venv-fl. Flower and its dependencies are installed here
+                only; torch and numpy are reused from .venv through a path
+                link. The study environment .venv is not changed.
+
+4. ACCEPTANCE CRITERIA (fixed now, before implementation)
+  T1  Equivalence of computation. The same configuration (fold 0, seed 0,
+      10 natural clients, 3 rounds, small budget) in the real system and in
+      fedsim3: per-round global weights differ by at most 1e-5
+      (max |diff|); client losses are identical to float tolerance.
+  T2  Full-run equivalence. The deployment recipe (S+F: server checkpoint,
+      then FedAvg 200 rounds, lr 1e-3) for 3 seeds on fold 0, scored with
+      the frozen evaluator. Per seed, |LOBES and POLARITY difference vs the
+      study's S+F run of the same seed| <= 0.01. Expected: about 0 if T1
+      holds; float drift over 200 rounds is the only allowed source.
+  T3  Data isolation. Every file a client process opens lies inside its own
+      folder or the shared code/environment (traced at run time). A client
+      started with another client's folder path sees only that folder.
+  T4  Fault handling. Kill one client process during a round. The server
+      must not aggregate a partial round silently: the round is re-run when
+      the client returns, or the run stops with a clear error. A restarted
+      server resumes from its last saved round. Behaviour is documented and
+      tested.
+  T5  Communication accounting. Bytes per round and in total are measured
+      and compared with the theory: 207 424 + head parameters x 4 bytes x
+      2 directions x 10 clients.
+  T6  Reproducibility. Two real-system runs with the same seed give
+      bit-identical (or float-tolerance) final weights.
+  Any failure is reported, not hidden. The system is called "validated"
+  only if T1, T2, T3 and T6 pass. T4 and T5 are reported with their
+  measured behaviour.
+
+5. STEPS AND COST (each step gets its own report)
+  A1  environment .venv-fl + Flower install; provisioning script; T3
+      setup                                            ~1 h,     no GPU
+  A2  core.py (extracted loop) + client + server       ~3-4 h,   minutes of
+                                                                 GPU
+  A3  T1 exact equivalence; T6 reproducibility         ~1 h,     minutes
+  A4  T2 full-run equivalence (3 S+F runs + scoring)   ~1-2 h GPU (the
+                                                                 overhead of
+                                                                 real
+                                                                 processes
+                                                                 is
+                                                                 measured)
+  A5  T4 fault handling; T5 communication; runbook (how to run on real
+      separate machines)                               ~2 h
+  A6  final system report
+  Nothing is committed to git unless the user asks.
+
+6. WHAT THIS DOES NOT DO
+  - No secure aggregation or differential privacy. The nuisance gate of the
+    study is not a privacy guarantee. These are listed as future work.
+  - No change to the frozen study or its conclusions.
+  - No vehicle-level claims (no labels).
+
+================================================================================
+ End of report
+================================================================================

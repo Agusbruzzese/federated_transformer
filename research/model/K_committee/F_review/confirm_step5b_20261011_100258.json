@@ -1,0 +1,248 @@
+{
+ "sha_now": {
+  "fedsim3.py": "62c9e4bf56c2144ebb39932418b19166606669967646ea97885a341c87e39ce3",
+  "evaluator.py": "193ca2e0307c5863c6aba10765052e823627268b047b0c55167613aa6ad3910f",
+  "evaluator2.py": "ce0d48dcf75babb4c71ac2ede320accfd443bf9726b3d04d2541e86c2642d595",
+  "analyze.py": "bd73299c8537037f84c70bb8b563f4c6060280ab553ee4bc2b14ddfd8fdbf737",
+  "score_all.py": "7ece424517de4298e7934b3c84a9654c6bc17dc25e5d4ee7b8e061868cfc00e9",
+  "tune.py": "110d39bb7ace57a9f559a1ba79cab1426d88fe59ee08ba87ec07c3ffb01efad6",
+  "launch.py": "5a34ed74f8716ebfb05a369cd94cd0760b44b9ce4aa0d0e2357ff629d85b24b8",
+  "manifest.py": "d4b4113d4f87499766f3168dba504abe72771abb3e5fb6fa6a45695fa0caeee0",
+  "manifest_v2_1.json": "2ed0423d40847d3b9a62ed18215cfea5853cec9de288e2f3d90ca71e49ba9dcb",
+  "folds.json": "79f3b1ffe755d66639e4522b4f814d7c4619ee6b994655b98dc30d610daf776a"
+ },
+ "sha_equal_to_tested": {
+  "fedsim3.py": true,
+  "evaluator.py": true,
+  "evaluator2.py": true,
+  "analyze.py": true,
+  "score_all.py": true,
+  "tune.py": true,
+  "launch.py": true,
+  "manifest.py": true,
+  "manifest_v2_1.json": true,
+  "folds.json": true
+ },
+ "M_entries_not_matching_A1": [],
+ "M_cells": {
+  "ablation|F-nat-R50": 15,
+  "ablation|F-nat-reset": 15,
+  "dryrun|C256": 30,
+  "dryrun|C256rep": 30,
+  "main|C64": 30,
+  "main|CJ": 30,
+  "main|F-IID": 30,
+  "main|F-X+P": 30,
+  "main|F-nat": 30,
+  "main|S+C": 30,
+  "main|S+F": 30,
+  "server|server": 10,
+  "tuning|C256": 4,
+  "tuning|C64": 4,
+  "tuning|CJ": 4,
+  "tuning|F-X+P": 4,
+  "tuning|F-nat": 4,
+  "tuning|S+C": 4,
+  "tuning|S+F": 4
+ },
+ "M_seeds": {
+  "server|server": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "tuning|C256": [
+   0
+  ],
+  "tuning|C64": [
+   0
+  ],
+  "tuning|F-nat": [
+   0
+  ],
+  "tuning|S+F": [
+   0
+  ],
+  "tuning|S+C": [
+   0
+  ],
+  "tuning|F-X+P": [
+   0
+  ],
+  "tuning|CJ": [
+   0
+  ],
+  "dryrun|C256": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "dryrun|C256rep": [
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19
+  ],
+  "main|C64": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "main|F-nat": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "main|F-IID": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "main|F-X+P": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "main|S+F": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "main|S+C": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "main|CJ": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9
+  ],
+  "ablation|F-nat-reset": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "ablation|F-nat-R50": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ]
+ },
+ "M_score_all_tags_missing_from_manifest": [],
+ "M_tune_tags": [
+  "v21_tune_C256_lr0.00015",
+  "v21_tune_C256_lr0.0003",
+  "v21_tune_C256_lr0.0006"
+ ],
+ "A_formulas_max_abs_diff": 3.552713678800501e-15,
+ "A_QS_mismatches_of_5000": 0,
+ "A_attribution_mismatches": "0 of 1250",
+ "A_controls_L1_fail_case": {
+  "criteria": {
+   "C1": true,
+   "C3": true,
+   "C4": true,
+   "C5": true,
+   "L1": true,
+   "L2": true
+  },
+  "ALL_PASS": true,
+  "gate_status": "CALIBRATED",
+  "m_leak": 0.04417491453909086,
+  "L1": "PASS"
+ },
+ "A_main_analysis_signature": "(scores, models, m_leak, seeds=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], days=['2025-02-05', '2025-02-11', '2025-02-25', '2025-02-06', '2025-02-13', '2025-02-26', '2025-02-07', '2025-02-14', '2025-02-27'])",
+ "A_main_reads_gate_status": false,
+ "A_main_cli_reads": [
+  "out = main_analysis(S, M, json.load(open(sys.argv[4]))[\"m_leak\"])"
+ ],
+ "T_select": {
+  "exact_plus_0_02": 0.0003,
+  "just_above": 0.0006,
+  "lower_lr_wins": 0.00015
+ },
+ "G_init_encoder_equals_build": [
+  true,
+  true
+ ],
+ "G_gate_core2_equals_gate_core": true,
+ "G_gate_fits_nonconverged": [
+  0,
+  60
+ ],
+ "G_analyze_or_evaluator_pins_folds": false
+}

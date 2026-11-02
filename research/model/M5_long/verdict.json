@@ -1,0 +1,161 @@
+{
+ "Q1": {
+  "simclr_tf": {
+   "per_baseline": {
+    "B1": {
+     "wins": 0,
+     "losses": 0
+    },
+    "B2": {
+     "wins": 1,
+     "losses": 0
+    },
+    "B3": {
+     "wins": 1,
+     "losses": 0
+    },
+    "B4": {
+     "wins": 1,
+     "losses": 0
+    }
+   },
+   "beats_all": false
+  },
+  "vicreg_tf": {
+   "per_baseline": {
+    "B1": {
+     "wins": 0,
+     "losses": 0
+    },
+    "B2": {
+     "wins": 0,
+     "losses": 0
+    },
+    "B3": {
+     "wins": 1,
+     "losses": 0
+    },
+    "B4": {
+     "wins": 0,
+     "losses": 0
+    }
+   },
+   "beats_all": false
+  },
+  "mae_tf": {
+   "per_baseline": {
+    "B1": {
+     "wins": 0,
+     "losses": 2
+    },
+    "B2": {
+     "wins": 0,
+     "losses": 2
+    },
+    "B3": {
+     "wins": 1,
+     "losses": 0
+    },
+    "B4": {
+     "wins": 1,
+     "losses": 0
+    }
+   },
+   "beats_all": false
+  },
+  "simclr_cnn": {
+   "per_baseline": {
+    "B1": {
+     "wins": 1,
+     "losses": 0
+    },
+    "B2": {
+     "wins": 0,
+     "losses": 0
+    },
+    "B3": {
+     "wins": 2,
+     "losses": 0
+    },
+    "B4": {
+     "wins": 1,
+     "losses": 0
+    }
+   },
+   "beats_all": false
+  }
+ },
+ "Q2": {
+  "simclr_tf": 2,
+  "vicreg_tf": 2,
+  "simclr_cnn": 2,
+  "mae_tf": -6
+ },
+ "Q3": {
+  "B1_cnn_init": {
+   "delta_lr": 0.02070334412081986,
+   "lo": 0.01158791801510246,
+   "delta_knn": 0.0186483279395901,
+   "is0204_alone": -0.14988025889967632,
+   "morph": -0.1409708737864078,
+   "flag": false
+  },
+  "B2_tf_tokens": {
+   "delta_lr": 0.0232750809061489,
+   "lo": 0.01732578209277242,
+   "delta_knn": -0.014482200647249121,
+   "is0204_alone": -0.2019719525350593,
+   "morph": -0.1409708737864078,
+   "flag": false
+  },
+  "B3_raw": {
+   "delta_lr": 0.0179719525350594,
+   "lo": 0.0179719525350594,
+   "delta_knn": -0.0020334412081984,
+   "is0204_alone": -0.1780744336569579,
+   "morph": -0.1409708737864078,
+   "flag": false
+  },
+  "B4_pca64": {
+   "delta_lr": 0.0039536138079827,
+   "lo": 0.0039536138079827,
+   "delta_knn": -0.0187432578209276,
+   "is0204_alone": -0.1773247033441208,
+   "morph": -0.1409708737864078,
+   "flag": false
+  },
+  "mae_tf": {
+   "delta_lr": 0.03326752966558792,
+   "lo": 0.029248112189859798,
+   "delta_knn": -0.0013959007551239803,
+   "is0204_alone": -0.11392556634304203,
+   "morph": -0.1409708737864078,
+   "flag": false
+  },
+  "simclr_cnn": {
+   "delta_lr": 0.12710355987055014,
+   "lo": 0.11525458468176908,
+   "delta_knn": 0.05741855447680692,
+   "is0204_alone": -0.014526429341963302,
+   "morph": -0.1409708737864078,
+   "flag": true
+  },
+  "simclr_tf": {
+   "delta_lr": 0.052654800431499484,
+   "lo": 0.04258144552319306,
+   "delta_knn": 0.028550161812297758,
+   "is0204_alone": -0.08391154261057168,
+   "morph": -0.1409708737864078,
+   "flag": true
+  },
+  "vicreg_tf": {
+   "delta_lr": 0.031092772384034562,
+   "lo": 0.012463861920172601,
+   "delta_knn": 0.030905070118662326,
+   "is0204_alone": -0.16928371089536137,
+   "morph": -0.1409708737864078,
+   "flag": false
+  }
+ },
+ "Q1_conclusion": "no evidence that self-supervised training adds value over random or raw features at this data size"
+}

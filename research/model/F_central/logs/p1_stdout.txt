@@ -1,0 +1,6 @@
+P1 snr20/y done in 31s
+P1 snr30/y done in 29s
+P1 all/y done in 45s
+P1 snr20/y21 done in 28s
+[p1] cumulative 134s
+.venv/bin/python -m ssl_central.evaluate p1 >  2>&1  135.99s user 0.30s system 99% cpu 2:16.32 total

@@ -1,0 +1,12 @@
+[h_cnn_s0] ep   0 loss 5.4160 guard 2.81e-04 1.25s
+[h_cnn_s0] ep  10 loss 3.1513 guard 2.68e-04 0.48s
+[h_cnn_s0] ep  20 loss 2.8598 guard 2.68e-04 0.47s
+[h_cnn_s0] ep  30 loss 2.7406 guard 2.71e-04 0.48s
+[h_cnn_s0] ep  40 loss 2.5964 guard 2.37e-04 0.47s
+[h_cnn_s0] ep  50 loss 2.5765 guard 2.68e-04 0.48s
+[h_cnn_s0] ep  60 loss 2.5316 guard 2.58e-04 0.48s
+[h_cnn_s0] ep  70 loss 2.5010 guard 2.73e-04 0.48s
+[h_cnn_s0] ep  80 loss 2.5108 guard 2.89e-04 0.48s
+[h_cnn_s0] ep  90 loss 2.4899 guard 2.96e-04 0.48s
+[h_cnn_s0] ep  99 loss 2.4731 guard 3.01e-04 0.24s
+done 48.2s, mem 0.28 GB, final loss 2.4731

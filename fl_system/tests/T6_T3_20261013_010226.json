@@ -1,0 +1,56 @@
+{
+ "T6_final_maxabs": 0.0,
+ "T6_rounds_equal": true,
+ "T6_PASS": true,
+ "T3_files_opened_per_client": {
+  "0": 3057,
+  "1": 3057,
+  "2": 3057,
+  "3": 3057,
+  "4": 3057,
+  "5": 3057,
+  "6": 3057,
+  "7": 3057,
+  "8": 3057,
+  "9": 3057
+ },
+ "T3_violations": {
+  "0": [
+   "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs/t6_t3/trace_client_00.txt"
+  ],
+  "1": [
+   "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs/t6_t3/trace_client_01.txt"
+  ],
+  "2": [
+   "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs/t6_t3/trace_client_02.txt"
+  ],
+  "3": [
+   "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs/t6_t3/trace_client_03.txt"
+  ],
+  "4": [
+   "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs/t6_t3/trace_client_04.txt"
+  ],
+  "5": [
+   "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs/t6_t3/trace_client_05.txt"
+  ],
+  "6": [
+   "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs/t6_t3/trace_client_06.txt"
+  ],
+  "7": [
+   "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs/t6_t3/trace_client_07.txt"
+  ],
+  "8": [
+   "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs/t6_t3/trace_client_08.txt"
+  ],
+  "9": [
+   "/home/augustin/Documents/federated_transformer/data/fl_system/fold0_v2/server/runs/t6_t3/trace_client_09.txt"
+  ]
+ },
+ "T3_PASS": false,
+ "T3_data_files_opened_example": [
+  "events.npz",
+  "info.json",
+  "noise.npz",
+  "trace_client_03.txt"
+ ]
+}

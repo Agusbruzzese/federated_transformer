@@ -1,0 +1,60 @@
+{
+ "P_symmetric_maxabs": 3.5762786865234375e-07,
+ "P_diag_min": 0.9999996423721313,
+ "P_vs_my_fullnorm_maxabsdiff": 2.1325256316373498e-07,
+ "P_vs_my_overlapPearson_maxabsdiff": 0.177891784718618,
+ "dur_min_max": [
+  0.35918870373192807,
+  8.067942800811295
+ ],
+ "claim1": {
+  "n_groups": 106,
+  "coverage": 0.3853714285714286,
+  "worst_within_d": 0.9962707757949831,
+  "sizes_top": [
+   57,
+   57,
+   38,
+   34,
+   34,
+   33,
+   29,
+   27
+  ],
+  "share_of_edges_of_grouped_events_inside_own_group": 0.07745265124161106
+ },
+ "degree": {
+  "ge1": 0.8816,
+  "ge10": 0.7810285714285714,
+  "median": 89.0,
+  "mean": 132.288
+ },
+ "claim3_recurrence_other_run": [
+  0.8685714285714285,
+  0.8585142857142857,
+  0.8781771428571429
+ ],
+ "claim3_dayblock_CI": [
+  0.8517398930314303,
+  0.8834040198924421
+ ],
+ "claim3_among_events_with_ge1_lookalike": 0.9852216748768473,
+ "amp_dur_only_match_other_run": 0.9997714285714285,
+ "claim4_share": 0.2246125282531482,
+ "shape_match_rate_all_pairs": 0.08834886667973088,
+ "shape_match_rate_given_ampdur": 0.2246125282531482,
+ "shape_match_rate_given_not_ampdur": 0.06712818782460989,
+ "same_run_share_of_lookalike_edges": {
+  "observed": 0.30169673094201394,
+  "expected_random": 0.2882724671761709,
+  "ampdur_only": 0.2963731961451529
+ },
+ "same_day_share": {
+  "lookalike": 0.07356762734121225,
+  "ampdur_only": 0.0745091403591565
+ },
+ "within_1h_share": {
+  "lookalike": 0.023754233188195452,
+  "ampdur_only": 0.025069235736817266
+ }
+}

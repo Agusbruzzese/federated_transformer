@@ -1,0 +1,13 @@
+e1f17ad9f855a228022991a6da5e1aac583e2c391bb532b2bb23e61b33738036  fl_system5/run_stack.py
+0d10492262f5c9991a5b14a8261fb1dcfefa97167fc463aaf3a88744a746878b  fl_system5/check_rel.py
+cacc375f22b12c5acf4b220ad8449551341c043405d13decc20671216a23e1de  fl_system5/app/fl_system5/client_app.py
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  fl_system5/app/fl_system5/__init__.py
+2d17e553d032b5caee361ab4894421499a28eed822870058428a9fd327c10903  fl_system5/app/fl_system5/server_app.py
+f99e75d640cf0ed354eb5b206c1f013626d8fb3c3fa96bf3a34e098a581ecb64  fl_system5/app/pyproject.toml
+{"mode": "intruders", "finished": false, "wall_s": 68.1, "killed": null, "PASS": true, "stalled": null}
+[dpsim rel_ref5b_s0] done 5 rounds in 12s
+{"mode": "run", "finished": false, "wall_s": 184.6, "killed": {"rc": 0, "after_round": 2, "t": 112.0}, "PASS": null, "stalled": null}
+{"mode": "run", "finished": true, "wall_s": 152.8, "killed": null, "PASS": null, "stalled": null}
+{"mode": "run", "finished": true, "wall_s": 8650.5, "killed": null, "PASS": null, "stalled": null}
+{"R1": true, "R2": true, "R3": true, "R4": true, "R5": null, "RELEASE_PASS": true} -> /home/augustin/Documents/federated_transformer/fl_system5/results_rel_20261015_134134.json
+CHAIN_EXIT 0

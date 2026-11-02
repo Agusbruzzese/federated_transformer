@@ -1,0 +1,18 @@
+{
+ "weight_maxabs": 0.0,
+ "bit_identical": true,
+ "score_diff": {
+  "LOBES": 0.0,
+  "POLARITY": 0.0,
+  "DURATION": 0.0
+ },
+ "M1b_PASS": true,
+ "M1e": {
+  "rounds": 200,
+  "retries": 2,
+  "round_secs_median": 30.79,
+  "round_secs_max": 245.22,
+  "total_min": 110.0,
+  "bytes_total": 3451904000
+ }
+}

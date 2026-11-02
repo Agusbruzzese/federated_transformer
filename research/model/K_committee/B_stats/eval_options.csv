@@ -1,0 +1,9 @@
+option,folds,eval_days_total,eval_events_total,eval_days_per_fold,train_days_per_fold,train_events_per_fold,note
+a reuse 4 exhausted test days,1,4,1412,4,13,2636,exploratory only; D=4
+b1 4 fresh held-out days (largest unseen) + reuse none,1,4,1410,4,13,2638,
+b1' 8 held-out days = 4 old test + 4 fresh,1,8,2822,8,9,1226,
+b2 2-fold cross-fitting over 13 large days,2,13,4133,6-7,11-12,2116-2501,training cost x2; every large day evaluated once
+b2 3-fold cross-fitting over 13 large days,3,13,4133,4-5,13-14,2775-3223,training cost x3; every large day evaluated once
+b2 4-fold cross-fitting over 13 large days,4,13,4133,3-4,14-15,3193-3497,training cost x4; every large day evaluated once
+b3 within-day temporal holdout (last 25 % of blocks per day),1,18,537,18,18,3838,every client keeps its own held-out tail; enables client-identity leakage; same-day environment shared
+c synthetic held-out events (synth/),1,any,unlimited,-,18,4375,known labels; generator fitted on real data; C2ST 0.60

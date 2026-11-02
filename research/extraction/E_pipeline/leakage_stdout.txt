@@ -1,0 +1,57 @@
+{'features': 'morph21', 'subset': 'all', 'target': 'date', 'n': 15260, 'K': 18, 'cv_groups': 'blk30', 'n_groups': 684, 'skill': 0.18378107128309124, 'null_skill': -0.0023726062897568233}
+{'features': 'morph21', 'subset': 'all', 'target': 'run_id', 'n': 15260, 'K': 4, 'cv_groups': 'blk30', 'n_groups': 684, 'skill': 0.30261242110610326, 'null_skill': -0.000796099251730705}
+{'features': 'morph21', 'subset': 'all', 'target': 'hbin', 'n': 15260, 'K': 4, 'cv_groups': 'blk30', 'n_groups': 684, 'skill': 0.333590432879087, 'null_skill': -0.004883276201559632}
+{'features': 'morph21', 'subset': 'all', 'target': 'has_dropout', 'n': 15260, 'K': 2, 'cv_groups': 'date', 'n_groups': 18, 'skill': 0.08294991833174814, 'null_skill': 0.007149118854305803}
+{'features': 'morph21', 'subset': 'SNR>=20', 'target': 'date', 'n': 4375, 'K': 18, 'cv_groups': 'blk30', 'n_groups': 545, 'skill': 0.02396422361905415, 'null_skill': -0.01326635735245049}
+{'features': 'morph21', 'subset': 'SNR>=20', 'target': 'run_id', 'n': 4375, 'K': 4, 'cv_groups': 'blk30', 'n_groups': 545, 'skill': 0.14439348683972342, 'null_skill': -0.015324247335665286}
+{'features': 'morph21', 'subset': 'SNR>=20', 'target': 'hbin', 'n': 4375, 'K': 4, 'cv_groups': 'blk30', 'n_groups': 545, 'skill': 0.34672236449758104, 'null_skill': -0.018494746544967817}
+{'features': 'morph21', 'subset': 'SNR>=20', 'target': 'has_dropout', 'n': 4375, 'K': 2, 'cv_groups': 'date', 'n_groups': 18, 'skill': 0.14173311915813502, 'null_skill': 0.12932600265082717}
+{'features': 'morph21', 'subset': 'SNR>=30', 'target': 'date', 'n': 3534, 'K': 18, 'cv_groups': 'blk30', 'n_groups': 419, 'skill': 0.009835706414479835, 'null_skill': -0.00030059325943060703}
+{'features': 'morph21', 'subset': 'SNR>=30', 'target': 'run_id', 'n': 3534, 'K': 4, 'cv_groups': 'blk30', 'n_groups': 419, 'skill': 0.10475665867803863, 'null_skill': -0.02958999041642596}
+{'features': 'morph21', 'subset': 'SNR>=30', 'target': 'hbin', 'n': 3534, 'K': 4, 'cv_groups': 'blk30', 'n_groups': 419, 'skill': 0.12398144444980035, 'null_skill': -0.0360746247397884}
+{'features': 'morph21', 'subset': 'SNR>=30', 'target': 'has_dropout', 'n': 3534, 'K': 2, 'cv_groups': 'date', 'n_groups': 18, 'skill': 0.07486026436186499, 'null_skill': 0.0944074046680683}
+{'features': 'morph21', 'subset': 'SNR>=20, no dropout', 'target': 'date', 'n': 2808, 'K': 18, 'cv_groups': 'blk30', 'n_groups': 442, 'skill': 0.007350259467341567, 'null_skill': -0.0058331759444276345}
+{'features': 'morph21', 'subset': 'SNR>=20, no dropout', 'target': 'run_id', 'n': 2808, 'K': 4, 'cv_groups': 'blk30', 'n_groups': 442, 'skill': 0.09010357065237717, 'null_skill': -0.0019196010554383136}
+{'features': 'morph21', 'subset': 'SNR>=20, no dropout', 'target': 'hbin', 'n': 2808, 'K': 4, 'cv_groups': 'blk30', 'n_groups': 442, 'skill': 0.346583722405642, 'null_skill': -0.014862235253366126}
+{'features': 'morph21', 'subset': 'all, no dropout', 'target': 'date', 'n': 12595, 'K': 18, 'cv_groups': 'blk30', 'n_groups': 684, 'skill': 0.20194804045707646, 'null_skill': -0.004140703494263487}
+{'features': 'morph21', 'subset': 'all, no dropout', 'target': 'run_id', 'n': 12595, 'K': 4, 'cv_groups': 'blk30', 'n_groups': 684, 'skill': 0.3247558081437984, 'null_skill': -0.003961396745850314}
+{'features': 'morph21', 'subset': 'all, no dropout', 'target': 'hbin', 'n': 12595, 'K': 4, 'cv_groups': 'blk30', 'n_groups': 684, 'skill': 0.3363095288578499, 'null_skill': 0.0007006875183928063}
+{'features': 'morph21', 'subset': 'SNR>=20, runs 1-3 only', 'target': 'date', 'n': 2575, 'K': 10, 'cv_groups': 'blk30', 'n_groups': 301, 'skill': 0.011988566516591661, 'null_skill': -0.013363956042479181}
+{'features': 'morph21', 'subset': 'SNR>=20, runs 1-3 only', 'target': 'run_id', 'n': 2575, 'K': 3, 'cv_groups': 'blk30', 'n_groups': 301, 'skill': 0.036493971977843036, 'null_skill': 0.0011651564414656699}
+{'features': 'morph8', 'subset': 'all', 'target': 'date', 'n': 15260, 'K': 18, 'cv_groups': 'blk30', 'n_groups': 684, 'skill': 0.17095482918796642, 'null_skill': -0.0035139349693789836}
+{'features': 'morph8', 'subset': 'all', 'target': 'run_id', 'n': 15260, 'K': 4, 'cv_groups': 'blk30', 'n_groups': 684, 'skill': 0.2958743453348438, 'null_skill': -0.0004833211273096068}
+{'features': 'morph8', 'subset': 'all', 'target': 'hbin', 'n': 15260, 'K': 4, 'cv_groups': 'blk30', 'n_groups': 684, 'skill': 0.3144335465981844, 'null_skill': -0.011734279750790813}
+{'features': 'morph8', 'subset': 'all', 'target': 'has_dropout', 'n': 15260, 'K': 2, 'cv_groups': 'date', 'n_groups': 18, 'skill': 0.0724868485439365, 'null_skill': 0.005395839648688838}
+{'features': 'morph8', 'subset': 'SNR>=20', 'target': 'date', 'n': 4375, 'K': 18, 'cv_groups': 'blk30', 'n_groups': 545, 'skill': 0.018487912465319493, 'null_skill': -0.011711819073825612}
+{'features': 'morph8', 'subset': 'SNR>=20', 'target': 'run_id', 'n': 4375, 'K': 4, 'cv_groups': 'blk30', 'n_groups': 545, 'skill': 0.1221160077477282, 'null_skill': -0.00711462083633152}
+{'features': 'morph8', 'subset': 'SNR>=20', 'target': 'hbin', 'n': 4375, 'K': 4, 'cv_groups': 'blk30', 'n_groups': 545, 'skill': 0.3220221425816685, 'null_skill': -0.012768308612854384}
+{'features': 'morph8', 'subset': 'SNR>=20', 'target': 'has_dropout', 'n': 4375, 'K': 2, 'cv_groups': 'date', 'n_groups': 18, 'skill': 0.12028900924880492, 'null_skill': 0.08551758400194909}
+features                 subset      target     n  K cv_groups  n_groups  skill  null_skill
+ morph21                    all        date 15260 18     blk30       684  0.184      -0.002
+ morph21                    all      run_id 15260  4     blk30       684  0.303      -0.001
+ morph21                    all        hbin 15260  4     blk30       684  0.334      -0.005
+ morph21                    all has_dropout 15260  2      date        18  0.083       0.007
+ morph21                SNR>=20        date  4375 18     blk30       545  0.024      -0.013
+ morph21                SNR>=20      run_id  4375  4     blk30       545  0.144      -0.015
+ morph21                SNR>=20        hbin  4375  4     blk30       545  0.347      -0.018
+ morph21                SNR>=20 has_dropout  4375  2      date        18  0.142       0.129
+ morph21                SNR>=30        date  3534 18     blk30       419  0.010      -0.000
+ morph21                SNR>=30      run_id  3534  4     blk30       419  0.105      -0.030
+ morph21                SNR>=30        hbin  3534  4     blk30       419  0.124      -0.036
+ morph21                SNR>=30 has_dropout  3534  2      date        18  0.075       0.094
+ morph21    SNR>=20, no dropout        date  2808 18     blk30       442  0.007      -0.006
+ morph21    SNR>=20, no dropout      run_id  2808  4     blk30       442  0.090      -0.002
+ morph21    SNR>=20, no dropout        hbin  2808  4     blk30       442  0.347      -0.015
+ morph21        all, no dropout        date 12595 18     blk30       684  0.202      -0.004
+ morph21        all, no dropout      run_id 12595  4     blk30       684  0.325      -0.004
+ morph21        all, no dropout        hbin 12595  4     blk30       684  0.336       0.001
+ morph21 SNR>=20, runs 1-3 only        date  2575 10     blk30       301  0.012      -0.013
+ morph21 SNR>=20, runs 1-3 only      run_id  2575  3     blk30       301  0.036       0.001
+  morph8                    all        date 15260 18     blk30       684  0.171      -0.004
+  morph8                    all      run_id 15260  4     blk30       684  0.296      -0.000
+  morph8                    all        hbin 15260  4     blk30       684  0.314      -0.012
+  morph8                    all has_dropout 15260  2      date        18  0.072       0.005
+  morph8                SNR>=20        date  4375 18     blk30       545  0.018      -0.012
+  morph8                SNR>=20      run_id  4375  4     blk30       545  0.122      -0.007
+  morph8                SNR>=20        hbin  4375  4     blk30       545  0.322      -0.013
+  morph8                SNR>=20 has_dropout  4375  2      date        18  0.120       0.086

@@ -1,0 +1,25 @@
+{
+ "rounds": 3,
+ "examples": 163840,
+ "lr": 0.001,
+ "per_round_maxabs": [
+  0.0,
+  0.0,
+  0.0
+ ],
+ "fedsim_plan_s": [
+  144,
+  100,
+  27,
+  21,
+  107,
+  98,
+  134,
+  21,
+  121,
+  84
+ ],
+ "final_maxabs": 0.0,
+ "bit_identical": true,
+ "PASS": true
+}

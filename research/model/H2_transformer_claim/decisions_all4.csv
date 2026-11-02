@@ -1,0 +1,31 @@
+comp,score,mean_delta,runs_positive,runs_ci_above0,runs_ci_below0,outcome,sign_test_p
+tfinit,polarity,0.255901901847555,4,4,0,TF better,0.0625
+tfinit,lobes,0.17285705271288954,4,4,0,TF better,0.0625
+tfinit,duration,0.08965711660124343,4,3,0,TF better,0.0625
+tfinit,magnitude,0.2603639121778742,4,4,0,TF better,0.0625
+tfinit,group4,0.30358692036742946,4,4,0,TF better,0.0625
+cnn_oracle,polarity,0.0011579196295614749,3,0,0,no clear difference,
+cnn_oracle,lobes,-0.04998169774022935,0,0,2,no clear difference,
+cnn_oracle,duration,0.023877359710178975,4,3,0,TF better,0.0625
+cnn_oracle,magnitude,-0.002318502656688325,1,0,0,no clear difference,
+cnn_oracle,group4,0.0007196052001761004,2,0,0,no clear difference,
+cnn01,polarity,0.010300012813112651,3,0,0,no clear difference,
+cnn01,lobes,-0.020997932366825723,1,0,1,no clear difference,
+cnn01,duration,0.023877359710178975,4,3,0,TF better,0.0625
+cnn01,magnitude,-0.0022482712983868253,1,0,0,no clear difference,
+cnn01,group4,0.003909640308016475,4,0,0,no clear difference,0.0625
+cnn02,polarity,0.0012907520460380749,3,0,0,no clear difference,
+cnn02,lobes,-0.04879272464011665,0,0,2,no clear difference,
+cnn02,duration,0.04195903379631107,4,4,0,TF better,0.0625
+cnn02,magnitude,0.0034860350642137,3,0,0,no clear difference,
+cnn02,group4,0.0010689686481310254,2,0,0,no clear difference,
+pca,polarity,0.20235764838967613,4,4,0,TF better,0.0625
+pca,lobes,0.2545813858133901,4,4,0,TF better,0.0625
+pca,duration,0.43128156471361045,4,4,0,TF better,0.0625
+pca,magnitude,0.6124308312157172,4,4,0,TF better,0.0625
+pca,group4,0.4838944824092417,4,4,0,TF better,0.0625
+raw,polarity,0.10343339059979413,4,4,0,TF better,0.0625
+raw,lobes,0.12381952583857223,4,4,0,TF better,0.0625
+raw,duration,0.2640307124406062,4,4,0,TF better,0.0625
+raw,magnitude,0.32067332475500426,4,4,0,TF better,0.0625
+raw,group4,0.27505175541852456,4,4,0,TF better,0.0625

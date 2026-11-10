@@ -1,2 +1,0 @@
-2025-02-10 09:00 17159898 2416.359 {'intra-chunk dropout': 2683} join slot steps 106 min dt us 412.903
-2025-02-13 10:30 13031673 2414.085 {'intra-chunk dropout': 522} join slot steps 102 min dt us 413.058

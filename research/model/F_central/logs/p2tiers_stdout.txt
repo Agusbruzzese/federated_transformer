@@ -1,3 +1,0 @@
-P2 snr30/all_runs/hgb: 210 CV fits in 726s
-P2 all/all_runs/hgb: 105 CV fits in 92s
-[p2tiers] cumulative 1681s

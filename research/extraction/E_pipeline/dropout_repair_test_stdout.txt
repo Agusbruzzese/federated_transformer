@@ -1,7 +1,0 @@
-180 dropout placements on 20 events (SNR 35-976)
-                median max|err|/sigma  p90 max|err|/sigma  max max|err|/sigma  median max|err|/peak  p90 max|err|/peak
-pad      guard                                                                                                        
-constant 0.00                   4.331              24.114             121.254                 0.007              0.047
-         0.15                   9.383              76.552             876.373                 0.016              0.171
-line     0.00                   2.729              12.153              74.140                 0.004              0.030
-         0.15                   9.392              76.793             878.096                 0.016              0.172

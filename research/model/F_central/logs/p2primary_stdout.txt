@@ -1,4 +1,0 @@
-P2 snr20/all_runs/hgb: 1680 CV fits in 6235s
-P2 snr20/no0204/hgb: 1008 CV fits in 3380s
-P2 snr20/all_runs/knn: 80 CV fits in 2s
-[p2primary] cumulative 10694s

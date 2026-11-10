@@ -1,5 +1,0 @@
-n tested 3077
-dt/base in (1.3,1.4]: n=1369  post-offset slots: median -0.001  frac |off-1|<0.3: 0.0000  frac |off|<0.3: 1.0000
-dt/base in (1.4,1.5]: n=961  post-offset slots: median -0.001  frac |off-1|<0.3: 0.0000  frac |off|<0.3: 1.0000
-dt/base in (1.5,1.6]: n=508  post-offset slots: median -0.001  frac |off-1|<0.3: 0.0000  frac |off|<0.3: 1.0000
-dt/base in (1.6,1.7]: n=239  post-offset slots: median -0.002  frac |off-1|<0.3: 0.0000  frac |off|<0.3: 1.0000

@@ -1,7 +1,0 @@
-{
- "n": 4375,
- "r2_linear_snr_on_amp_resid": -9.387033372831866e-10,
- "r2_knn_snr_on_amp_resid": 0.0324532405147836,
- "r2_knn_snr_on_raw_log_amp": 0.8455820296912265,
- "corr_amp_snr": 0.917118823629986
-}
